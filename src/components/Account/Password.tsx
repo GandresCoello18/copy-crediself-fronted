@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable prettier/prettier */
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable no-undef */
 import * as Yup from 'yup';
@@ -29,8 +31,12 @@ export const ResetPassword = () => {
 
           Cookies.remove('access-token-cici');
           window.location.href = '/login';
-        } catch (error) {
-          toast.error(error.message);
+        } catch (error: any) {
+          if (error.request.response) {
+            toast.error(JSON.parse(error.request.response).status);
+          } else {
+            toast.error(error.message);
+          }
         }
 
         actions.setSubmitting(false);

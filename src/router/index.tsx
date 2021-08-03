@@ -20,6 +20,7 @@ import { toast, ToastContainer } from 'react-toast';
 // import dinamic
 const PermisosView = lazy(() => import('../view/permisos'));
 const AccountView = lazy(() => import('../view/account'));
+const RolesView = lazy(() => import('../view/roles'));
 
 const token = Cookies.get('access-token-crediself');
 
@@ -38,6 +39,7 @@ const routes = [
     children: [
       { path: 'dashboard', element: PathSesion(Panel) },
       { path: 'permisos', element: PathSesion(PermisosView) },
+      { path: 'roles', element: PathSesion(RolesView) },
       { path: 'account', element: PathSesion(AccountView) },
       { path: '*', element: <Navigate to='/404' /> },
     ],
@@ -67,7 +69,11 @@ const App = () => {
 
       token && FetchMe();
     } catch (error) {
-      toast.error(error.message);
+      if (error.request.response) {
+        toast.error(JSON.parse(error.request.response).status);
+      } else {
+        toast.error(error.message);
+      }
     }
   }, [token, setMe]);
 

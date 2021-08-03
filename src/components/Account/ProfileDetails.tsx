@@ -40,7 +40,11 @@ export const ProfileDetails = () => {
             await UpdateUser({ token, data: values });
             toast.success('Se actualizaron los datos');
           } catch (error) {
-            toast.error(error.message);
+            if (error.request.response) {
+              toast.error(JSON.parse(error.request.response).status);
+            } else {
+              toast.error(error.message);
+            }
           }
 
           actions.setSubmitting(false);

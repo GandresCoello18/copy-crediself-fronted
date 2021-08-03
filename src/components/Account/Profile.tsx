@@ -55,7 +55,11 @@ export const Profile = () => {
       setTimeout(() => window.location.reload(), 1000);
     } catch (error) {
       setLoading(false);
-      toast.error(error.message);
+      if (error.request.response) {
+        toast.error(JSON.parse(error.request.response).status);
+      } else {
+        toast.error(error.message);
+      }
     }
   };
 

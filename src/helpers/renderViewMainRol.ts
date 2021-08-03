@@ -1,7 +1,7 @@
 export const RenderMainViewRol = (Rol: string) => {
   switch (Rol) {
     case 'Director':
-      return '/app/permisos';
+      return '/app/roles';
     default:
       return '/app/dashboard';
   }

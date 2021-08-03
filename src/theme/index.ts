@@ -13,6 +13,18 @@ const theme = createMuiTheme({
     secondary: {
       main: '#0b505d',
     },
+    error: {
+      main: '#f4bec3',
+    },
+    warning: {
+      main: '#fff3cd',
+    },
+    info: {
+      main: '#cfe2ff',
+    },
+    success: {
+      main: '#d1e7dd',
+    },
     text: {
       primary: '#0b505d',
       secondary: colors.blueGrey[600],

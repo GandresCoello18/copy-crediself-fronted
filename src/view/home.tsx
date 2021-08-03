@@ -34,7 +34,11 @@ export const Panel = () => {
     try {
       setLoading(false);
     } catch (error) {
-      toast.error(error.message);
+      if (error.request.response) {
+        toast.error(JSON.parse(error.request.response).status);
+      } else {
+        toast.error(error.message);
+      }
       setLoading(false);
     }
   };

@@ -36,17 +36,19 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface Props {
+  click: () => void;
   href: string;
   icon: any;
   title: string;
 }
 
-const NavItem = ({ href, icon: Icon, title, ...rest }: Props) => {
+const NavItem = ({ click, href, icon: Icon, title, ...rest }: Props) => {
   const classes = useStyles();
 
   return (
     <ListItem className={classes.item} disableGutters {...rest}>
       <Button
+        onClick={() => click()}
         activeClassName={classes.active}
         className={classes.button}
         component={RouterLink}

@@ -19,6 +19,7 @@ import {
 import EqualizerIcon from '@material-ui/icons/Equalizer';
 import PersonIcon from '@material-ui/icons/Person';
 import LockIcon from '@material-ui/icons/Lock';
+import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import NavItem from './NavItem';
 import { MeContext } from '../../../context/contextMe';
 import Cookies from 'js-cookie';
@@ -87,6 +88,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
     case 'Director':
       items = [
         {
+          href: '/app/roles',
+          icon: SupervisedUserCircleIcon,
+          title: 'Roles',
+        },
+        {
           href: '/app/permisos',
           icon: LockIcon,
           title: 'Permisos',
@@ -112,7 +118,7 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
     if (openMobile && onMobileClose) {
       onMobileClose();
     }
-  }, [openMobile]);
+  }, []);
 
   const content = (
     <Box height='100%' display='flex' flexDirection='column'>
@@ -134,7 +140,13 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
       <Box p={2}>
         <List>
           {items.map((item: any) => (
-            <NavItem href={item.href} key={item.title} title={item.title} icon={item.icon} />
+            <NavItem
+              click={onMobileClose}
+              href={item.href}
+              key={item.title}
+              title={item.title}
+              icon={item.icon}
+            />
           ))}
           <ListItem className={classes.item} disableGutters>
             <Button className={classes.button} onClick={closeSesion}>

@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-undef */
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
@@ -43,7 +45,6 @@ export const Login = () => {
         })}
         onSubmit={async (values, actions) => {
           setLoading(true);
-          console.log(values);
 
           try {
             const response = await (await LoginAccess({ token: undefined, data: values })).data;
@@ -53,8 +54,12 @@ export const Login = () => {
             Cookies.set('access-token-crediself', response.me.token, { expires: tresHoras });
 
             window.location.href = RenderMainViewRol(response.me.user.idRol);
-          } catch (error) {
-            toast.error(error.message);
+          } catch (error: any) {
+            if (error.request.response) {
+              toast.error(JSON.parse(error.request.response).status);
+            } else {
+              toast.error(error.message);
+            }
             setLoading(false);
           }
 

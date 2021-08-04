@@ -1,13 +1,10 @@
-# Dashboard Cici beauty place app
-
-[![CircleCI](https://circleci.com/gh/locol23/next-redux-typescript-starter/tree/master.svg?style=svg)](https://circleci.com/gh/locol23/next-redux-typescript-starter/tree/master)
-[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
+# Dashboard Credifelf
 
 # Libraries
 
-- now
+- Vercel
 - React
-- Jest
+- Cypress
 - TypeScript
 
 # Development
@@ -19,8 +16,6 @@ yarn dev
 ## Comenzando 🚀
 
 _Estas instrucciones te permitirán obtener una copia del proyecto en funcionamiento en tu máquina local para propósitos de desarrollo y pruebas._
-
-Mira **Deployment** para conocer como desplegar el proyecto.
 
 ### Pre-requisitos 📋
 
@@ -39,7 +34,7 @@ _Para el desarrollo de esta api rest se utilizo las siguientes herramientas._
 - [Vercel](https://vercel.com/) - Plataforma para deploy y test A - B.
 - [Axios](https://github.com/axios/axios) - Fetch de datos.
 - [TypeScript](https://www.typescriptlang.org/) - Tipado fuerte para javascript.
-- [Firebase](https://firebase.google.com/?hl=es) - Auth para facebbok y google.
+- [Cypress](https://www.cypress.io/) - Testing de punto a punto.
 
 ## Autores ✒️
 

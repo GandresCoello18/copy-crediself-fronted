@@ -21,6 +21,8 @@ import { ImageListType } from 'react-images-uploading';
 import { toast } from 'react-toast';
 import { UpdateAvatarUser } from '../../api/users';
 import { SourceAvatar } from '../../helpers/sourceAvatar';
+import { AxiosError } from 'axios';
+import { HandleError } from '../../helpers/handleError';
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -55,11 +57,7 @@ export const Profile = () => {
       setTimeout(() => window.location.reload(), 1000);
     } catch (error) {
       setLoading(false);
-      if (error.request.response) {
-        toast.error(JSON.parse(error.request.response).status);
-      } else {
-        toast.error(error.message);
-      }
+      toast.error(HandleError(error as AxiosError));
     }
   };
 

@@ -12,6 +12,8 @@ import TotalProfit from '../components/Panel/TotalProfit';
 import { useState, useEffect, useContext } from 'react';
 import { toast } from 'react-toast';
 import { MeContext } from '../context/contextMe';
+import { AxiosError } from 'axios';
+import { HandleError } from '../helpers/handleError';
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -34,11 +36,7 @@ export const Panel = () => {
     try {
       setLoading(false);
     } catch (error) {
-      if (error.request.response) {
-        toast.error(JSON.parse(error.request.response).status);
-      } else {
-        toast.error(error.message);
-      }
+      toast.error(HandleError(error as AxiosError));
       setLoading(false);
     }
   };

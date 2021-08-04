@@ -23,6 +23,8 @@ import { MeContext } from '../context/contextMe';
 import { toast } from 'react-toast';
 import { Rol } from '../interfaces/Rol';
 import { TableRol } from '../components/Roles/table-rol';
+import { AxiosError } from 'axios';
+import { HandleError } from '../helpers/handleError';
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -56,11 +58,7 @@ const RolesView = () => {
       setRoles(roles);
       setLoading(false);
     } catch (error) {
-      if (error.request.response) {
-        toast.error(JSON.parse(error.request.response).status);
-      } else {
-        toast.error(error.message);
-      }
+      toast.error(HandleError(error as AxiosError));
       setLoading(false);
     }
   };
@@ -85,11 +83,7 @@ const RolesView = () => {
       setIdsRole([]);
       fetchRoles();
     } catch (error) {
-      if (error.request.response) {
-        toast.error(JSON.parse(error.request.response).status);
-      } else {
-        toast.error(error.message);
-      }
+      toast.error(HandleError(error as AxiosError));
       setLoadingMulti(false);
     }
   };

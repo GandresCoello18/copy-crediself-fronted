@@ -16,6 +16,8 @@ import { useContext, useEffect } from 'react';
 import { GetMeUser } from '../api/users';
 import { MeContext } from '../context/contextMe';
 import { toast, ToastContainer } from 'react-toast';
+import { AxiosError } from 'axios';
+import { HandleError } from '../helpers/handleError';
 
 // import dinamic
 const PermisosView = lazy(() => import('../view/permisos'));
@@ -69,11 +71,7 @@ const App = () => {
 
       token && FetchMe();
     } catch (error) {
-      if (error.request.response) {
-        toast.error(JSON.parse(error.request.response).status);
-      } else {
-        toast.error(error.message);
-      }
+      toast.error(HandleError(error as AxiosError));
     }
   }, [token, setMe]);
 

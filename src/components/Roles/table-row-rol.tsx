@@ -18,6 +18,8 @@ import { MeContext } from '../../context/contextMe';
 import { toast } from 'react-toast';
 import { DialogoForm } from '../DialogoForm';
 import { FormEditRol } from './edit-rol';
+import { AxiosError } from 'axios';
+import { HandleError } from '../../helpers/handleError';
 
 const useStyles = makeStyles((theme: any) => ({
   btnDelete: {
@@ -60,11 +62,7 @@ export const RowTableRol = ({
       setIsActive(check);
     } catch (error) {
       setLoading(false);
-      if (error.request.response) {
-        toast.error(JSON.parse(error.request.response).status);
-      } else {
-        toast.error(error.message);
-      }
+      toast.error(HandleError(error as AxiosError));
     }
   };
 

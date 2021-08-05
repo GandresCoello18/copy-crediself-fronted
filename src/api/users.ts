@@ -27,14 +27,12 @@ interface NewUsers {
   email: string;
   userName: string;
   password: string;
-  provider: string;
+  nombres: string;
+  apellidos: string;
+  idRol: string;
 }
 
-export const GetUsers = async (option: {
-  token: string | undefined;
-  findUser?: string;
-  page: number;
-}) => {
+export const GetUsers = async (option: { token?: string; findUser?: string; page: number }) => {
   api.defaults.headers['access-token'] = option.token;
   const response = await api({
     method: 'GET',
@@ -75,7 +73,8 @@ export const GetMeUser = async (options: { token: string | undefined }) => {
   return response;
 };
 
-export const NewUser = async (options: { data: NewUsers }) => {
+export const NewUser = async (options: { token: string; data: NewUsers }) => {
+  api.defaults.headers['access-token'] = options.token;
   const response = await api({
     method: 'POST',
     url: '/users',
@@ -150,7 +149,7 @@ export const UpdatePasswordEmail = async (options: {
   return response;
 };
 
-export const DeleteUser = async (options: { token: string | undefined; IdUser: string }) => {
+export const DeleteUser = async (options: { token?: string; IdUser: string }) => {
   api.defaults.headers['access-token'] = options.token;
   const response = await api({
     method: 'DELETE',

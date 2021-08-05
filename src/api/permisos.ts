@@ -1,10 +1,10 @@
 import { api } from '.';
 
-export const GetPermisosByRoles = async (option: { token?: string }) => {
+export const GetPermisosByRole = async (option: { token?: string }) => {
   api.defaults.headers['access-token'] = option.token;
   const response = await api({
     method: 'GET',
-    url: '/',
+    url: '/permiso',
   });
   return response;
 };

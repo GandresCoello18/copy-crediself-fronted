@@ -19,6 +19,7 @@ import {
 import EqualizerIcon from '@material-ui/icons/Equalizer';
 import PersonIcon from '@material-ui/icons/Person';
 import LockIcon from '@material-ui/icons/Lock';
+import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import NavItem from './NavItem';
 import { MeContext } from '../../../context/contextMe';
@@ -96,6 +97,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           href: '/app/permisos',
           icon: LockIcon,
           title: 'Permisos',
+        },
+        {
+          href: '/app/usuarios',
+          icon: GroupAddIcon,
+          title: 'Usuarios',
         },
         {
           href: '/app/account',

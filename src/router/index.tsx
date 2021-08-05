@@ -23,6 +23,7 @@ import { HandleError } from '../helpers/handleError';
 const PermisosView = lazy(() => import('../view/permisos'));
 const AccountView = lazy(() => import('../view/account'));
 const RolesView = lazy(() => import('../view/roles'));
+const UsuariosView = lazy(() => import('../view/usuarios'));
 
 const token = Cookies.get('access-token-crediself');
 
@@ -43,6 +44,7 @@ const routes = [
       { path: 'permisos', element: PathSesion(PermisosView) },
       { path: 'roles', element: PathSesion(RolesView) },
       { path: 'account', element: PathSesion(AccountView) },
+      { path: 'usuarios', element: PathSesion(UsuariosView) },
       { path: '*', element: <Navigate to='/404' /> },
     ],
   },

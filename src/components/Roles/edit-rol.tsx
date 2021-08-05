@@ -17,6 +17,8 @@ import { toast } from 'react-toast';
 import { Dispatch, SetStateAction, useContext } from 'react';
 import { MeContext } from '../../context/contextMe';
 import { UpdateRole } from '../../api/roles';
+import { AxiosError } from 'axios';
+import { HandleError } from '../../helpers/handleError';
 
 interface Props {
   IdRol: string;
@@ -37,17 +39,11 @@ export const FormEditRol = ({ IdRol, descripcion, setReloadRol }: Props) => {
           descripcion: Yup.string().max(100).required('El campo es requerido'),
         })}
         onSubmit={async (values, actions) => {
-          console.log(values);
-
           try {
             await UpdateRole({ token, descripcion: values.descripcion, IdRol });
             setReloadRol(true);
           } catch (error) {
-            if (error.request.response) {
-              toast.error(JSON.parse(error.request.response).status);
-            } else {
-              toast.error(error.message);
-            }
+            toast.error(HandleError(error as AxiosError));
           }
 
           actions.setSubmitting(false);

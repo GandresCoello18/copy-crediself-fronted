@@ -8,27 +8,27 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { DialogoMessage } from '../DialogoMessage';
 import { toast } from 'react-toast';
-import { Rol } from '../../interfaces/Rol';
-import { RowTableRol } from './table-row-rol';
-import { DeleteRole } from '../../api/roles';
-import { AxiosError } from 'axios';
 import { HandleError } from '../../helpers/handleError';
+import { AxiosError } from 'axios';
+import { Usuario } from '../../interfaces/Usuario';
+import { DeleteUser } from '../../api/users';
+import { RowTableUser } from './row-table-user';
 
 interface Props {
-  roles: Rol[];
+  usuarios: Usuario[];
   Loading: boolean;
-  IdsRole: string[];
-  setReloadRol: Dispatch<SetStateAction<boolean>>;
-  setIdsRole: Dispatch<SetStateAction<string[]>>;
+  IdsUser: string[];
+  setReloadUser: Dispatch<SetStateAction<boolean>>;
+  setIdsUser: Dispatch<SetStateAction<string[]>>;
 }
 
-export const TableRol = ({ roles, Loading, IdsRole, setReloadRol, setIdsRole }: Props) => {
-  const { token } = useContext(MeContext);
-  const [IdRol, setIdRol] = useState<string>('');
+export const TableUser = ({ usuarios, Loading, IdsUser, setReloadUser, setIdsUser }: Props) => {
+  const { token, me } = useContext(MeContext);
+  const [IdUser, setIdUser] = useState<string>('');
   const [DialogoDelete, setDialogoDelete] = useState<boolean>(false);
   const [AceptDialog, setAceptDialog] = useState<boolean>(false);
 
-  const SkeletonRoles = () => {
+  const SkeletonUser = () => {
     return [0, 1, 2, 3, 4, 5, 6, 7].map(item => (
       <Skeleton key={item} style={{ marginBottom: 10 }} variant='rect' width='100%' height={40} />
     ));
@@ -37,20 +37,26 @@ export const TableRol = ({ roles, Loading, IdsRole, setReloadRol, setIdsRole }: 
   useEffect(() => {
     const FetchDelete = async () => {
       try {
-        await DeleteRole({ token, IdRol });
-        toast.success('Rol eliminado');
-        setReloadRol(true);
+        await DeleteUser({ token, IdUser });
+        toast.success('Usuario eliminado');
+        setReloadUser(true);
 
         setAceptDialog(false);
         setDialogoDelete(false);
-        setIdRol('');
+        setIdUser('');
       } catch (error) {
         toast.error(HandleError(error as AxiosError));
       }
     };
 
-    AceptDialog && IdRol && FetchDelete();
-  }, [AceptDialog, token, IdRol, setReloadRol]);
+    AceptDialog && IdUser && FetchDelete();
+  }, [AceptDialog, token, IdUser, setReloadUser]);
+
+  useEffect(() => {
+    if (!DialogoDelete) {
+      setIdUser('');
+    }
+  }, [DialogoDelete]);
 
   return (
     <>
@@ -64,13 +70,22 @@ export const TableRol = ({ roles, Loading, IdsRole, setReloadRol, setIdsRole }: 
                     <strong>Check</strong>
                   </TableCell>
                   <TableCell>
-                    <strong>Rol</strong>
+                    <strong>Nombres</strong>
                   </TableCell>
                   <TableCell>
-                    <strong>Descripcion</strong>
+                    <strong>Apellidos</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>Nombre de usuario</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>Email</strong>
                   </TableCell>
                   <TableCell>
                     <strong>Creado el</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>Rol</strong>
                   </TableCell>
                   <TableCell>
                     <strong>Activo</strong>
@@ -82,25 +97,25 @@ export const TableRol = ({ roles, Loading, IdsRole, setReloadRol, setIdsRole }: 
               </TableHead>
               <TableBody>
                 {!Loading &&
-                  roles.map(rol => (
-                    <RowTableRol
-                      rol={rol}
-                      key={rol.idRol}
-                      IdsRole={IdsRole}
-                      setIdRol={setIdRol}
-                      setIdsRole={setIdsRole}
+                  usuarios.map(user => (
+                    <RowTableUser
+                      user={user}
+                      isMe={me.idUser === user.idUser}
+                      key={user.idUser}
+                      IdsUser={IdsUser}
+                      setIdUser={setIdUser}
+                      setIdsUser={setIdsUser}
                       setDialogoDelete={setDialogoDelete}
-                      setReloadRol={setReloadRol}
                     />
                   ))}
               </TableBody>
             </Table>
 
-            {Loading && SkeletonRoles()}
+            {Loading && SkeletonUser()}
 
-            {!Loading && roles.length === 0 && (
+            {!Loading && usuarios.length === 0 && (
               <Alert severity='info'>
-                Por el momento no hay <strong>Roles</strong> para mostrar.
+                Por el momento no hay <strong>Usuarios</strong> para mostrar.
               </Alert>
             )}
           </Box>

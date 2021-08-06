@@ -19,6 +19,7 @@ import {
 import EqualizerIcon from '@material-ui/icons/Equalizer';
 import PersonIcon from '@material-ui/icons/Person';
 import LockIcon from '@material-ui/icons/Lock';
+import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import NavItem from './NavItem';
@@ -102,6 +103,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           href: '/app/usuarios',
           icon: GroupAddIcon,
           title: 'Usuarios',
+        },
+        {
+          href: '/app/notificaciones',
+          icon: NotificationsActiveIcon,
+          title: 'Notificaciones',
         },
         {
           href: '/app/account',

@@ -44,8 +44,8 @@ const NotificacionView = () => {
   const [Notificaciones, setNotificaciones] = useState<NotificacionByMe[]>([]);
   const [Count, setCount] = useState<number>(0);
   const [Visible, setVisible] = useState<boolean>(false);
+  const [ReloadNotificacion, setReloadNotificacion] = useState<boolean>(false);
   const [Loading, setLoading] = useState<boolean>(false);
-  const [ReloadUser, setReloadUser] = useState<boolean>(false);
 
   const SkeletonNotificacion = () => {
     return (
@@ -83,10 +83,10 @@ const NotificacionView = () => {
   useEffect(() => {
     fetchNotificacion(1);
 
-    if (ReloadUser) {
-      setReloadUser(false);
+    if (ReloadNotificacion) {
+      setReloadNotificacion(false);
     }
-  }, [ReloadUser]);
+  }, [ReloadNotificacion]);
 
   const SelectItemPagination = (page: number) => fetchNotificacion(page);
 
@@ -102,7 +102,10 @@ const NotificacionView = () => {
             style={{ backgroundColor: '#fff', borderBottom: '1px solid #cdcdcd' }}
           >
             <Box mt={3}>
-              <ActionNotification VisibleViewAll={false} />
+              <ActionNotification
+                VisibleViewAll={false}
+                setReloadNotificacion={setReloadNotificacion}
+              />
               <List className={classes.containerList}>
                 {!Loading && !Notificaciones.length && (
                   <Alert severity='info'>

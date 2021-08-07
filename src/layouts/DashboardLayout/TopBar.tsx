@@ -56,6 +56,7 @@ interface Props {
 const TopBar = ({ onMobileNavOpen, ...rest }: Props) => {
   const classes = useStyles();
   const [open, setOpen] = useState<boolean>(false);
+  const [ReloadNotificacion, setReloadNotificacion] = useState<boolean>(false);
   const [Notificaciones, setNotificaciones] = useState<NotificacionByMe[]>([]);
   const { token, me } = useContext(MeContext);
 
@@ -75,7 +76,11 @@ const TopBar = ({ onMobileNavOpen, ...rest }: Props) => {
     };
 
     fetchNotificacion(1);
-  }, []);
+
+    if (ReloadNotificacion) {
+      setReloadNotificacion(false);
+    }
+  }, [ReloadNotificacion]);
 
   return (
     <>
@@ -132,7 +137,7 @@ const TopBar = ({ onMobileNavOpen, ...rest }: Props) => {
             </>
           ))}
         </List>
-        <ActionNotification setOpen={setOpen} />
+        <ActionNotification setOpen={setOpen} setReloadNotificacion={setReloadNotificacion} />
       </SwipeableDrawer>
     </>
   );

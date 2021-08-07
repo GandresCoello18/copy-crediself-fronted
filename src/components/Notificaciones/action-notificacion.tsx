@@ -11,9 +11,14 @@ import { HandleError } from '../../helpers/handleError';
 interface Props {
   VisibleViewAll?: boolean;
   setOpen?: Dispatch<SetStateAction<boolean>>;
+  setReloadNotificacion: Dispatch<SetStateAction<boolean>>;
 }
 
-export const ActionNotification = ({ VisibleViewAll = true, setOpen }: Props) => {
+export const ActionNotification = ({
+  VisibleViewAll = true,
+  setOpen,
+  setReloadNotificacion,
+}: Props) => {
   const { token } = useContext(MeContext);
   const [Loading, setLoading] = useState<boolean>(false);
 
@@ -23,6 +28,7 @@ export const ActionNotification = ({ VisibleViewAll = true, setOpen }: Props) =>
     try {
       await UpdateAllReadNotificacion({ token });
       setLoading(false);
+      setReloadNotificacion(true);
     } catch (error) {
       toast.error(HandleError(error as AxiosError));
       setLoading(false);

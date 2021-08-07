@@ -102,7 +102,9 @@ const PermisosView = () => {
                   aria-controls='panel1bh-content'
                   id='panel1bh-header'
                 >
-                  <Typography className={classes.heading}>{per.rol}</Typography>
+                  <Typography className={classes.heading}>
+                    {per.rol} ({per.permisos.length})
+                  </Typography>
                   <Typography className={classes.secondaryHeading}>{per.descripcion}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>

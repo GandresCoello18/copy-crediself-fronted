@@ -1,7 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/react-in-jsx-scope */
 import { useState, useContext, useEffect, Dispatch, SetStateAction } from 'react';
-import { Box, Table, TableBody, TableCell, Card, TableHead, TableRow } from '@material-ui/core';
+import {
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  Card,
+  makeStyles,
+  TableHead,
+  TableRow,
+} from '@material-ui/core';
 import { MeContext } from '../../context/contextMe';
 import Alert from '@material-ui/lab/Alert';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -14,6 +23,15 @@ import { Usuario } from '../../interfaces/Usuario';
 import { DeleteUser } from '../../api/users';
 import { RowTableUser } from './row-table-user';
 
+const useStyles = makeStyles((theme: any) => ({
+  headTable: {
+    backgroundColor: theme.palette.primary.main,
+  },
+  textHeadTable: {
+    color: '#fff',
+  },
+}));
+
 interface Props {
   usuarios: Usuario[];
   Loading: boolean;
@@ -23,6 +41,7 @@ interface Props {
 }
 
 export const TableUser = ({ usuarios, Loading, IdsUser, setReloadUser, setIdsUser }: Props) => {
+  const classes = useStyles();
   const { token, me } = useContext(MeContext);
   const [IdUser, setIdUser] = useState<string>('');
   const [DialogoDelete, setDialogoDelete] = useState<boolean>(false);
@@ -64,33 +83,33 @@ export const TableUser = ({ usuarios, Loading, IdsUser, setReloadUser, setIdsUse
         <PerfectScrollbar>
           <Box minWidth={1050}>
             <Table>
-              <TableHead>
+              <TableHead className={classes.headTable}>
                 <TableRow>
-                  <TableCell>
+                  <TableCell className={classes.textHeadTable}>
                     <strong>Check</strong>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className={classes.textHeadTable}>
                     <strong>Nombres</strong>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className={classes.textHeadTable}>
                     <strong>Apellidos</strong>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className={classes.textHeadTable}>
                     <strong>Nombre de usuario</strong>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className={classes.textHeadTable}>
                     <strong>Email</strong>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className={classes.textHeadTable}>
                     <strong>Creado el</strong>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className={classes.textHeadTable}>
                     <strong>Rol</strong>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className={classes.textHeadTable}>
                     <strong>Activo</strong>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className={classes.textHeadTable}>
                     <strong>Opciones</strong>
                   </TableCell>
                 </TableRow>

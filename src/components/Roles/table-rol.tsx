@@ -1,7 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/react-in-jsx-scope */
 import { useState, useContext, useEffect, Dispatch, SetStateAction } from 'react';
-import { Box, Table, TableBody, TableCell, Card, TableHead, TableRow } from '@material-ui/core';
+import {
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  Card,
+  TableHead,
+  makeStyles,
+  TableRow,
+} from '@material-ui/core';
 import { MeContext } from '../../context/contextMe';
 import Alert from '@material-ui/lab/Alert';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -14,6 +23,15 @@ import { DeleteRole } from '../../api/roles';
 import { AxiosError } from 'axios';
 import { HandleError } from '../../helpers/handleError';
 
+const useStyles = makeStyles((theme: any) => ({
+  headTable: {
+    backgroundColor: theme.palette.primary.main,
+  },
+  textHeadTable: {
+    color: '#fff',
+  },
+}));
+
 interface Props {
   roles: Rol[];
   Loading: boolean;
@@ -23,6 +41,7 @@ interface Props {
 }
 
 export const TableRol = ({ roles, Loading, IdsRole, setReloadRol, setIdsRole }: Props) => {
+  const classes = useStyles();
   const { token } = useContext(MeContext);
   const [IdRol, setIdRol] = useState<string>('');
   const [DialogoDelete, setDialogoDelete] = useState<boolean>(false);
@@ -58,24 +77,24 @@ export const TableRol = ({ roles, Loading, IdsRole, setReloadRol, setIdsRole }: 
         <PerfectScrollbar>
           <Box minWidth={1050}>
             <Table>
-              <TableHead>
+              <TableHead className={classes.headTable}>
                 <TableRow>
-                  <TableCell>
+                  <TableCell className={classes.textHeadTable}>
                     <strong>Check</strong>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className={classes.textHeadTable}>
                     <strong>Rol</strong>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className={classes.textHeadTable}>
                     <strong>Descripcion</strong>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className={classes.textHeadTable}>
                     <strong>Creado el</strong>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className={classes.textHeadTable}>
                     <strong>Activo</strong>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className={classes.textHeadTable}>
                     <strong>Opciones</strong>
                   </TableCell>
                 </TableRow>

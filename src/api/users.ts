@@ -87,7 +87,7 @@ export const UpdateUser = async (options: { token: string; data: UpdateMeUser })
   api.defaults.headers['access-token'] = options.token;
   const response = await api({
     method: 'PUT',
-    url: '/users',
+    url: '/users/me',
     data: options.data,
   });
   return response;

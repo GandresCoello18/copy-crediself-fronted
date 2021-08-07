@@ -16,9 +16,11 @@ import { useContext } from 'react';
 import { MeContext } from '../../context/contextMe';
 import { UpdateUser } from '../../api/users';
 import { toast } from 'react-toast';
+import { AxiosError } from 'axios';
+import { HandleError } from '../../helpers/handleError';
 
 export const ProfileDetails = () => {
-  const { me, token } = useContext(MeContext);
+  const { me, setMe, token } = useContext(MeContext);
 
   return (
     <>
@@ -39,12 +41,12 @@ export const ProfileDetails = () => {
           try {
             await UpdateUser({ token, data: values });
             toast.success('Se actualizaron los datos');
+            setMe({
+              ...me,
+              ...values,
+            });
           } catch (error) {
-            if (error.request.response) {
-              toast.error(JSON.parse(error.request.response).status);
-            } else {
-              toast.error(error.message);
-            }
+            toast.error(HandleError(error as AxiosError));
           }
 
           actions.setSubmitting(false);
@@ -62,7 +64,7 @@ export const ProfileDetails = () => {
                       error={Boolean(touched.userName && errors.userName)}
                       helperText={touched.userName && errors.userName}
                       fullWidth
-                      label='User name'
+                      label='Nombre de usuario'
                       name='userName'
                       onChange={handleChange}
                       onBlur={handleBlur}

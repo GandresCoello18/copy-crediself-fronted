@@ -21,6 +21,7 @@ import { AxiosError } from 'axios';
 import { HandleError } from '../../helpers/handleError';
 import { Usuario } from '../../interfaces/Usuario';
 import getInitials from '../../util/getInitials';
+import { SourceAvatar } from '../../helpers/sourceAvatar';
 
 const useStyles = makeStyles((theme: any) => ({
   btnDelete: {
@@ -90,7 +91,7 @@ export const RowTableUser = ({
         </TableCell>
         <TableCell>
           <Box alignItems='center' display='flex'>
-            <Avatar className={clases.avatar} src={user.avatar}>
+            <Avatar className={clases.avatar} src={SourceAvatar(user.avatar)}>
               {getInitials(user.nombres)}
             </Avatar>
             <Typography color='textPrimary' variant='body1'>

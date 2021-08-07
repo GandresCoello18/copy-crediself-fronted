@@ -15,6 +15,8 @@ import {
   Divider,
   Grid,
   TextField,
+  Checkbox,
+  FormControlLabel,
 } from '@material-ui/core';
 import { LoginAccess } from '../../api/users';
 import { toast } from 'react-toast';
@@ -22,9 +24,12 @@ import Cookies from 'js-cookie';
 import { useContext, useState } from 'react';
 import { MeContext } from '../../context/contextMe';
 import { RenderMainViewRol } from '../../helpers/renderViewMainRol';
+import { AxiosError } from 'axios';
+import { HandleError } from '../../helpers/handleError';
 
 export const Login = () => {
   const { setMe } = useContext(MeContext);
+  const [visibleKey, setVisibleKey] = useState<boolean>(false);
   const [Loading, setLoading] = useState<boolean>(false);
 
   return (
@@ -54,12 +59,8 @@ export const Login = () => {
             Cookies.set('access-token-crediself', response.me.token, { expires: tresHoras });
 
             window.location.href = RenderMainViewRol(response.me.user.idRol);
-          } catch (error: any) {
-            if (error.request.response) {
-              toast.error(JSON.parse(error.request.response).status);
-            } else {
-              toast.error(error.message);
-            }
+          } catch (error) {
+            toast.error(HandleError(error as AxiosError));
             setLoading(false);
           }
 
@@ -68,7 +69,7 @@ export const Login = () => {
       >
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched }) => (
           <form onSubmit={handleSubmit}>
-            <CardHeader subheader='Acceso solo para administradores' title='Iniciar sesión' />
+            <CardHeader subheader='Acceso para personal de crediself' title='Iniciar sesión' />
             <Divider />
             <CardContent>
               <Grid container spacing={3}>
@@ -90,12 +91,25 @@ export const Login = () => {
                     error={Boolean(touched.password && errors.password)}
                     helperText={touched.password && errors.password}
                     fullWidth
+                    required
                     name='password'
                     onBlur={handleBlur}
-                    type='password'
+                    type={visibleKey ? 'text' : 'password'}
                     onChange={handleChange}
                     variant='outlined'
                     placeholder={'Clave secreta'}
+                  />
+                </Grid>
+                <Grid xs={9} sm={4} md={4}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={visibleKey}
+                        onChange={check => setVisibleKey(check.target.checked)}
+                        inputProps={{ 'aria-label': 'primary checkbox' }}
+                      />
+                    }
+                    label='Mostrar contraseña'
                   />
                 </Grid>
               </Grid>

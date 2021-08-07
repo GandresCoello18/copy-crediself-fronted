@@ -68,7 +68,7 @@ export const Profile = () => {
           <Box alignItems='center' display='flex' flexDirection='column'>
             <Avatar className={classes.avatar} src={SourceAvatar(me.avatar)} />
             <Typography color='textPrimary' gutterBottom variant='h3'>
-              {me.userName}
+              {me.userName || me.nombres + ' ' + me.apellidos}
             </Typography>
             <Typography color='textSecondary' variant='body1'>
               {me.email}

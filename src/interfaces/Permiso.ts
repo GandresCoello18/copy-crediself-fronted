@@ -6,8 +6,13 @@ export interface Permisos {
   active: number;
 }
 
+export interface PermisosResponseByRol extends Permisos {
+  activePBR: string;
+  idPermisoRol: string;
+}
+
 export interface PermisosByRol {
   rol: string;
   descripcion: string;
-  permisos: Permisos[];
+  permisos: PermisosResponseByRol[];
 }

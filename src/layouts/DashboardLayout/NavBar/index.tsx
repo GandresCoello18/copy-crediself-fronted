@@ -142,7 +142,7 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           to='/app/account'
         />
         <Typography color='textPrimary' variant='h5'>
-          {me.userName}
+          {me.userName || me.nombres + ' ' + me.apellidos}
         </Typography>
         <Typography color='textSecondary' variant='body2'>
           {me.idRol}

@@ -20,7 +20,7 @@ const Account = () => {
   return (
     <Page className={classes.root} title='Mi cuenta'>
       <Container maxWidth='lg'>
-        <Grid container spacing={3}>
+        <Grid container spacing={3} direction='row' justify='flex-end'>
           <Grid item lg={4} md={6} xs={12}>
             <Profile />
           </Grid>

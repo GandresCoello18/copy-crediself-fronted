@@ -1,17 +1,50 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/react-in-jsx-scope */
-import { Table, TableBody, Box, TableCell, TableRow, Chip } from '@material-ui/core';
+import {
+  Table,
+  TableBody,
+  Box,
+  TableCell,
+  TableRow,
+  Switch,
+  CircularProgress,
+} from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
-import React from 'react';
+import { AxiosError } from 'axios';
+import React, { useState, useContext } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { Permisos } from '../../interfaces/Permiso';
+import { toast } from 'react-toast';
+import { UpdateActivePermisoByRol } from '../../api/permisos';
+import { MeContext } from '../../context/contextMe';
+import { HandleError } from '../../helpers/handleError';
+import { PermisosResponseByRol } from '../../interfaces/Permiso';
 
 interface Props {
-  permisos: Permisos[];
+  permisos: PermisosResponseByRol[];
 }
 
 export const TablePermisos = ({ permisos }: Props) => {
+  const { token } = useContext(MeContext);
+  const [Loading, setLoading] = useState<boolean>(false);
+  const [IsActive, setIsActive] = useState<{ check: boolean; idPermisoRol: string | undefined }>({
+    check: false,
+    idPermisoRol: undefined,
+  });
+
+  const handleActive = async (check: boolean, idPermisoRol: string) => {
+    setLoading(true);
+
+    try {
+      await UpdateActivePermisoByRol({ token, active: check, idPermisoRol });
+      setLoading(false);
+      setIsActive({ check, idPermisoRol });
+    } catch (error) {
+      setLoading(false);
+      toast.error(HandleError(error as AxiosError));
+    }
+  };
+
   return (
     <PerfectScrollbar>
       <Box width={800}>
@@ -22,10 +55,22 @@ export const TablePermisos = ({ permisos }: Props) => {
                 <TableCell>{per.permiso}</TableCell>
                 <TableCell>{per.descripcion}</TableCell>
                 <TableCell>
-                  <Chip
-                    label={per.active ? 'Activo' : 'No Activo'}
-                    color={per.active ? 'primary' : 'secondary'}
-                  />
+                  {Loading ? (
+                    <CircularProgress color='secondary' />
+                  ) : (
+                    <Switch
+                      checked={
+                        IsActive.idPermisoRol === per.idPermisoRol
+                          ? IsActive.check
+                          : per.activePBR
+                          ? true
+                          : false
+                      }
+                      disabled={per.permiso === 'UpdatePermisos'}
+                      onChange={value => handleActive(value.target.checked, per.idPermisoRol)}
+                      inputProps={{ 'aria-label': 'secondary checkbox' }}
+                    />
+                  )}
                 </TableCell>
               </TableRow>
             ))}

@@ -4,14 +4,27 @@
 /* eslint-disable no-undef */
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-import { Box, Button, Card, CardContent, CardHeader, Divider, TextField } from '@material-ui/core';
-import { useContext } from 'react';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  Checkbox,
+  FormControlLabel,
+  TextField,
+} from '@material-ui/core';
+import { useState, useContext } from 'react';
 import { MeContext } from '../../context/contextMe';
 import { UpdatePasswordUser } from '../../api/users';
 import { toast } from 'react-toast';
 import Cookies from 'js-cookie';
+import { HandleError } from '../../helpers/handleError';
+import { AxiosError } from 'axios';
 
 export const ResetPassword = () => {
+  const [visibleKey, setVisibleKey] = useState<boolean>(false);
   const { token } = useContext(MeContext);
 
   return (
@@ -29,14 +42,10 @@ export const ResetPassword = () => {
           await UpdatePasswordUser({ token, currentKey: values.currentKey, newKey: values.newKey });
           toast.success('Se actualizaron los datos');
 
-          Cookies.remove('access-token-cici');
+          Cookies.remove('access-token-crediself');
           window.location.href = '/login';
-        } catch (error: any) {
-          if (error.request.response) {
-            toast.error(JSON.parse(error.request.response).status);
-          } else {
-            toast.error(error.message);
-          }
+        } catch (error) {
+          toast.error(HandleError(error as AxiosError));
         }
 
         actions.setSubmitting(false);
@@ -50,27 +59,39 @@ export const ResetPassword = () => {
             <CardContent>
               <TextField
                 fullWidth
-                label='Password'
+                label='Clave actual'
                 error={Boolean(touched.currentKey && errors.currentKey)}
                 helperText={touched.currentKey && errors.currentKey}
                 margin='normal'
+                disabled={isSubmitting}
                 name='currentKey'
                 onChange={handleChange}
                 onBlur={handleBlur}
-                type='password'
+                type={visibleKey ? 'text' : 'password'}
                 variant='outlined'
               />
               <TextField
                 fullWidth
                 error={Boolean(touched.newKey && errors.newKey)}
                 helperText={touched.newKey && errors.newKey}
-                label='Confirmar password'
+                label='Nueva clave'
                 margin='normal'
                 name='newKey'
+                disabled={isSubmitting}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                type='password'
+                type={visibleKey ? 'text' : 'password'}
                 variant='outlined'
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={visibleKey}
+                    onChange={check => setVisibleKey(check.target.checked)}
+                    inputProps={{ 'aria-label': 'primary checkbox' }}
+                  />
+                }
+                label='Mostrar contraseñas'
               />
             </CardContent>
             <Divider />

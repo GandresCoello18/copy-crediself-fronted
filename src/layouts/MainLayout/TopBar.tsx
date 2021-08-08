@@ -17,7 +17,7 @@ const TopBar = () => {
       <Toolbar className={classes.toolbar}>
         <RouterLink to='/'>
           <img
-            src='logo-crediself.png'
+            src='https://res.cloudinary.com/cici/image/upload/v1627948680/util/logo-crediself_jtbifz.png'
             alt='logo crediself'
             width={60}
             style={{ borderRadius: 5, border: '1px solid royalblue' }}

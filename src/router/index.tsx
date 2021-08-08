@@ -16,6 +16,8 @@ import { useContext, useEffect } from 'react';
 import { GetMeUser } from '../api/users';
 import { MeContext } from '../context/contextMe';
 import { toast, ToastContainer } from 'react-toast';
+import { ResetPassword } from '../view/reset-password';
+import { RestaurarCuenta } from '../view/reset-password-idTime';
 import { AxiosError } from 'axios';
 import { HandleError } from '../helpers/handleError';
 
@@ -56,6 +58,8 @@ const routes = [
     children: [
       { path: '/404', element: <NotFound /> },
       { path: '/login', element: NotPathSesion(Auth) },
+      { path: '/reset-password', element: NotPathSesion(ResetPassword) },
+      { path: '/reset-password/:idTimeMessage', element: NotPathSesion(RestaurarCuenta) },
       { path: '/', element: NotPathSesion(Auth) },
       { path: '*', element: <Navigate to='/404' /> },
     ],

@@ -10,6 +10,7 @@ import {
   Button,
   Card,
   CardContent,
+  Typography,
   CircularProgress,
   CardHeader,
   Divider,
@@ -20,6 +21,7 @@ import {
 } from '@material-ui/core';
 import { LoginAccess } from '../../api/users';
 import { toast } from 'react-toast';
+import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { useContext, useState } from 'react';
 import { MeContext } from '../../context/contextMe';
@@ -100,19 +102,25 @@ export const Login = () => {
                     placeholder={'Clave secreta'}
                   />
                 </Grid>
-                <Grid xs={9} sm={4} md={4}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={visibleKey}
-                        onChange={check => setVisibleKey(check.target.checked)}
-                        inputProps={{ 'aria-label': 'primary checkbox' }}
-                      />
-                    }
-                    label='Mostrar contraseña'
-                  />
-                </Grid>
               </Grid>
+              <Box p={1} display='flex' justifyContent='space-between'>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={visibleKey}
+                      onChange={check => setVisibleKey(check.target.checked)}
+                      inputProps={{ 'aria-label': 'primary checkbox' }}
+                    />
+                  }
+                  label='Mostrar contraseña'
+                />
+
+                <Link to='/reset-password'>
+                  <Typography color='primary' style={{ marginTop: 10 }}>
+                    ¿Olvidastes tu contraseña?
+                  </Typography>
+                </Link>
+              </Box>
             </CardContent>
             <Divider />
             <Box display='flex' justifyContent='flex-end' p={2}>

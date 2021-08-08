@@ -134,14 +134,14 @@ export const UpdateCustomer = async (options: {
 };
 
 export const UpdatePasswordEmail = async (options: {
-  token: string | undefined;
+  token?: string;
   newKey: string;
   email: string;
 }) => {
   api.defaults.headers['access-token'] = options.token;
   const response = await api({
     method: 'PUT',
-    url: `/reset-password/${options.email}`,
+    url: `/users/password/reset/${options.email}`,
     data: {
       newKey: options.newKey,
     },

@@ -1,0 +1,34 @@
+[
+    {
+        "rol": "Director",
+        "permisos": ["NewRoles", "NewUsers", "DelRoles", "ModRoles", "ViewRoles", "DelUsers", "ViewUsers", "UpdateMeUser", "ViewPermisos", "UpdatePermisos", "ModUsers", "ViewNotification"]
+    },
+    {
+        "rol": "Administrativo",
+        "permisos": []
+    },
+    {
+        "rol": "Gerente Regional",
+        "permisos": ["UpdateMeUser", "ViewUsers", "UpdateRolByUsers", "ViewRoles"]
+    },
+    {
+        "rol": "Gerente de Sucursal",
+        "permisos": []
+    },
+    {
+        "rol": "Supervisor",
+        "permisos": []
+    },
+    {
+        "rol": "Asesor",
+        "permisos": []
+    },
+    {
+        "rol": "Cobranza",
+        "permisos": []
+    },
+    {
+        "rol": "RRHH",
+        "permisos": ["UpdateMeUser", "ViewUsers", "NewUsers"]
+    }
+]

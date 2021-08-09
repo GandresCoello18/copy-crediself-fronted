@@ -21,7 +21,7 @@ import MailIcon from '@material-ui/icons/Mail';
 import Cookies from 'js-cookie';
 import { useEffect, useState, useContext } from 'react';
 import { MeContext } from '../../context/contextMe';
-import { RenderMainViewRol } from '../../helpers/renderViewMainRol';
+import { getPermisoExist, RenderMainViewRol } from '../../helpers/renderViewMainRol';
 import { ItemNotification } from '../../components/Notificaciones/item-notificacion';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toast';
@@ -29,6 +29,7 @@ import { GetNotificacion } from '../../api/notificacion';
 import { HandleError } from '../../helpers/handleError';
 import { NotificacionByMe } from '../../interfaces/Notificacion';
 import { ActionNotification } from '../../components/Notificaciones/action-notificacion';
+import { Alert } from '@material-ui/lab';
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -75,12 +76,14 @@ const TopBar = ({ onMobileNavOpen, ...rest }: Props) => {
       }
     };
 
-    fetchNotificacion(1);
+    if (getPermisoExist({ RolName: me.idRol, permiso: 'ViewNotification' })) {
+      fetchNotificacion(1);
+    }
 
     if (ReloadNotificacion) {
       setReloadNotificacion(false);
     }
-  }, [ReloadNotificacion]);
+  }, [ReloadNotificacion, me]);
 
   return (
     <>
@@ -95,17 +98,21 @@ const TopBar = ({ onMobileNavOpen, ...rest }: Props) => {
             />
           </RouterLink>
           <Box flexGrow={1} />
-          <Hidden>
-            <IconButton color='inherit' onClick={() => setOpen(true)}>
-              <Badge
-                badgeContent={Notificaciones.filter(noti => noti.isRead === 0).length}
-                color='secondary'
-                className={classes.spaceBadge}
-              >
-                <MailIcon />
-              </Badge>
-            </IconButton>
-          </Hidden>
+          {getPermisoExist({ RolName: me.idRol, permiso: 'ViewNotification' }) ? (
+            <Hidden>
+              <IconButton color='inherit' onClick={() => setOpen(true)}>
+                <Badge
+                  badgeContent={Notificaciones.filter(noti => noti.isRead === 0).length}
+                  color='secondary'
+                  className={classes.spaceBadge}
+                >
+                  <MailIcon />
+                </Badge>
+              </IconButton>
+            </Hidden>
+          ) : (
+            ''
+          )}
           <Hidden mdDown>
             <IconButton color='inherit' onClick={closeSesion}>
               <InputIcon />
@@ -126,6 +133,11 @@ const TopBar = ({ onMobileNavOpen, ...rest }: Props) => {
         onOpen={() => setOpen(true)}
       >
         <List className={classes.root}>
+          {!Notificaciones.length && (
+            <Alert severity='info'>
+              Por el momento no hay <strong>Notificaciones</strong> para mostrar.
+            </Alert>
+          )}
           {Notificaciones.map(notificacion => (
             <>
               <ItemNotification

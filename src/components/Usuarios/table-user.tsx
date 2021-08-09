@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/react-in-jsx-scope */
 import { useState, useContext, useEffect, Dispatch, SetStateAction } from 'react';
@@ -22,6 +23,9 @@ import { AxiosError } from 'axios';
 import { Usuario } from '../../interfaces/Usuario';
 import { DeleteUser } from '../../api/users';
 import { RowTableUser } from './row-table-user';
+import { getPermisoExist } from '../../helpers/renderViewMainRol';
+import { DialogoForm } from '../DialogoForm';
+import { FormUpdateRol } from './updateRol';
 
 const useStyles = makeStyles((theme: any) => ({
   headTable: {
@@ -40,11 +44,25 @@ interface Props {
   setIdsUser: Dispatch<SetStateAction<string[]>>;
 }
 
+export interface DisableInputUser {
+  check: boolean;
+  switch: boolean;
+  delete: boolean;
+  updateRol: boolean;
+}
+
 export const TableUser = ({ usuarios, Loading, IdsUser, setReloadUser, setIdsUser }: Props) => {
   const classes = useStyles();
   const { token, me } = useContext(MeContext);
   const [IdUser, setIdUser] = useState<string>('');
+  const [disableInputUser] = useState<DisableInputUser>({
+    check: getPermisoExist({ RolName: me.idRol, permiso: 'DelUsers' }),
+    switch: getPermisoExist({ RolName: me.idRol, permiso: 'ModUsers' }),
+    delete: getPermisoExist({ RolName: me.idRol, permiso: 'DelUsers' }),
+    updateRol: getPermisoExist({ RolName: me.idRol, permiso: 'UpdateRolByUsers' }),
+  });
   const [DialogoDelete, setDialogoDelete] = useState<boolean>(false);
+  const [DialogoUpdateRol, setDialogoUpdateRol] = useState<boolean>(false);
   const [AceptDialog, setAceptDialog] = useState<boolean>(false);
 
   const SkeletonUser = () => {
@@ -121,10 +139,12 @@ export const TableUser = ({ usuarios, Loading, IdsUser, setReloadUser, setIdsUse
                       user={user}
                       isMe={me.idUser === user.idUser}
                       key={user.idUser}
+                      disabledInput={disableInputUser}
                       IdsUser={IdsUser}
                       setIdUser={setIdUser}
                       setIdsUser={setIdsUser}
                       setDialogoDelete={setDialogoDelete}
+                      setDialogoUpdateRol={setDialogoUpdateRol}
                     />
                   ))}
               </TableBody>
@@ -148,6 +168,14 @@ export const TableUser = ({ usuarios, Loading, IdsUser, setReloadUser, setIdsUse
         setAceptDialog={setAceptDialog}
         content='¿Esta seguro que deseas eliminar este registro?, una vez hecho sera irrecuperable.'
       />
+
+      <DialogoForm Open={DialogoUpdateRol} setOpen={setDialogoUpdateRol} title=''>
+        <FormUpdateRol
+          User={usuarios.find(user => user.idUser === IdUser)}
+          setReloadUser={setReloadUser}
+          setVisible={setDialogoUpdateRol}
+        />
+      </DialogoForm>
     </>
   );
 };

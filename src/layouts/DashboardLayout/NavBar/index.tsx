@@ -76,9 +76,23 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
     case 'Gerente Regional':
       items = [
         {
-          href: '/app/dashboard',
-          icon: EqualizerIcon,
-          title: 'Panel',
+          href: '/app/usuarios',
+          icon: GroupAddIcon,
+          title: 'Usuarios',
+        },
+        {
+          href: '/app/account',
+          icon: PersonIcon,
+          title: 'Mi cuenta',
+        },
+      ];
+      break;
+    case 'RRHH':
+      items = [
+        {
+          href: '/app/usuarios',
+          icon: GroupAddIcon,
+          title: 'Usuarios',
         },
         {
           href: '/app/account',
@@ -117,7 +131,13 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
       ];
       break;
     default:
-      items = [];
+      items = [
+        {
+          href: '/app/dashboard',
+          icon: EqualizerIcon,
+          title: 'Panel',
+        },
+      ];
       break;
   }
 

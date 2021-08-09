@@ -8,6 +8,7 @@ import {
   Box,
   Card,
   Button,
+  Grid,
   CardContent,
   InputAdornment,
   SvgIcon,
@@ -21,11 +22,13 @@ import Pagination from '@material-ui/lab/Pagination';
 import { toast } from 'react-toast';
 import { AxiosError } from 'axios';
 import { HandleError } from '../helpers/handleError';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { TableUser } from '../components/Usuarios/table-user';
 import { Usuario } from '../interfaces/Usuario';
-import { GetUsers } from '../api/users';
+import { DeleteMultiUser, GetUsers } from '../api/users';
 import { DialogoForm } from '../components/DialogoForm';
 import { FormNewUser } from '../components/Usuarios/new-user';
+import { getPermisoExist } from '../helpers/renderViewMainRol';
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -41,7 +44,7 @@ const useStyles = makeStyles((theme: any) => ({
 
 const UsuariosView = () => {
   const classes = useStyles();
-  const { token } = useContext(MeContext);
+  const { token, me } = useContext(MeContext);
   const [SearchUser, setSearchUser] = useState<string>('');
   const [IdsUser, setIdsUser] = useState<string[]>([]);
   const [Usuarios, setUsuarios] = useState<Usuario[]>([]);
@@ -49,6 +52,7 @@ const UsuariosView = () => {
   const [Visible, setVisible] = useState<boolean>(false);
   const [Loading, setLoading] = useState<boolean>(false);
   const [ReloadUser, setReloadUser] = useState<boolean>(false);
+  const [LoadingMulti, setLoadingMulti] = useState<boolean>(false);
 
   const fetchUsuarios = async (page: number) => {
     setLoading(true);
@@ -64,6 +68,20 @@ const UsuariosView = () => {
     }
   };
 
+  const DeleteMulti = async () => {
+    setLoadingMulti(true);
+
+    try {
+      await DeleteMultiUser({ token, IdsUser });
+      setLoadingMulti(false);
+      setIdsUser([]);
+      fetchUsuarios(1);
+    } catch (error) {
+      toast.error(HandleError(error as AxiosError));
+      setLoadingMulti(false);
+    }
+  };
+
   useEffect(() => {
     fetchUsuarios(1);
 
@@ -76,32 +94,57 @@ const UsuariosView = () => {
 
   return (
     <Page className={classes.root} title='Usuarios'>
-      <Container maxWidth='lg'>
-        <Box display='flex' justifyContent='flex-end'>
-          <Button color='secondary' variant='contained' onClick={() => setVisible(true)}>
-            Nuevo usuario
-          </Button>
-        </Box>
+      <Container maxWidth='xl'>
+        {getPermisoExist({ RolName: me.idRol, permiso: 'NewUsers' }) ? (
+          <Box display='flex' justifyContent='flex-end'>
+            <Button color='secondary' variant='contained' onClick={() => setVisible(true)}>
+              Nuevo usuario {me.idRol === 'Director' ? 'RRHH' : ''}
+            </Button>
+          </Box>
+        ) : (
+          ''
+        )}
         <Box mt={3}>
           <Card>
             <CardContent>
-              <Box maxWidth={500}>
-                <TextField
-                  fullWidth
-                  onChange={event => setSearchUser(event.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <SvgIcon fontSize='small' color='action'>
-                          <SearchIcon />
-                        </SvgIcon>
-                      </InputAdornment>
-                    ),
-                  }}
-                  placeholder='Buscar Usuario'
-                  variant='outlined'
-                />
-              </Box>
+              <Grid container spacing={3} direction='row' justify='center' alignItems='center'>
+                <Grid item xs={12} md={9}>
+                  <Box maxWidth={500}>
+                    <TextField
+                      fullWidth
+                      onChange={event => setSearchUser(event.target.value)}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position='start'>
+                            <SvgIcon fontSize='small' color='action'>
+                              <SearchIcon />
+                            </SvgIcon>
+                          </InputAdornment>
+                        ),
+                      }}
+                      placeholder='Buscar Usuario'
+                      variant='outlined'
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  {IdsUser.length ? (
+                    <Button
+                      size='small'
+                      title='Eliminar conjunto de rols'
+                      className={classes.btnDelete}
+                      variant='contained'
+                      disabled={LoadingMulti}
+                      onClick={DeleteMulti}
+                    >
+                      Eliminar &nbsp; <strong> {IdsUser.length} </strong> &nbsp; usuarios{' '}
+                      <DeleteIcon />
+                    </Button>
+                  ) : (
+                    ''
+                  )}
+                </Grid>
+              </Grid>
             </CardContent>
           </Card>
         </Box>

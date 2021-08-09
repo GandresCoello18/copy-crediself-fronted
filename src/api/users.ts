@@ -14,15 +14,6 @@ export interface UpdateMeUser {
   apellidos: string;
 }
 
-export interface UpdateCustomerUser {
-  email: string;
-  userName: string;
-  phone?: number | null;
-  isBanner: number;
-  isAdmin: number;
-  validatedEmail: number;
-}
-
 interface NewUsers {
   email: string;
   userName: string;
@@ -120,15 +111,14 @@ export const UpdatePasswordUser = async (options: {
   return response;
 };
 
-export const UpdateCustomer = async (options: {
-  token: string | undefined;
-  data: UpdateCustomerUser;
-}) => {
+export const UpdateRolUser = async (options: { token?: string; idRol: string; idUser: string }) => {
   api.defaults.headers['access-token'] = options.token;
   const response = await api({
     method: 'PUT',
-    url: '/users/customer',
-    data: options.data,
+    url: `/users/rol/${options.idUser}`,
+    data: {
+      idRol: options.idRol,
+    },
   });
   return response;
 };
@@ -149,11 +139,39 @@ export const UpdatePasswordEmail = async (options: {
   return response;
 };
 
+export const UpdateActiveUser = async (option: {
+  token?: string;
+  active: boolean;
+  IdUser: string;
+}) => {
+  api.defaults.headers['access-token'] = option.token;
+  const response = await api({
+    method: 'PUT',
+    data: {
+      active: option.active,
+    },
+    url: `/users/active/${option.IdUser}`,
+  });
+  return response;
+};
+
 export const DeleteUser = async (options: { token?: string; IdUser: string }) => {
   api.defaults.headers['access-token'] = options.token;
   const response = await api({
     method: 'DELETE',
     url: `/users/${options.IdUser}`,
+  });
+  return response;
+};
+
+export const DeleteMultiUser = async (option: { token?: string; IdsUser: string[] }) => {
+  api.defaults.headers['access-token'] = option.token;
+  const response = await api({
+    method: 'DELETE',
+    url: '/users/multiple',
+    data: {
+      idsUser: option.IdsUser,
+    },
   });
   return response;
 };

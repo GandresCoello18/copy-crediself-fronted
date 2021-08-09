@@ -31,21 +31,26 @@ interface Props {
 }
 
 export const FormNewUser = ({ setReloadUser, setVisible }: Props) => {
-  const { token } = useContext(MeContext);
+  const { token, me } = useContext(MeContext);
   const [Roles, setRoles] = useState<Rol[]>([]);
 
   useEffect(() => {
     const fetchRoles = async () => {
       try {
         const { roles } = await (await GetRoles({ token })).data;
-        setRoles(roles);
+
+        if (me.idRol === 'RRHH' && roles?.length) {
+          setRoles(roles.filter((item: Rol) => item.rol !== 'RRHH'));
+        } else {
+          setRoles(roles);
+        }
       } catch (error) {
         toast.error(HandleError(error as AxiosError));
       }
     };
 
     fetchRoles();
-  }, [token]);
+  }, [token, me]);
 
   return (
     <Card>
@@ -64,10 +69,10 @@ export const FormNewUser = ({ setReloadUser, setVisible }: Props) => {
           userName: Yup.string().max(100),
           email: Yup.string().email('Email invalido').max(100).required('El campo es requerido'),
           password: Yup.string().max(100).required('El campo es requerido'),
-          idRol: Yup.string().max(100).required('El campo es requerido'),
+          idRol: Yup.string().max(100),
         })}
         onSubmit={async (values, actions) => {
-          if (!values.idRol || !Roles.length) {
+          if (me.idRol !== 'Director' && (!values.idRol || !Roles.length)) {
             toast.warn('Seleccione el rol');
             return;
           }
@@ -85,7 +90,7 @@ export const FormNewUser = ({ setReloadUser, setVisible }: Props) => {
       >
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <form onSubmit={handleSubmit}>
-            <CardHeader title='Crear nuevo usuario' />
+            <CardHeader title={`Crear nuevo usuario ${me.idRol === 'Director' ? 'RRHH' : ''}`} />
             <Divider />
             <CardContent>
               <Grid container spacing={3}>
@@ -168,23 +173,27 @@ export const FormNewUser = ({ setReloadUser, setVisible }: Props) => {
                     placeholder={'Escriba una contraseña mayor de 7 digitos'}
                   />
                 </Grid>
-                <Grid item md={6} xs={12}>
-                  <InputLabel id='demo-simple-select-outlined-label'>Roles</InputLabel>
-                  <Select
-                    labelId='demo-simple-select-outlined-label'
-                    id='demo-simple-select-outlined'
-                    style={{ width: '100%' }}
-                    onChange={handleChange}
-                    name='idRol'
-                    label='Roles'
-                  >
-                    {Roles.map(rol => (
-                      <MenuItem value={rol.idRol} key={rol.idRol}>
-                        {rol.rol}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </Grid>
+                {me.idRol !== 'Director' ? (
+                  <Grid item md={6} xs={12}>
+                    <InputLabel id='demo-simple-select-outlined-label'>Roles</InputLabel>
+                    <Select
+                      labelId='demo-simple-select-outlined-label'
+                      id='demo-simple-select-outlined'
+                      style={{ width: '100%' }}
+                      onChange={handleChange}
+                      name='idRol'
+                      label='Roles'
+                    >
+                      {Roles.map(rol => (
+                        <MenuItem value={rol.idRol} key={rol.idRol}>
+                          {rol.rol}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </Grid>
+                ) : (
+                  ''
+                )}
               </Grid>
             </CardContent>
             <Divider />

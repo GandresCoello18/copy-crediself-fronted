@@ -14,14 +14,16 @@ import {
 } from '@material-ui/core';
 import React, { useState, Dispatch, SetStateAction, useContext } from 'react';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { UpdateActiveRol } from '../../api/roles';
 import { MeContext } from '../../context/contextMe';
 import { toast } from 'react-toast';
 import { AxiosError } from 'axios';
 import { HandleError } from '../../helpers/handleError';
+import ImportExportIcon from '@material-ui/icons/ImportExport';
 import { Usuario } from '../../interfaces/Usuario';
 import getInitials from '../../util/getInitials';
 import { SourceAvatar } from '../../helpers/sourceAvatar';
+import { DisableInputUser } from './table-user';
+import { UpdateActiveUser } from '../../api/users';
 
 const useStyles = makeStyles((theme: any) => ({
   btnDelete: {
@@ -39,18 +41,22 @@ interface Props {
   user: Usuario;
   isMe: boolean;
   IdsUser: string[];
+  disabledInput: DisableInputUser;
   setIdUser: Dispatch<SetStateAction<string>>;
   setIdsUser: Dispatch<SetStateAction<string[]>>;
   setDialogoDelete: Dispatch<SetStateAction<boolean>>;
+  setDialogoUpdateRol: Dispatch<SetStateAction<boolean>>;
 }
 
 export const RowTableUser = ({
   user,
   isMe,
   IdsUser,
+  disabledInput,
   setIdUser,
   setIdsUser,
   setDialogoDelete,
+  setDialogoUpdateRol,
 }: Props) => {
   const clases = useStyles();
   const { token } = useContext(MeContext);
@@ -61,7 +67,7 @@ export const RowTableUser = ({
     setLoading(true);
 
     try {
-      await UpdateActiveRol({ token, active: check, IdRol: user.idUser });
+      await UpdateActiveUser({ token, active: check, IdUser: user.idUser });
       setLoading(false);
       setIsActive(check);
     } catch (error) {
@@ -79,12 +85,49 @@ export const RowTableUser = ({
     }
   };
 
+  const renderAcction = () => {
+    if (!isMe && disabledInput.delete) {
+      return (
+        <Button
+          size='small'
+          title='Eliminar rol'
+          className={clases.btnDelete}
+          variant='contained'
+          onClick={() => {
+            setDialogoDelete(true);
+            setIdUser(user.idUser);
+          }}
+        >
+          <DeleteIcon />
+        </Button>
+      );
+    }
+
+    if (!isMe && disabledInput.updateRol) {
+      return (
+        <Button
+          size='small'
+          title='Cambiar rol'
+          className={clases.btnEdit}
+          variant='contained'
+          onClick={() => {
+            setDialogoUpdateRol(true);
+            setIdUser(user.idUser);
+          }}
+        >
+          <ImportExportIcon />
+        </Button>
+      );
+    }
+  };
+
   return (
     <>
       <TableRow hover>
         <TableCell>
           <Checkbox
             checked={IdsUser.find(id => id === user.idUser) ? true : false}
+            disabled={!disabledInput.check}
             onChange={check => handleCheck(check.target.checked)}
             inputProps={{ 'aria-label': 'primary checkbox' }}
           />
@@ -112,6 +155,7 @@ export const RowTableUser = ({
               <Switch
                 checked={isActive}
                 onChange={value => handleActive(value.target.checked)}
+                disabled={!disabledInput.switch}
                 inputProps={{ 'aria-label': 'secondary checkbox' }}
               />
             )
@@ -119,24 +163,7 @@ export const RowTableUser = ({
             ''
           )}
         </TableCell>
-        <TableCell>
-          {!isMe ? (
-            <Button
-              size='small'
-              title='Eliminar rol'
-              className={clases.btnDelete}
-              variant='contained'
-              onClick={() => {
-                setDialogoDelete(true);
-                setIdUser(user.idUser);
-              }}
-            >
-              <DeleteIcon />
-            </Button>
-          ) : (
-            ''
-          )}
-        </TableCell>
+        <TableCell>{renderAcction()}</TableCell>
       </TableRow>
     </>
   );

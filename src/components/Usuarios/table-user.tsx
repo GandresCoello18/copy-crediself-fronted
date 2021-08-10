@@ -113,10 +113,13 @@ export const TableUser = ({ usuarios, Loading, IdsUser, setReloadUser, setIdsUse
                     <strong>Apellidos</strong>
                   </TableCell>
                   <TableCell className={classes.textHeadTable}>
-                    <strong>Nombre de usuario</strong>
+                    <strong>Usuario</strong>
                   </TableCell>
                   <TableCell className={classes.textHeadTable}>
                     <strong>Email</strong>
+                  </TableCell>
+                  <TableCell className={classes.textHeadTable}>
+                    <strong>Sexo</strong>
                   </TableCell>
                   <TableCell className={classes.textHeadTable}>
                     <strong>Creado el</strong>

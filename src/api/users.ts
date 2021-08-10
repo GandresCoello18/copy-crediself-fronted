@@ -21,6 +21,10 @@ interface NewUsers {
   nombres: string;
   apellidos: string;
   idRol: string;
+  sexo: string;
+  razonSocial: string;
+  idSucursal: string;
+  fechaNacimiento: Date | string;
 }
 
 export const GetUsers = async (option: { token?: string; findUser?: string; page: number }) => {

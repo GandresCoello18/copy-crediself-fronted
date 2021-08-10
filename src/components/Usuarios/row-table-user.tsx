@@ -145,6 +145,7 @@ export const RowTableUser = ({
         <TableCell>{user.apellidos}</TableCell>
         <TableCell>{user.userName || 'None'}</TableCell>
         <TableCell>{user.email}</TableCell>
+        <TableCell>{user.sexo}</TableCell>
         <TableCell>{user.created_at}</TableCell>
         <TableCell>{user.idRol}</TableCell>
         <TableCell>

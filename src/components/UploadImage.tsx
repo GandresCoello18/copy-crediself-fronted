@@ -30,7 +30,7 @@ export const UploadImage = ({ images, maxNumber, onChange }: Props) => {
       onChange={onChange}
       maxNumber={maxNumber}
       dataURLKey='data_url'
-      acceptType={['jpg', 'gif', 'png']}
+      acceptType={['jpg', 'gif', 'png', 'jpeg']}
     >
       {({
         imageList,

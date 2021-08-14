@@ -21,6 +21,7 @@ import PersonIcon from '@material-ui/icons/Person';
 import LockIcon from '@material-ui/icons/Lock';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
+import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
 import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import NavItem from './NavItem';
 import { MeContext } from '../../../context/contextMe';
@@ -93,6 +94,20 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           href: '/app/usuarios',
           icon: GroupAddIcon,
           title: 'Usuarios',
+        },
+        {
+          href: '/app/account',
+          icon: PersonIcon,
+          title: 'Mi cuenta',
+        },
+      ];
+      break;
+    case 'Gerente de Sucursal':
+      items = [
+        {
+          href: '/app/clientes',
+          icon: EmojiPeopleIcon,
+          title: 'Clientes',
         },
         {
           href: '/app/account',

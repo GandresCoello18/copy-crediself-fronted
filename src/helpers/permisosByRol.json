@@ -13,7 +13,7 @@
     },
     {
         "rol": "Gerente de Sucursal",
-        "permisos": []
+        "permisos": ["UpdateMeUser", "ViewClientes", "NewCliente", "UpdateCliente", "DelCliente"]
     },
     {
         "rol": "Supervisor",
@@ -29,6 +29,6 @@
     },
     {
         "rol": "RRHH",
-        "permisos": ["UpdateMeUser", "ViewUsers", "NewUsers"]
+        "permisos": ["UpdateMeUser", "ViewUsers", "NewUsers", "ViewRoles"]
     }
 ]

@@ -6,6 +6,10 @@ export const RenderMainViewRol = (Rol: string) => {
       return '/app/roles';
     case 'Gerente Regional':
       return '/app/usuarios';
+    case 'RRHH':
+      return '/app/usuarios';
+    case 'Gerente de Sucursal':
+      return '/app/clientes';
     default:
       return '/app/dashboard';
   }

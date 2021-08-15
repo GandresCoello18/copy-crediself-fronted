@@ -6,15 +6,23 @@ import {
   Switch,
   Button,
   makeStyles,
+  Tooltip,
   CircularProgress,
+  Typography,
+  IconButton,
+  Menu,
+  MenuList,
+  MenuItem,
 } from '@material-ui/core';
 import React, { useState, Dispatch, SetStateAction, useContext } from 'react';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { MeContext } from '../../context/contextMe';
 import { toast } from 'react-toast';
+import CardTravelIcon from '@material-ui/icons/CardTravel';
 import { AxiosError } from 'axios';
 import EditIcon from '@material-ui/icons/Edit';
 import { HandleError } from '../../helpers/handleError';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { Cliente } from '../../interfaces/Cliente';
 import { UpdateActiveUser } from '../../api/users';
 
@@ -25,8 +33,17 @@ const useStyles = makeStyles((theme: any) => ({
   btnEdit: {
     backgroundColor: theme.palette.warning.main,
   },
+  btnSolict: {
+    backgroundColor: theme.palette.success.main,
+  },
   avatar: {
     marginRight: theme.spacing(2),
+  },
+  cutText: {
+    width: 120,
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
   },
 }));
 
@@ -47,6 +64,8 @@ export const RowTableClient = ({
   const { token } = useContext(MeContext);
   const [isActive, setIsActive] = useState<boolean>(cliente.active ? true : false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
 
   const handleActive = async (check: boolean) => {
     setLoading(true);
@@ -61,6 +80,81 @@ export const RowTableClient = ({
     }
   };
 
+  const OnClose = () => setAnchorEl(null);
+
+  const renderOPtions = () => {
+    return (
+      <>
+        <IconButton
+          aria-label='more'
+          aria-controls='long-menu'
+          aria-haspopup='true'
+          onClick={event => setAnchorEl(event.currentTarget)}
+        >
+          <MoreVertIcon />
+        </IconButton>
+        <Menu
+          id='long-menu'
+          anchorEl={anchorEl}
+          keepMounted
+          open={open}
+          onClose={() => setAnchorEl(null)}
+          PaperProps={{
+            style: {
+              maxHeight: 48 * 4.5,
+              width: '20ch',
+            },
+          }}
+        >
+          <MenuList>
+            <MenuItem selected={false} onClick={OnClose}>
+              <Button
+                size='small'
+                title='Editar Cliente'
+                className={clases.btnSolict}
+                variant='contained'
+                onClick={() => {
+                  setDialogoUpdateClient(true);
+                  setIdCliente(cliente.idCliente);
+                }}
+              >
+                {'Solicitar '} <CardTravelIcon />
+              </Button>
+            </MenuItem>
+            <MenuItem selected={false} onClick={OnClose}>
+              <Button
+                size='small'
+                title='Editar Cliente'
+                className={clases.btnEdit}
+                variant='contained'
+                onClick={() => {
+                  setDialogoUpdateClient(true);
+                  setIdCliente(cliente.idCliente);
+                }}
+              >
+                {'Editar '} <EditIcon />
+              </Button>
+            </MenuItem>
+            <MenuItem selected={false} onClick={OnClose}>
+              <Button
+                size='small'
+                title='Eliminar Cliente'
+                className={clases.btnDelete}
+                variant='contained'
+                onClick={() => {
+                  setDialogoDelete(true);
+                  setIdCliente(cliente.idCliente);
+                }}
+              >
+                {'Eliminar '} <DeleteIcon />
+              </Button>
+            </MenuItem>
+          </MenuList>
+        </Menu>
+      </>
+    );
+  };
+
   return (
     <>
       <TableRow hover>
@@ -71,7 +165,11 @@ export const RowTableClient = ({
         <TableCell>{cliente.sexo}</TableCell>
         <TableCell>{cliente.created_at}</TableCell>
         <TableCell>{cliente.ciudad}</TableCell>
-        <TableCell>{cliente.direccion}</TableCell>
+        <TableCell>
+          <Tooltip title={cliente.direccion}>
+            <Typography className={clases.cutText}>{cliente.direccion}</Typography>
+          </Tooltip>
+        </TableCell>
         <TableCell>
           {loading ? (
             <CircularProgress color='secondary' />
@@ -83,33 +181,7 @@ export const RowTableClient = ({
             />
           )}
         </TableCell>
-        <TableCell>
-          <Button
-            size='small'
-            title='Editar Cliente'
-            className={clases.btnEdit}
-            variant='contained'
-            onClick={() => {
-              setDialogoUpdateClient(true);
-              setIdCliente(cliente.idCliente);
-            }}
-          >
-            <EditIcon />
-          </Button>
-          {'  '}
-          <Button
-            size='small'
-            title='Eliminar Cliente'
-            className={clases.btnDelete}
-            variant='contained'
-            onClick={() => {
-              setDialogoDelete(true);
-              setIdCliente(cliente.idCliente);
-            }}
-          >
-            <DeleteIcon />
-          </Button>
-        </TableCell>
+        <TableCell>{renderOPtions()}</TableCell>
       </TableRow>
     </>
   );

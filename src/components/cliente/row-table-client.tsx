@@ -16,8 +16,10 @@ import {
 } from '@material-ui/core';
 import React, { useState, Dispatch, SetStateAction, useContext } from 'react';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { Link } from 'react-router-dom';
 import { MeContext } from '../../context/contextMe';
 import { toast } from 'react-toast';
+import PostAddIcon from '@material-ui/icons/PostAdd';
 import CardTravelIcon from '@material-ui/icons/CardTravel';
 import { AxiosError } from 'axios';
 import EditIcon from '@material-ui/icons/Edit';
@@ -27,14 +29,8 @@ import { Cliente } from '../../interfaces/Cliente';
 import { UpdateActiveUser } from '../../api/users';
 
 const useStyles = makeStyles((theme: any) => ({
-  btnDelete: {
-    backgroundColor: theme.palette.error.main,
-  },
-  btnEdit: {
-    backgroundColor: theme.palette.warning.main,
-  },
-  btnSolict: {
-    backgroundColor: theme.palette.success.main,
+  btnIcon: {
+    marginRight: 5,
   },
   avatar: {
     marginRight: theme.spacing(2),
@@ -110,45 +106,61 @@ export const RowTableClient = ({
         >
           <MenuList>
             <MenuItem selected={false} onClick={OnClose}>
+              <Link to={`/app/creditos/cliente/${cliente.idCliente}`}>
+                <Button
+                  size='small'
+                  title='Ver creditos de cliente'
+                  fullWidth
+                  variant='outlined'
+                  onClick={() => {
+                    setDialogoCredit(true);
+                    setIdCliente(cliente.idCliente);
+                  }}
+                >
+                  <span className={clases.btnIcon}>Creditos</span> <CardTravelIcon />
+                </Button>
+              </Link>
+            </MenuItem>
+            <MenuItem selected={false} onClick={OnClose}>
               <Button
                 size='small'
-                title='Editar Cliente'
-                className={clases.btnSolict}
-                variant='contained'
+                title='Solicitar credito'
+                variant='outlined'
+                fullWidth
                 onClick={() => {
                   setDialogoCredit(true);
                   setIdCliente(cliente.idCliente);
                 }}
               >
-                {'Solicitar '} <CardTravelIcon />
+                <span className={clases.btnIcon}>Solicitar</span> <PostAddIcon />
               </Button>
             </MenuItem>
             <MenuItem selected={false} onClick={OnClose}>
               <Button
                 size='small'
                 title='Editar Cliente'
-                className={clases.btnEdit}
-                variant='contained'
+                variant='outlined'
+                fullWidth
                 onClick={() => {
                   setDialogoUpdateClient(true);
                   setIdCliente(cliente.idCliente);
                 }}
               >
-                {'Editar '} <EditIcon />
+                <span className={clases.btnIcon}>Editar</span> <EditIcon />
               </Button>
             </MenuItem>
             <MenuItem selected={false} onClick={OnClose}>
               <Button
                 size='small'
                 title='Eliminar Cliente'
-                className={clases.btnDelete}
-                variant='contained'
+                fullWidth
+                variant='outlined'
                 onClick={() => {
                   setDialogoDelete(true);
                   setIdCliente(cliente.idCliente);
                 }}
               >
-                {'Eliminar '} <DeleteIcon />
+                <span className={clases.btnIcon}>Eliminar</span> <DeleteIcon />
               </Button>
             </MenuItem>
           </MenuList>

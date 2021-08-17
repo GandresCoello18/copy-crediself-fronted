@@ -13,7 +13,7 @@
     },
     {
         "rol": "Gerente de Sucursal",
-        "permisos": ["UpdateMeUser", "ViewClientes", "NewCliente", "UpdateCliente", "DelCliente", "NewCredito", "ViewCredito", "DelCredito"]
+        "permisos": ["UpdateMeUser", "ViewClientes", "ViewNotification", "NewCliente", "UpdateCliente", "DelCliente", "NewCredito", "ViewCredito", "DelCredito"]
     },
     {
         "rol": "Supervisor",

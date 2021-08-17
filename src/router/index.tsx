@@ -28,6 +28,7 @@ const RolesView = lazy(() => import('../view/roles'));
 const UsuariosView = lazy(() => import('../view/usuarios'));
 const NotificacionesView = lazy(() => import('../view/notificacion'));
 const ClientesView = lazy(() => import('../view/clientes'));
+const CreditosView = lazy(() => import('../view/creditos'));
 
 const token = Cookies.get('access-token-crediself');
 
@@ -49,6 +50,7 @@ const routes = [
       { path: 'roles', element: PathSesion(RolesView) },
       { path: 'account', element: PathSesion(AccountView) },
       { path: 'clientes', element: PathSesion(ClientesView) },
+      { path: 'creditos', element: PathSesion(CreditosView) },
       { path: 'usuarios', element: PathSesion(UsuariosView) },
       { path: 'notificaciones', element: PathSesion(NotificacionesView) },
       { path: '*', element: <Navigate to='/404' /> },

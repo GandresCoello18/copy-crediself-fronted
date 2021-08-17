@@ -21,6 +21,7 @@ import PersonIcon from '@material-ui/icons/Person';
 import LockIcon from '@material-ui/icons/Lock';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
+import CardTravelIcon from '@material-ui/icons/CardTravel';
 import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
 import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import NavItem from './NavItem';
@@ -108,6 +109,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           href: '/app/clientes',
           icon: EmojiPeopleIcon,
           title: 'Clientes',
+        },
+        {
+          href: '/app/creditos',
+          icon: CardTravelIcon,
+          title: 'Creditos',
         },
         {
           href: '/app/account',

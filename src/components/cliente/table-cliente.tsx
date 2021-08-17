@@ -24,6 +24,7 @@ import { Cliente } from '../../interfaces/Cliente';
 import { DialogoForm } from '../DialogoForm';
 import { DeleteCliente } from '../../api/clientes';
 import { RowTableClient } from './row-table-client';
+import { FormNewCredit } from './new-credit';
 
 const useStyles = makeStyles((theme: any) => ({
   headTable: {
@@ -45,6 +46,7 @@ export const TablaCliente = ({ clientes, Loading, setReloadCliente }: Props) => 
   const { token } = useContext(MeContext);
   const [IdCliente, setIdCliente] = useState<string>('');
   const [DialogoDelete, setDialogoDelete] = useState<boolean>(false);
+  const [DialogoCredit, setDialogoCredit] = useState<boolean>(false);
   const [DialogoUpdateClient, setDialogoUpdateClient] = useState<boolean>(false);
   const [AceptDialog, setAceptDialog] = useState<boolean>(false);
 
@@ -126,6 +128,7 @@ export const TablaCliente = ({ clientes, Loading, setReloadCliente }: Props) => 
                       key={client.idCliente}
                       setIdCliente={setIdCliente}
                       setDialogoDelete={setDialogoDelete}
+                      setDialogoCredit={setDialogoCredit}
                       setDialogoUpdateClient={setDialogoUpdateClient}
                     />
                   ))}
@@ -153,6 +156,10 @@ export const TablaCliente = ({ clientes, Loading, setReloadCliente }: Props) => 
 
       <DialogoForm Open={DialogoUpdateClient} setOpen={setDialogoUpdateClient} title=''>
         update
+      </DialogoForm>
+
+      <DialogoForm Open={DialogoCredit} setOpen={setDialogoCredit} title=''>
+        <FormNewCredit setVisible={setDialogoCredit} idCliente={IdCliente} />
       </DialogoForm>
     </>
   );

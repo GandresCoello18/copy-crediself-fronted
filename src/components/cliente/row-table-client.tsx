@@ -51,6 +51,7 @@ interface Props {
   cliente: Cliente;
   setIdCliente: Dispatch<SetStateAction<string>>;
   setDialogoDelete: Dispatch<SetStateAction<boolean>>;
+  setDialogoCredit: Dispatch<SetStateAction<boolean>>;
   setDialogoUpdateClient: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -58,6 +59,7 @@ export const RowTableClient = ({
   cliente,
   setIdCliente,
   setDialogoDelete,
+  setDialogoCredit,
   setDialogoUpdateClient,
 }: Props) => {
   const clases = useStyles();
@@ -114,7 +116,7 @@ export const RowTableClient = ({
                 className={clases.btnSolict}
                 variant='contained'
                 onClick={() => {
-                  setDialogoUpdateClient(true);
+                  setDialogoCredit(true);
                   setIdCliente(cliente.idCliente);
                 }}
               >

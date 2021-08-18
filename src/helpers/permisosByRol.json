@@ -1,7 +1,7 @@
 [
     {
         "rol": "Director",
-        "permisos": ["NewRoles", "NewUsers", "DelRoles", "ModRoles", "ViewRoles", "DelUsers", "ViewUsers", "UpdateMeUser", "ViewPermisos", "UpdatePermisos", "ModUsers", "ViewNotification"]
+        "permisos": ["NewRoles", "NewUsers", "DelRoles", "ModRoles", "ViewRoles", "DelUsers", "ViewUsers", "UpdateMeUser", "ViewPermisos", "UpdatePermisos", "ModUsers", "ViewNotification", "AutorizarCredito", "ViewCredito"]
     },
     {
         "rol": "Administrativo",
@@ -13,7 +13,7 @@
     },
     {
         "rol": "Gerente de Sucursal",
-        "permisos": ["UpdateMeUser", "ViewClientes", "ViewNotification", "NewCliente", "UpdateCliente", "DelCliente", "NewCredito", "ViewCredito", "DelCredito"]
+        "permisos": ["UpdateMeUser", "ViewClientes", "ViewNotification", "NewCliente", "UpdateCliente", "DelCliente", "NewCredito", "ViewCredito", "DelCredito", "UpdateCredito"]
     },
     {
         "rol": "Supervisor",

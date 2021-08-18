@@ -81,12 +81,13 @@ const useStyles = makeStyles(theme => ({
 
 interface Props {
   credito?: CreditoByCliente;
+  imgSrc: string;
   setSelectCredito: Dispatch<SetStateAction<CreditoByCliente | undefined>>;
 }
 
-export const DetailsCredito = ({ credito, setSelectCredito }: Props) => {
+export const DetailsCredito = ({ credito, imgSrc, setSelectCredito }: Props) => {
   const clases = useStyles();
-  const { token } = useContext(MeContext);
+  const { token, me } = useContext(MeContext);
   const [statusCredit, setStatusCredit] = useState<{ loading: boolean; modific: string }>({
     loading: false,
     modific: '',
@@ -288,6 +289,7 @@ export const DetailsCredito = ({ credito, setSelectCredito }: Props) => {
                   ) : (
                     <Switch
                       checked={isActive || credito?.active ? true : false}
+                      disabled={me.idRol !== 'Gerente de Sucursal'}
                       onChange={value => handleActive(value.target.checked)}
                       inputProps={{ 'aria-label': 'secondary checkbox' }}
                     />
@@ -314,6 +316,7 @@ export const DetailsCredito = ({ credito, setSelectCredito }: Props) => {
                     <CircularProgress color='secondary' />
                   ) : (
                     <Select
+                      disabled={me.idRol !== 'Gerente de Sucursal'}
                       style={{ width: 150 }}
                       onChange={event => handleStatus(event.target.value as string)}
                     >
@@ -372,23 +375,27 @@ export const DetailsCredito = ({ credito, setSelectCredito }: Props) => {
             </Box>
             <Box mt={1}>
               <Grid container justify='space-between'>
-                <Grid item xs={12} md={3}>
-                  <Button
-                    disabled={credito?.autorizado ? true : false}
-                    className={clases.btnAutorizar}
-                    onClick={NotificarAutorizacion}
-                    fullWidth
-                    variant='outlined'
-                  >
-                    {LoadingSolicitud ? (
-                      <CircularProgress color='secondary' />
-                    ) : credito.autorizado ? (
-                      'Autorizado'
-                    ) : (
-                      'Autorizar'
-                    )}
-                  </Button>
-                </Grid>
+                {me.idRol === 'Gerente de Sucursal' ? (
+                  <Grid item xs={12} md={3}>
+                    <Button
+                      disabled={credito?.autorizado ? true : false}
+                      className={clases.btnAutorizar}
+                      onClick={NotificarAutorizacion}
+                      fullWidth
+                      variant='outlined'
+                    >
+                      {LoadingSolicitud ? (
+                        <CircularProgress color='secondary' />
+                      ) : credito.autorizado ? (
+                        'Autorizado'
+                      ) : (
+                        'Autorizar'
+                      )}
+                    </Button>
+                  </Grid>
+                ) : (
+                  ''
+                )}
                 <Grid item xs={12} md={4}>
                   <Link to={`/app/creditos/cliente/${credito.idCliente}`}>
                     <Button fullWidth variant='outlined'>
@@ -396,18 +403,22 @@ export const DetailsCredito = ({ credito, setSelectCredito }: Props) => {
                     </Button>
                   </Link>
                 </Grid>
-                <Grid item xs={12} md={3}>
-                  <Button className={clases.btnDelete} fullWidth variant='outlined'>
-                    Eliminar
-                  </Button>
-                </Grid>
+                {me.idRol === 'Gerente de Sucursal' ? (
+                  <Grid item xs={12} md={3}>
+                    <Button className={clases.btnDelete} fullWidth variant='outlined'>
+                      Eliminar
+                    </Button>
+                  </Grid>
+                ) : (
+                  ''
+                )}
               </Grid>
             </Box>
           </Grid>
         </Grid>
       ) : (
         <>
-          <img src='../no-data.svg' alt='no data' width='100%' />
+          <img src={imgSrc} alt='no data' width='100%' />
           <Alert severity='info'>Seleccione un credito!</Alert>
         </>
       )}

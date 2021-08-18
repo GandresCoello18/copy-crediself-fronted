@@ -16,6 +16,18 @@ export const NewContrato = async (options: { token: string; data: InputContrato 
   return response;
 };
 
+export const NotificarAutorizarCredito = async (options: { token: string; IdCredito: string }) => {
+  api.defaults.headers['access-token'] = options.token;
+  const response = await api({
+    method: 'POST',
+    url: '/credito/autorizar',
+    data: {
+      idCredito: options.IdCredito,
+    },
+  });
+  return response;
+};
+
 export const GetCreditos = async (option: {
   token?: string;
   findCredito?: string;
@@ -60,6 +72,22 @@ export const UpdateStatusCredito = async (options: {
     url: `/credito/status/${options.IdCredito}`,
     data: {
       status: options.status,
+    },
+  });
+  return response;
+};
+
+export const UpdateAutorizarCredito = async (options: {
+  token: string;
+  autorizar: boolean;
+  IdCredito: string;
+}) => {
+  api.defaults.headers['access-token'] = options.token;
+  const response = await api({
+    method: 'PUT',
+    url: `/credito/autorizar/${options.IdCredito}`,
+    data: {
+      autorizar: options.autorizar,
     },
   });
   return response;

@@ -116,6 +116,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           title: 'Creditos',
         },
         {
+          href: '/app/notificaciones',
+          icon: NotificationsActiveIcon,
+          title: 'Notificaciones',
+        },
+        {
           href: '/app/account',
           icon: PersonIcon,
           title: 'Mi cuenta',

@@ -26,7 +26,11 @@ import { toast } from 'react-toast';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import { HandleError } from '../../helpers/handleError';
 import { MeContext } from '../../context/contextMe';
-import { UpdateActiveCredito, UpdateStatusCredito } from '../../api/credito';
+import {
+  NotificarAutorizarCredito,
+  UpdateActiveCredito,
+  UpdateStatusCredito,
+} from '../../api/credito';
 import { BASE_API_FILE_DOCUMENT } from '../../api';
 
 const useStyles = makeStyles(theme => ({
@@ -88,6 +92,7 @@ export const DetailsCredito = ({ credito, setSelectCredito }: Props) => {
     modific: '',
   });
   const [Loading, setLoading] = useState<boolean>(false);
+  const [LoadingSolicitud, setLoadingSolicitud] = useState<boolean>(false);
   const [isActive, setIsActive] = useState<boolean>(credito?.active ? true : false);
 
   const handleActive = async (check: boolean) => {
@@ -99,6 +104,22 @@ export const DetailsCredito = ({ credito, setSelectCredito }: Props) => {
       setIsActive(check);
     } catch (error) {
       setLoading(false);
+      toast.error(HandleError(error as AxiosError));
+    }
+  };
+
+  const NotificarAutorizacion = async () => {
+    setLoadingSolicitud(true);
+
+    try {
+      await NotificarAutorizarCredito({
+        token,
+        IdCredito: credito?.idCredito || '',
+      });
+      setLoadingSolicitud(false);
+      toast.success('Se envio la notificación al director');
+    } catch (error) {
+      setLoadingSolicitud(false);
       toast.error(HandleError(error as AxiosError));
     }
   };
@@ -353,12 +374,19 @@ export const DetailsCredito = ({ credito, setSelectCredito }: Props) => {
               <Grid container justify='space-between'>
                 <Grid item xs={12} md={3}>
                   <Button
-                    disabled={credito.autorizado ? true : false}
+                    disabled={credito?.autorizado ? true : false}
                     className={clases.btnAutorizar}
+                    onClick={NotificarAutorizacion}
                     fullWidth
                     variant='outlined'
                   >
-                    {credito.autorizado ? 'Autorizado' : 'Autorizar'}
+                    {LoadingSolicitud ? (
+                      <CircularProgress color='secondary' />
+                    ) : credito.autorizado ? (
+                      'Autorizado'
+                    ) : (
+                      'Autorizar'
+                    )}
                   </Button>
                 </Grid>
                 <Grid item xs={12} md={4}>

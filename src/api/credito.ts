@@ -88,6 +88,20 @@ export const UpdateActiveCredito = async (options: {
   return response;
 };
 
+export const UpdateContratoByCredito = async (options: {
+  token: string;
+  data: FormData;
+  idCreditoContrato: string;
+}) => {
+  api.defaults.headers['access-token'] = options.token;
+  const response = await api({
+    method: 'PUT',
+    url: `/credito/contrato/${options.idCreditoContrato}`,
+    data: options.data,
+  });
+  return response;
+};
+
 export const UpdateStatusCredito = async (options: {
   token: string;
   status: string;

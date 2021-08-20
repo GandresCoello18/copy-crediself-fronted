@@ -138,15 +138,11 @@ const TopBar = ({ onMobileNavOpen, ...rest }: Props) => {
               Por el momento no hay <strong>Notificaciones</strong> para mostrar.
             </Alert>
           )}
-          {Notificaciones.map(notificacion => (
-            <>
-              <ItemNotification
-                notificacion={notificacion}
-                setOpen={setOpen}
-                key={notificacion.idNotification}
-              />
+          {Notificaciones.map((notificacion, index) => (
+            <Box key={notificacion.idNotification + index}>
+              <ItemNotification notificacion={notificacion} setOpen={setOpen} />
               <Divider variant='inset' component='li' />
-            </>
+            </Box>
           ))}
         </List>
         <ActionNotification setOpen={setOpen} setReloadNotificacion={setReloadNotificacion} />

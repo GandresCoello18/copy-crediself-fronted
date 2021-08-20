@@ -9,7 +9,6 @@ import {
   Divider,
   Chip,
   CircularProgress,
-  Paper,
   Switch,
   MenuItem,
   Select,
@@ -23,7 +22,6 @@ import { CreditoByCliente } from '../../interfaces/Credito';
 import { SourceAvatar } from '../../helpers/sourceAvatar';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toast';
-import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import { HandleError } from '../../helpers/handleError';
 import { MeContext } from '../../context/contextMe';
 import {
@@ -31,7 +29,7 @@ import {
   UpdateActiveCredito,
   UpdateStatusCredito,
 } from '../../api/credito';
-import { BASE_API_FILE_DOCUMENT } from '../../api';
+import { ContratoCard } from './conntrato-card';
 
 const useStyles = makeStyles(theme => ({
   headDetails: {
@@ -349,24 +347,8 @@ export const DetailsCredito = ({ credito, imgSrc, setSelectCredito }: Props) => 
                 <Grid item xs={12}>
                   {credito.contratos.map(contrato => (
                     <>
-                      <a
-                        target='_blank'
-                        rel='noreferrer'
-                        href={`${BASE_API_FILE_DOCUMENT}/doc/${contrato.source}`}
-                        key={contrato.id_credito_contrato}
-                      >
-                        <Paper elevation={3}>
-                          <Box p={1} textAlign='center'>
-                            <InsertDriveFileIcon style={{ fontSize: 40 }} />
-                            <br />
-                            <strong>Contrato: </strong>
-                            <span>{contrato.contrato}</span>
-                            <br />
-                            <strong>Actualizado el: </strong>
-                            <span>{contrato.updated_at}</span>
-                          </Box>
-                        </Paper>
-                      </a>
+                      <ContratoCard contrato={contrato} />
+                      <br />
                       <br />
                     </>
                   ))}

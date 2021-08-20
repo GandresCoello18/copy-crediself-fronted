@@ -10,7 +10,6 @@ import Pagination from '@material-ui/lab/Pagination';
 import { toast } from 'react-toast';
 import { AxiosError } from 'axios';
 import { HandleError } from '../helpers/handleError';
-import { DialogoForm } from '../components/DialogoForm';
 import { Alert, Skeleton } from '@material-ui/lab';
 import { NotificacionByMe } from '../interfaces/Notificacion';
 import { GetNotificacion } from '../api/notificacion';
@@ -43,7 +42,7 @@ const NotificacionView = () => {
   const { token } = useContext(MeContext);
   const [Notificaciones, setNotificaciones] = useState<NotificacionByMe[]>([]);
   const [Count, setCount] = useState<number>(0);
-  const [Visible, setVisible] = useState<boolean>(false);
+  const [Notification, setNotification] = useState<NotificacionByMe>();
   const [ReloadNotificacion, setReloadNotificacion] = useState<boolean>(false);
   const [Loading, setLoading] = useState<boolean>(false);
 
@@ -68,12 +67,20 @@ const NotificacionView = () => {
 
   const fetchNotificacion = async (page: number) => {
     setLoading(true);
+    const queryUrl = new URLSearchParams(location.search).get('idNotificacion') as string;
 
     try {
       const { notifications, pages } = await (await GetNotificacion({ token, page })).data;
       setNotificaciones(notifications);
       setLoading(false);
       setCount(pages || 1);
+
+      if (notifications && queryUrl) {
+        const findNoti = notifications.find(
+          (item: NotificacionByMe) => item.idNotification === queryUrl,
+        );
+        setNotification(findNoti);
+      }
     } catch (error) {
       toast.error(HandleError(error as AxiosError));
       setLoading(false);
@@ -115,13 +122,13 @@ const NotificacionView = () => {
 
                 {!Loading &&
                   Notificaciones.map(notificacion => (
-                    <>
+                    <Box key={notificacion.idNotification}>
                       <ItemNotification
                         notificacion={notificacion}
-                        key={notificacion.idNotification}
+                        setNotification={setNotification}
                       />
                       <Divider variant='inset' component='li' />
-                    </>
+                    </Box>
                   ))}
               </List>
             </Box>
@@ -134,14 +141,10 @@ const NotificacionView = () => {
             </Box>
           </Grid>
           <Grid item xs={12} lg={5} style={{ backgroundColor: '#fff' }}>
-            <DetailsNotificacion notifiacion={undefined} />
+            <DetailsNotificacion notifiacion={Notification} />
           </Grid>
         </Grid>
       </Container>
-
-      <DialogoForm Open={Visible} setOpen={setVisible} title=''>
-        efew
-      </DialogoForm>
     </Page>
   );
 };

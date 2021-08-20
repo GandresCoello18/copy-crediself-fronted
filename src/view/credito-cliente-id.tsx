@@ -19,7 +19,7 @@ import { MeContext } from '../context/contextMe';
 import Pagination from '@material-ui/lab/Pagination';
 import SearchIcon from '@material-ui/icons/Search';
 import { toast } from 'react-toast';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { AxiosError } from 'axios';
 import { HandleError } from '../helpers/handleError';
 import { TablaCredito } from '../components/Creditos/table-credito';
@@ -43,6 +43,7 @@ const useStyles = makeStyles((theme: any) => ({
 const CreditoClienteOnlyView = () => {
   const params = useParams();
   const classes = useStyles();
+  const navigate = useNavigate();
   const { token } = useContext(MeContext);
   const [SearchCredito, setSearchCliente] = useState<string>('');
   const [Creditos, setCreditos] = useState<CreditoByCliente[]>([]);
@@ -63,6 +64,11 @@ const CreditoClienteOnlyView = () => {
           findCredito: SearchCredito,
         })
       ).data;
+
+      if (creditos === undefined) {
+        navigate('/app/creditos');
+      }
+
       setCreditos(creditos);
       setCount(pages || 1);
       setLoading(false);

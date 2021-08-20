@@ -45,16 +45,20 @@ const useStyles = makeStyles((theme: any) => ({
 
 interface Props {
   setOpen?: Dispatch<SetStateAction<boolean>>;
+  setNotification?: Dispatch<SetStateAction<NotificacionByMe | undefined>>;
   notificacion: NotificacionByMe;
 }
 
-export const ItemNotification = ({ setOpen, notificacion }: Props) => {
+export const ItemNotification = ({ setOpen, setNotification, notificacion }: Props) => {
   const classes = useStyles();
 
   return (
     <Link
       to={`/app/notificaciones?idNotificacion=${notificacion.idNotification}`}
-      onClick={() => setOpen && setOpen(false)}
+      onClick={() => {
+        setOpen && setOpen(false);
+        setNotification && setNotification(notificacion);
+      }}
     >
       <ListItem
         alignItems='flex-start'

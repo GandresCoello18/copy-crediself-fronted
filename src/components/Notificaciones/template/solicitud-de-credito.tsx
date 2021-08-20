@@ -26,6 +26,9 @@ const useStyles = makeStyles(theme => ({
   btnSuccess: {
     backgroundColor: theme.palette.success.main,
   },
+  btnDanger: {
+    backgroundColor: theme.palette.error.main,
+  },
 }));
 
 export const SolicitudCredito = ({ notifiacion }: Props) => {
@@ -57,17 +60,15 @@ export const SolicitudCredito = ({ notifiacion }: Props) => {
           </Typography>
         </Typography>
       </Grid>
-      <Grid item xs={12} md={5}>
-        <a href={notifiacion.link} target='_blanck'>
+      <Grid item xs={7}>
+        <a
+          href={`${notifiacion.link}?idNotificacion=${notifiacion.idNotification}`}
+          target='_blanck'
+        >
           <Button variant='contained' color='primary'>
-            Cliente
+            Ver Credito de Cliente
           </Button>
         </a>
-      </Grid>
-      <Grid item xs={12} md={6}>
-        <Button variant='contained' className={classes.btnSuccess}>
-          Autorizar Credito
-        </Button>
       </Grid>
     </Grid>
   );

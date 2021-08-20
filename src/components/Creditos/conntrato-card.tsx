@@ -9,6 +9,7 @@ import { toast } from 'react-toast';
 import { UpdateContratoByCredito } from '../../api/credito';
 import { HandleError } from '../../helpers/handleError';
 import { MeContext } from '../../context/contextMe';
+import { getPermisoExist } from '../../helpers/renderViewMainRol';
 
 interface Props {
   contrato: CreditoByContrato;
@@ -24,7 +25,7 @@ const useStyles = makeStyles(() =>
 
 export const ContratoCard = ({ contrato }: Props) => {
   const classes = useStyles();
-  const { token } = useContext(MeContext);
+  const { token, me } = useContext(MeContext);
   const [fileUpload, setFileUpload] = useState<FileList | null>(null);
   const [fileName, setFileName] = useState<string>(contrato.source);
   const [Loading, setLoading] = useState<boolean>(false);
@@ -77,11 +78,15 @@ export const ContratoCard = ({ contrato }: Props) => {
         </Paper>
       </a>
 
-      {fileUpload ? (
+      {getPermisoExist({ RolName: me.idRol, permiso: 'UpdateContratoCredito' }) && fileUpload ? (
         <Button fullWidth variant='contained' color='primary' onClick={handleFile} component='span'>
           {Loading ? <CircularProgress color='secondary' /> : `Subir: ${fileUpload[0].name}`}
         </Button>
       ) : (
+        ''
+      )}
+
+      {getPermisoExist({ RolName: me.idRol, permiso: 'UpdateContratoCredito' }) && !fileUpload ? (
         <>
           <input
             accept='.doc,.docx,.pdf'
@@ -97,6 +102,8 @@ export const ContratoCard = ({ contrato }: Props) => {
             </Button>
           </label>
         </>
+      ) : (
+        ''
       )}
     </>
   );

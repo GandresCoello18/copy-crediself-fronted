@@ -122,6 +122,7 @@ export const UpdateAutorizarCredito = async (options: {
   token: string;
   autorizar: boolean;
   IdCredito: string;
+  idNotification?: string;
 }) => {
   api.defaults.headers['access-token'] = options.token;
   const response = await api({
@@ -129,6 +130,7 @@ export const UpdateAutorizarCredito = async (options: {
     url: `/credito/autorizar/${options.IdCredito}`,
     data: {
       autorizar: options.autorizar,
+      idNotification: options.idNotification,
     },
   });
   return response;

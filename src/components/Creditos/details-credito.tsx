@@ -27,9 +27,11 @@ import { MeContext } from '../../context/contextMe';
 import {
   NotificarAutorizarCredito,
   UpdateActiveCredito,
+  UpdateAutorizarCredito,
   UpdateStatusCredito,
 } from '../../api/credito';
 import { ContratoCard } from './conntrato-card';
+import { getPermisoExist } from '../../helpers/renderViewMainRol';
 
 const useStyles = makeStyles(theme => ({
   headDetails: {
@@ -111,12 +113,36 @@ export const DetailsCredito = ({ credito, imgSrc, setSelectCredito }: Props) => 
     setLoadingSolicitud(true);
 
     try {
-      await NotificarAutorizarCredito({
-        token,
-        IdCredito: credito?.idCredito || '',
-      });
+      if (me.idRol === 'Gerente de Sucursal') {
+        await NotificarAutorizarCredito({
+          token,
+          IdCredito: credito?.idCredito || '',
+        });
+        toast.success('Se envio la notificación al director');
+      }
       setLoadingSolicitud(false);
-      toast.success('Se envio la notificación al director');
+    } catch (error) {
+      setLoadingSolicitud(false);
+      toast.error(HandleError(error as AxiosError));
+    }
+  };
+
+  const HandleAutorizacion = async (options: { autorizado: boolean }) => {
+    setLoadingSolicitud(true);
+
+    try {
+      if (getPermisoExist({ RolName: me.idRol, permiso: 'AutorizarCredito' })) {
+        const idNotification = new URLSearchParams(location.search).get('idNotificacion') as string;
+
+        await UpdateAutorizarCredito({
+          token,
+          autorizar: options.autorizado,
+          idNotification,
+          IdCredito: credito?.idCredito || '',
+        });
+        toast.success('Se envio la notificación al gerente de sucursal');
+      }
+      setLoadingSolicitud(false);
     } catch (error) {
       setLoadingSolicitud(false);
       toast.error(HandleError(error as AxiosError));
@@ -358,7 +384,7 @@ export const DetailsCredito = ({ credito, imgSrc, setSelectCredito }: Props) => 
             <Box mt={1}>
               <Grid container justify='space-between'>
                 {me.idRol === 'Gerente de Sucursal' ? (
-                  <Grid item xs={12} md={3}>
+                  <Grid item xs={12} md={5}>
                     <Button
                       disabled={credito?.autorizado ? true : false}
                       className={clases.btnAutorizar}
@@ -371,25 +397,54 @@ export const DetailsCredito = ({ credito, imgSrc, setSelectCredito }: Props) => 
                       ) : credito.autorizado ? (
                         'Autorizado'
                       ) : (
-                        'Autorizar'
+                        'Solicitar Autorización'
                       )}
                     </Button>
                   </Grid>
                 ) : (
                   ''
                 )}
-                <Grid item xs={12} md={4}>
-                  <Link to={`/app/creditos/cliente/${credito.idCliente}`}>
-                    <Button fullWidth variant='outlined'>
-                      Más creditos
+
+                {getPermisoExist({ RolName: me.idRol, permiso: 'AutorizarCredito' }) &&
+                !credito?.autorizado ? (
+                  <Grid item xs={12} md={5}>
+                    <Button
+                      disabled={LoadingSolicitud}
+                      className={clases.btnAutorizar}
+                      onClick={() => HandleAutorizacion({ autorizado: true })}
+                      fullWidth
+                      variant='outlined'
+                    >
+                      Autorizar Credito
                     </Button>
-                  </Link>
-                </Grid>
-                {me.idRol === 'Gerente de Sucursal' ? (
-                  <Grid item xs={12} md={3}>
-                    <Button className={clases.btnDelete} fullWidth variant='outlined'>
-                      Eliminar
-                    </Button>
+                  </Grid>
+                ) : (
+                  ''
+                )}
+
+                {getPermisoExist({ RolName: me.idRol, permiso: 'AutorizarCredito' }) &&
+                !credito?.autorizado ? (
+                  <Grid item xs={12} md={5}>
+                    <Link to={`/app/creditos/cliente/${credito.idCliente}`}>
+                      <Button
+                        className={clases.btnDelete}
+                        onClick={() => HandleAutorizacion({ autorizado: false })}
+                        fullWidth
+                        disabled={LoadingSolicitud}
+                        variant='outlined'
+                      >
+                        Rechazar Credito
+                      </Button>
+                    </Link>
+                  </Grid>
+                ) : (
+                  ''
+                )}
+
+                {getPermisoExist({ RolName: me.idRol, permiso: 'AutorizarCredito' }) &&
+                credito?.autorizado ? (
+                  <Grid item xs={12}>
+                    <Alert color='info'>Credito Autorizado</Alert>
                   </Grid>
                 ) : (
                   ''

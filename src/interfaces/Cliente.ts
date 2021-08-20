@@ -10,4 +10,6 @@ export interface Cliente {
   ciudad: string;
   direccion: string;
   sexo: 'Masculino' | 'Femenino';
+  rfc: string;
+  numeroCliente: number;
 }

@@ -63,6 +63,7 @@ export const FormNewCliente = ({ setReloadCliente, setVisible }: Props) => {
           direccion: '',
           sexo: '',
           fechaNacimiento: '',
+          rfc: '',
         }}
         validationSchema={Yup.object().shape({
           nombres: Yup.string().max(100).required('El campo es requerido'),
@@ -73,6 +74,7 @@ export const FormNewCliente = ({ setReloadCliente, setVisible }: Props) => {
           direccion: Yup.string().max(200),
           sexo: Yup.string().max(100).required('El campo es requerido'),
           fechaNacimiento: Yup.string().max(100).required('El campo es requerido'),
+          rfc: Yup.string().max(25).required('El campo es requerido'),
         })}
         onSubmit={async (values, actions) => {
           if (new Date().getTime() < new Date(values.fechaNacimiento).getTime()) {
@@ -194,6 +196,21 @@ export const FormNewCliente = ({ setReloadCliente, setVisible }: Props) => {
                     variant='outlined'
                     onChange={handleChange}
                     placeholder={'Seleccione su fecha de nacimiento'}
+                  />
+                </Grid>
+                <Grid item md={6} xs={12}>
+                  <TextField
+                    error={Boolean(touched.rfc && errors.rfc)}
+                    helperText={touched.rfc && errors.rfc}
+                    fullWidth
+                    name='rfc'
+                    required
+                    label='RFC'
+                    onBlur={handleBlur}
+                    disabled={isSubmitting}
+                    variant='outlined'
+                    onChange={handleChange}
+                    placeholder={'Escriba el RFC'}
                   />
                 </Grid>
                 <Grid item md={6} xs={12}>

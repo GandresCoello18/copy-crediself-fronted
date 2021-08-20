@@ -45,6 +45,24 @@ export const GetCreditos = async (option: {
   return response;
 };
 
+export const GetCreditosCliente = async (option: {
+  token?: string;
+  findCredito?: string;
+  idCliente: string;
+  page: number;
+}) => {
+  api.defaults.headers['access-token'] = option.token;
+  const response = await api({
+    method: 'GET',
+    url: `${
+      option.findCredito
+        ? `/credito/cliente/${option.idCliente}?findCredito=${option.findCredito}&page=${option.page}`
+        : `/credito/cliente/${option.idCliente}?page=${option.page}`
+    }`,
+  });
+  return response;
+};
+
 export const GetCredito = async (options: { token: string; IdCredito: string }) => {
   api.defaults.headers['access-token'] = options.token;
   const response = await api({

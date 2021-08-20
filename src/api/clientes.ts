@@ -9,6 +9,7 @@ export interface NewClients {
   direccion: string;
   ciudad: string;
   fechaNacimiento: Date | string;
+  rfc: string;
 }
 
 export const GetClientes = async (option: {

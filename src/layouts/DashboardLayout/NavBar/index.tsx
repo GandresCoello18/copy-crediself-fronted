@@ -25,6 +25,7 @@ import CardTravelIcon from '@material-ui/icons/CardTravel';
 import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
 import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import NavItem from './NavItem';
+import MoneyOffIcon from '@material-ui/icons/MoneyOff';
 import { MeContext } from '../../../context/contextMe';
 import Cookies from 'js-cookie';
 import { SourceAvatar } from '../../../helpers/sourceAvatar';
@@ -119,6 +120,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           href: '/app/notificaciones',
           icon: NotificationsActiveIcon,
           title: 'Notificaciones',
+        },
+        {
+          href: '/app/gastos',
+          icon: MoneyOffIcon,
+          title: 'Gastos',
         },
         {
           href: '/app/account',

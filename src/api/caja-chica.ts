@@ -2,7 +2,7 @@ import { api } from '.';
 
 interface InputCaja {
   concepto: string;
-  gasto: number;
+  gasto: string;
   observaciones?: string;
 }
 
@@ -11,6 +11,7 @@ export const AddExpenses = async (option: { token?: string; data: InputCaja }) =
   const response = await api({
     method: 'POST',
     url: '/caja-chica',
+    data: option.data,
   });
   return response;
 };

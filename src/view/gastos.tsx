@@ -37,6 +37,7 @@ import { Gastos, GastoStatistics } from '../interfaces/Gastos';
 import { GraficoGastos } from '../components/Gastos/grafico-gastos';
 import { GetSucursales } from '../api/sucursales';
 import { Sucursal } from '../interfaces/Sucursales';
+import { FormNewGasto } from '../components/Gastos/new-gastos';
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -216,7 +217,7 @@ const GastosView = () => {
       </Container>
 
       <DialogoForm Open={Visible} setOpen={setVisible} title=''>
-        new
+        <FormNewGasto setReloadGasto={setReloadGasto} setVisible={setVisible} />
       </DialogoForm>
     </Page>
   );

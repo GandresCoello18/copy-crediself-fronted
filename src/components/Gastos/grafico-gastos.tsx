@@ -1,32 +1,15 @@
 /* eslint-disable react/react-in-jsx-scope */
 import { Line } from 'react-chartjs-2';
-import {
-  Box,
-  TextField,
-  CardContent,
-  CardHeader,
-  Divider,
-  useTheme,
-  colors,
-  CircularProgress,
-} from '@material-ui/core';
-import { Dispatch, SetStateAction } from 'react';
+import { Box, CardContent, useTheme, colors, CircularProgress } from '@material-ui/core';
 
 interface Props {
   fechas: string[] | undefined;
   gastos: number[] | undefined;
   gastosMesAnterior: number[] | undefined;
-  setDateFetch: Dispatch<SetStateAction<string>>;
   Loading: boolean;
 }
 
-export const GraficoGastos = ({
-  fechas,
-  gastos,
-  gastosMesAnterior,
-  setDateFetch,
-  Loading,
-}: Props) => {
+export const GraficoGastos = ({ fechas, gastos, gastosMesAnterior, Loading }: Props) => {
   const theme = useTheme();
 
   const data = {
@@ -102,19 +85,6 @@ export const GraficoGastos = ({
 
   return (
     <div style={{ width: '100%' }}>
-      <Box display='flex' justifyContent='space-between'>
-        <CardHeader title='' />
-        <TextField
-          id='date'
-          label='Mes'
-          type='month'
-          onChange={event => setDateFetch(event.target.value)}
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-      </Box>
-      <Divider />
       <CardContent>
         <Box height={400} position='relative'>
           {Loading ? (

@@ -16,6 +16,10 @@ import {
   AccordionDetails,
   AccordionSummary,
   Typography,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
 } from '@material-ui/core';
 import Page from '../components/page';
 import { useState, useEffect, useContext } from 'react';
@@ -31,6 +35,8 @@ import { GetExpenses } from '../api/caja-chica';
 import { TablaGastos } from '../components/Gastos/table-gastos';
 import { Gastos } from '../interfaces/Gastos';
 import { GraficoGastos } from '../components/Gastos/grafico-gastos';
+import { GetSucursales } from '../api/sucursales';
+import { Sucursal } from '../interfaces/Sucursales';
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -48,8 +54,10 @@ const GastosView = () => {
   const classes = useStyles();
   const { token } = useContext(MeContext);
   const [SearchGasto, setSearchGasto] = useState<string>('');
+  const [idSucursal, setIdSucursal] = useState<string>('');
   const [Gastos, setGastos] = useState<Gastos[]>([]);
   const [Count, setCount] = useState<number>(0);
+  const [DataSucursales, setDataSucursales] = useState<Sucursal[]>([]);
   const [Expanded, setExpanded] = useState<boolean>(false);
   const [DateFetch, setDateFetch] = useState<string>('');
   const [Visible, setVisible] = useState<boolean>(false);
@@ -61,8 +69,9 @@ const GastosView = () => {
     setLoading(true);
 
     try {
-      const { gastos, pages } = await (await GetExpenses({ token, page, findGasto: SearchGasto }))
-        .data;
+      const { gastos, pages } = await (
+        await GetExpenses({ token, page, findGasto: SearchGasto, idSucursal })
+      ).data;
       setGastos(gastos);
       setLoading(false);
       setCount(pages || 1);
@@ -78,7 +87,20 @@ const GastosView = () => {
     if (ReloadGasto) {
       setReloadGasto(false);
     }
-  }, [ReloadGasto, SearchGasto]);
+  }, [ReloadGasto, SearchGasto, idSucursal]);
+
+  const fetchSucursales = async () => {
+    try {
+      const { sucursales } = await (await GetSucursales({ token })).data;
+      setDataSucursales(sucursales);
+    } catch (error) {
+      toast.error(HandleError(error as AxiosError));
+    }
+  };
+
+  useEffect(() => {
+    fetchSucursales();
+  }, []);
 
   const SelectItemPagination = (page: number) => fetchGastos(page);
 
@@ -93,23 +115,53 @@ const GastosView = () => {
         <Box mt={3}>
           <Card>
             <CardContent>
-              <Box maxWidth={500}>
-                <TextField
-                  fullWidth
-                  onChange={event => setSearchGasto(event.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <SvgIcon fontSize='small' color='action'>
-                          <SearchIcon />
-                        </SvgIcon>
-                      </InputAdornment>
-                    ),
-                  }}
-                  placeholder='Buscar Gastos por concepto u observaciones'
-                  variant='outlined'
-                />
-              </Box>
+              <Grid container>
+                <Grid item xs={12} md={5}>
+                  <Box maxWidth={500}>
+                    <TextField
+                      fullWidth
+                      onChange={event => setSearchGasto(event.target.value)}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position='start'>
+                            <SvgIcon fontSize='small' color='action'>
+                              <SearchIcon />
+                            </SvgIcon>
+                          </InputAdornment>
+                        ),
+                      }}
+                      placeholder='Buscar Gastos por concepto u observaciones'
+                      variant='outlined'
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12} md={2}>
+                  <TextField
+                    id='date'
+                    label='Buscar por Mes'
+                    type='month'
+                    onChange={event => setDateFetch(event.target.value)}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                  <InputLabel id='select-sucursales'>Sucursales</InputLabel>
+                  <Select
+                    labelId='select-sucursales'
+                    style={{ width: 200 }}
+                    id='select-sucursales'
+                    onChange={event => setIdSucursal(event.target.value as string)}
+                  >
+                    {DataSucursales.map(sucursal => (
+                      <MenuItem key={sucursal.idSucursal} value={sucursal.idSucursal}>
+                        {sucursal.sucursal}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </Grid>
+              </Grid>
             </CardContent>
           </Card>
         </Box>
@@ -135,7 +187,6 @@ const GastosView = () => {
                 gastos={[45, 80, 12, 47, 0, 0, 0, 0, 0]}
                 gastosMesAnterior={[81, 56, 48, 30, 70, 10, 84, 60]}
                 Loading={false}
-                setDateFetch={setDateFetch}
               />
             </AccordionDetails>
           </Accordion>

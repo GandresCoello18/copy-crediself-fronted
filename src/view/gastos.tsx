@@ -33,7 +33,7 @@ import { HandleError } from '../helpers/handleError';
 import { DialogoForm } from '../components/DialogoForm';
 import { GetExpenses } from '../api/caja-chica';
 import { TablaGastos } from '../components/Gastos/table-gastos';
-import { Gastos } from '../interfaces/Gastos';
+import { Gastos, GastoStatistics } from '../interfaces/Gastos';
 import { GraficoGastos } from '../components/Gastos/grafico-gastos';
 import { GetSucursales } from '../api/sucursales';
 import { Sucursal } from '../interfaces/Sucursales';
@@ -57,22 +57,30 @@ const GastosView = () => {
   const [idSucursal, setIdSucursal] = useState<string>('');
   const [Gastos, setGastos] = useState<Gastos[]>([]);
   const [Count, setCount] = useState<number>(0);
+  const [Statistics, setStatistics] = useState<GastoStatistics | undefined>(undefined);
   const [DataSucursales, setDataSucursales] = useState<Sucursal[]>([]);
   const [Expanded, setExpanded] = useState<boolean>(false);
-  const [DateFetch, setDateFetch] = useState<string>('');
+  const [findDate, setFindDate] = useState<string>('');
   const [Visible, setVisible] = useState<boolean>(false);
   const [Loading, setLoading] = useState<boolean>(false);
   const [ReloadGasto, setReloadGasto] = useState<boolean>(false);
 
   const fetchGastos = async (page: number) => {
-    console.log(DateFetch + ' consultar por mes');
     setLoading(true);
 
     try {
-      const { gastos, pages } = await (
-        await GetExpenses({ token, page, findGasto: SearchGasto, idSucursal })
+      const { gastos, statistics, pages } = await (
+        await GetExpenses({
+          token,
+          page,
+          findGasto: SearchGasto,
+          idSucursal,
+          findDate,
+          isStatistics: 'true',
+        })
       ).data;
       setGastos(gastos);
+      setStatistics(statistics);
       setLoading(false);
       setCount(pages || 1);
     } catch (error) {
@@ -87,7 +95,7 @@ const GastosView = () => {
     if (ReloadGasto) {
       setReloadGasto(false);
     }
-  }, [ReloadGasto, SearchGasto, idSucursal]);
+  }, [ReloadGasto, SearchGasto, idSucursal, findDate]);
 
   const fetchSucursales = async () => {
     try {
@@ -101,6 +109,12 @@ const GastosView = () => {
   useEffect(() => {
     fetchSucursales();
   }, []);
+
+  const resetOptions = () => {
+    setFindDate('');
+    setIdSucursal('');
+    setSearchGasto('');
+  };
 
   const SelectItemPagination = (page: number) => fetchGastos(page);
 
@@ -116,10 +130,11 @@ const GastosView = () => {
           <Card>
             <CardContent>
               <Grid container>
-                <Grid item xs={12} md={5}>
+                <Grid item xs={12} lg={4} xl={5} style={{ marginRight: 10 }}>
                   <Box maxWidth={500}>
                     <TextField
                       fullWidth
+                      title='Buscar Gastos por concepto u observaciones'
                       onChange={event => setSearchGasto(event.target.value)}
                       InputProps={{
                         startAdornment: (
@@ -135,18 +150,19 @@ const GastosView = () => {
                     />
                   </Box>
                 </Grid>
-                <Grid item xs={12} md={2}>
+                <Grid item xs={12} lg={3} xl={2}>
                   <TextField
                     id='date'
                     label='Buscar por Mes'
                     type='month'
-                    onChange={event => setDateFetch(event.target.value)}
+                    value={findDate}
+                    onChange={event => setFindDate(event.target.value)}
                     InputLabelProps={{
                       shrink: true,
                     }}
                   />
                 </Grid>
-                <Grid item xs={12} md={3}>
+                <Grid item xs={12} lg={3} xl={2}>
                   <InputLabel id='select-sucursales'>Sucursales</InputLabel>
                   <Select
                     labelId='select-sucursales'
@@ -161,6 +177,11 @@ const GastosView = () => {
                     ))}
                   </Select>
                 </Grid>
+                <Grid item xs={12} lg={1}>
+                  <Button color='secondary' variant='outlined' onClick={resetOptions}>
+                    Restablecer
+                  </Button>
+                </Grid>
               </Grid>
             </CardContent>
           </Card>
@@ -174,19 +195,10 @@ const GastosView = () => {
             </AccordionSummary>
             <AccordionDetails>
               <GraficoGastos
-                fechas={[
-                  '2020-01-05',
-                  '2020-01-05',
-                  '2020-01-05',
-                  '2020-01-05',
-                  '2020-01-05',
-                  '2020-01-05',
-                  '2020-01-05',
-                  '2020-01-05',
-                ]}
-                gastos={[45, 80, 12, 47, 0, 0, 0, 0, 0]}
-                gastosMesAnterior={[81, 56, 48, 30, 70, 10, 84, 60]}
-                Loading={false}
+                fechas={Statistics?.fechas}
+                gastos={Statistics?.gastos}
+                gastosMesAnterior={Statistics?.gastosMesAnterior}
+                Loading={Loading}
               />
             </AccordionDetails>
           </Accordion>

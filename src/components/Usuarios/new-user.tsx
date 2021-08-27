@@ -25,6 +25,8 @@ import { NewUser } from '../../api/users';
 import { Rol } from '../../interfaces/Rol';
 import { GetRoles } from '../../api/roles';
 import { monthDiff } from '../../helpers/fechas';
+import { GetSucursales } from '../../api/sucursales';
+import { Sucursal } from '../../interfaces/Sucursales';
 
 interface Props {
   setReloadUser: Dispatch<SetStateAction<boolean>>;
@@ -33,6 +35,7 @@ interface Props {
 
 export const FormNewUser = ({ setReloadUser, setVisible }: Props) => {
   const { token, me } = useContext(MeContext);
+  const [Sucursales, setSucursales] = useState<Sucursal[]>([]);
   const [Roles, setRoles] = useState<Rol[]>([]);
 
   useEffect(() => {
@@ -50,7 +53,17 @@ export const FormNewUser = ({ setReloadUser, setVisible }: Props) => {
       }
     };
 
+    const fetchSucursales = async () => {
+      try {
+        const { sucursales } = await (await GetSucursales({ token })).data;
+        setSucursales(sucursales);
+      } catch (error) {
+        toast.error(HandleError(error as AxiosError));
+      }
+    };
+
     fetchRoles();
+    fetchSucursales();
   }, [token, me]);
 
   return (
@@ -223,7 +236,7 @@ export const FormNewUser = ({ setReloadUser, setVisible }: Props) => {
                     label='Nacimiento'
                     onBlur={handleBlur}
                     disabled={isSubmitting}
-                    defaultValue={values.fechaNacimiento}
+                    defaultValue={values.fechaNacimiento || '1990-01-01'}
                     variant='outlined'
                     onChange={handleChange}
                     placeholder={'Seleccione su fecha de nacimiento'}
@@ -256,9 +269,9 @@ export const FormNewUser = ({ setReloadUser, setVisible }: Props) => {
                     name='idSucursal'
                     label='Sucursales'
                   >
-                    {['1', '2', '3', '4'].map(suc => (
-                      <MenuItem value={suc} key={suc}>
-                        {suc}
+                    {Sucursales.map(suc => (
+                      <MenuItem value={suc.idSucursal} key={suc.idSucursal}>
+                        {suc.sucursal}
                       </MenuItem>
                     ))}
                   </Select>

@@ -18,15 +18,19 @@ export const AddExpenses = async (option: { token?: string; data: InputCaja }) =
 export const GetExpenses = async (option: {
   token?: string;
   findGasto?: string;
+  findDate?: string;
+  isStatistics?: string;
   idSucursal?: string;
   page: number;
 }) => {
   api.defaults.headers['access-token'] = option.token;
   const response = await api({
     method: 'GET',
-    url: `/caja-chica?findGasto=${option.findGasto || ''}&idSucursal=${
-      option.idSucursal || ''
-    }&page=${option.page}`,
+    url: `/caja-chica?findGasto=${option.findGasto || ''}&findDate=${
+      option.findDate || ''
+    }&idSucursal=${option.idSucursal || ''}&isStatistics=${option.isStatistics || ''}&page=${
+      option.page
+    }`,
   });
   return response;
 };

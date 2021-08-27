@@ -7,3 +7,9 @@ export interface Gastos {
   active: number;
   observaciones: string | null;
 }
+
+export interface GastoStatistics {
+  fechas: string[];
+  gastos: number[];
+  gastosMesAnterior: number[];
+}

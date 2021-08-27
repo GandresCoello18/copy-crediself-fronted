@@ -17,12 +17,12 @@ export const GraficoGastos = ({ fechas, gastos, gastosMesAnterior, Loading }: Pr
       {
         backgroundColor: '#fec4d2',
         data: gastos,
-        label: 'Gastos del mes anterior',
+        label: 'Gastos del mes actual',
       },
       {
         backgroundColor: colors.grey[200],
         data: gastosMesAnterior,
-        label: 'Gastos del mes actual',
+        label: 'Gastos del mes anterior',
       },
     ],
     labels: fechas,

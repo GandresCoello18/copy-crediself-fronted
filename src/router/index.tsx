@@ -32,6 +32,7 @@ const CreditosView = lazy(() => import('../view/creditos'));
 const CreditoOnlyView = lazy(() => import('../view/credito-id'));
 const CreditoClienteOnlyView = lazy(() => import('../view/credito-cliente-id'));
 const GastosView = lazy(() => import('../view/gastos'));
+const PagosView = lazy(() => import('../view/pagos'));
 
 const token = Cookies.get('access-token-crediself');
 
@@ -57,6 +58,7 @@ const routes = [
       { path: 'creditos/:idCredito', element: PathSesion(CreditoOnlyView) },
       { path: 'creditos/cliente/:idCliente', element: PathSesion(CreditoClienteOnlyView) },
       { path: 'gastos', element: PathSesion(GastosView) },
+      { path: 'pagos', element: PathSesion(PagosView) },
       { path: 'usuarios', element: PathSesion(UsuariosView) },
       { path: 'notificaciones', element: PathSesion(NotificacionesView) },
       { path: '*', element: <Navigate to='/404' /> },

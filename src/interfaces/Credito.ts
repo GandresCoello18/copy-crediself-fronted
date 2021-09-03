@@ -12,6 +12,11 @@ export interface Credito {
   active: number;
   numeroCredito: number;
   estado: 'Pendiente' | 'Al dia' | 'Completado' | 'Atrasado';
+  inscripcion: number;
+  cuota: number;
+  primeraCuota: number;
+  total: number;
+  idSucursal: string;
 }
 
 export interface CreditoByContrato {

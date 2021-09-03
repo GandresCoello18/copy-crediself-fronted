@@ -210,7 +210,11 @@ export const DetailsCredito = ({ credito, imgSrc, setSelectCredito }: Props) => 
 
             <Box p={2}>
               <Grid
-                className={clases.rowSecondary}
+                className={`${clases.marginB} ${
+                  credito.autorizado && credito.active
+                    ? clases.backGroundHeadTrue
+                    : clases.backGroundHeadFalse
+                }`}
                 alignItems='center'
                 container
                 spacing={3}
@@ -220,6 +224,19 @@ export const DetailsCredito = ({ credito, imgSrc, setSelectCredito }: Props) => 
                   <strong>Tipo de credito:</strong>
                 </Grid>
                 <Grid item>{credito.tipo}</Grid>
+              </Grid>
+
+              <Grid
+                className={clases.rowSecondary}
+                container
+                spacing={3}
+                alignItems='center'
+                justify='space-between'
+              >
+                <Grid item>
+                  <strong>Monto:</strong>
+                </Grid>
+                <Grid item>${credito.monto}</Grid>
               </Grid>
 
               <Grid
@@ -234,9 +251,69 @@ export const DetailsCredito = ({ credito, imgSrc, setSelectCredito }: Props) => 
                 justify='space-between'
               >
                 <Grid item>
-                  <strong>Monto:</strong>
+                  <strong>Inscripción:</strong>
                 </Grid>
-                <Grid item>${credito.monto}</Grid>
+                <Grid item>${credito.inscripcion}</Grid>
+              </Grid>
+
+              <Grid
+                className={clases.rowSecondary}
+                container
+                spacing={3}
+                alignItems='center'
+                justify='space-between'
+              >
+                <Grid item>
+                  <strong>Cuota:</strong>
+                </Grid>
+                <Grid item>${credito.cuota}</Grid>
+              </Grid>
+
+              <Grid
+                className={`${clases.marginB} ${
+                  credito.autorizado && credito.active
+                    ? clases.backGroundHeadTrue
+                    : clases.backGroundHeadFalse
+                }`}
+                container
+                spacing={3}
+                alignItems='center'
+                justify='space-between'
+              >
+                <Grid item>
+                  <strong>Primera Cuota:</strong>
+                </Grid>
+                <Grid item>${credito.primeraCuota}</Grid>
+              </Grid>
+
+              <Grid
+                className={clases.rowSecondary}
+                container
+                spacing={3}
+                alignItems='center'
+                justify='space-between'
+              >
+                <Grid item>
+                  <strong>Total:</strong>
+                </Grid>
+                <Grid item>${credito.total}</Grid>
+              </Grid>
+
+              <Grid
+                className={`${clases.marginB} ${
+                  credito.autorizado && credito.active
+                    ? clases.backGroundHeadTrue
+                    : clases.backGroundHeadFalse
+                }`}
+                container
+                spacing={3}
+                alignItems='center'
+                justify='space-between'
+              >
+                <Grid item>
+                  <strong>Sucursal:</strong>
+                </Grid>
+                <Grid item>${credito.idSucursal}</Grid>
               </Grid>
 
               <Grid className={clases.rowSecondary} container spacing={3} justify='space-between'>
@@ -400,6 +477,18 @@ export const DetailsCredito = ({ credito, imgSrc, setSelectCredito }: Props) => 
                         'Solicitar Autorización'
                       )}
                     </Button>
+                  </Grid>
+                ) : (
+                  ''
+                )}
+
+                {me.idRol === 'Administrativo' ? (
+                  <Grid item xs={12} md={5}>
+                    <Link to={`/app/pagos/credito/${credito.idCredito}`}>
+                      <Button className={clases.btnAutorizar} fullWidth variant='outlined'>
+                        Ver Pagos
+                      </Button>
+                    </Link>
                   </Grid>
                 ) : (
                   ''

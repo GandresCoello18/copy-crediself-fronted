@@ -22,6 +22,7 @@ import LockIcon from '@material-ui/icons/Lock';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import CardTravelIcon from '@material-ui/icons/CardTravel';
+import PaymentIcon from '@material-ui/icons/Payment';
 import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
 import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import NavItem from './NavItem';
@@ -154,6 +155,25 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           href: '/app/notificaciones',
           icon: NotificationsActiveIcon,
           title: 'Notificaciones',
+        },
+        {
+          href: '/app/account',
+          icon: PersonIcon,
+          title: 'Mi cuenta',
+        },
+      ];
+      break;
+    case 'Administrativo':
+      items = [
+        {
+          href: '/app/clientes',
+          icon: EmojiPeopleIcon,
+          title: 'Clientes',
+        },
+        {
+          href: '/app/pagos',
+          icon: PaymentIcon,
+          title: 'Pagos',
         },
         {
           href: '/app/account',

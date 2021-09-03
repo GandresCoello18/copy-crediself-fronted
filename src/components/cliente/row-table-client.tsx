@@ -27,6 +27,7 @@ import { HandleError } from '../../helpers/handleError';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { Cliente } from '../../interfaces/Cliente';
 import { UpdateActiveUser } from '../../api/users';
+import { PermisoTableClient } from './table-cliente';
 
 const useStyles = makeStyles((theme: any) => ({
   btnIcon: {
@@ -45,6 +46,7 @@ const useStyles = makeStyles((theme: any) => ({
 
 interface Props {
   cliente: Cliente;
+  permisos: PermisoTableClient;
   setIdCliente: Dispatch<SetStateAction<string>>;
   setDialogoDelete: Dispatch<SetStateAction<boolean>>;
   setDialogoCredit: Dispatch<SetStateAction<boolean>>;
@@ -53,6 +55,7 @@ interface Props {
 
 export const RowTableClient = ({
   cliente,
+  permisos,
   setIdCliente,
   setDialogoDelete,
   setDialogoCredit,
@@ -80,7 +83,7 @@ export const RowTableClient = ({
 
   const OnClose = () => setAnchorEl(null);
 
-  const renderOPtions = () => {
+  const RenderCreditoOPtions = () => {
     return (
       <>
         <IconButton
@@ -121,48 +124,54 @@ export const RowTableClient = ({
                 </Button>
               </Link>
             </MenuItem>
-            <MenuItem selected={false} onClick={OnClose}>
-              <Button
-                size='small'
-                title='Solicitar credito'
-                variant='outlined'
-                fullWidth
-                onClick={() => {
-                  setDialogoCredit(true);
-                  setIdCliente(cliente.idCliente);
-                }}
-              >
-                <span className={clases.btnIcon}>Solicitar</span> <PostAddIcon />
-              </Button>
-            </MenuItem>
-            <MenuItem selected={false} onClick={OnClose}>
-              <Button
-                size='small'
-                title='Editar Cliente'
-                variant='outlined'
-                fullWidth
-                onClick={() => {
-                  setDialogoUpdateClient(true);
-                  setIdCliente(cliente.idCliente);
-                }}
-              >
-                <span className={clases.btnIcon}>Editar</span> <EditIcon />
-              </Button>
-            </MenuItem>
-            <MenuItem selected={false} onClick={OnClose}>
-              <Button
-                size='small'
-                title='Eliminar Cliente'
-                fullWidth
-                variant='outlined'
-                onClick={() => {
-                  setDialogoDelete(true);
-                  setIdCliente(cliente.idCliente);
-                }}
-              >
-                <span className={clases.btnIcon}>Eliminar</span> <DeleteIcon />
-              </Button>
-            </MenuItem>
+            {permisos.newCredito ? (
+              <>
+                <MenuItem selected={false} onClick={OnClose}>
+                  <Button
+                    size='small'
+                    title='Solicitar credito'
+                    variant='outlined'
+                    fullWidth
+                    onClick={() => {
+                      setDialogoCredit(true);
+                      setIdCliente(cliente.idCliente);
+                    }}
+                  >
+                    <span className={clases.btnIcon}>Solicitar</span> <PostAddIcon />
+                  </Button>
+                </MenuItem>
+                <MenuItem selected={false} onClick={OnClose}>
+                  <Button
+                    size='small'
+                    title='Editar Cliente'
+                    variant='outlined'
+                    fullWidth
+                    onClick={() => {
+                      setDialogoUpdateClient(true);
+                      setIdCliente(cliente.idCliente);
+                    }}
+                  >
+                    <span className={clases.btnIcon}>Editar</span> <EditIcon />
+                  </Button>
+                </MenuItem>
+                <MenuItem selected={false} onClick={OnClose}>
+                  <Button
+                    size='small'
+                    title='Eliminar Cliente'
+                    fullWidth
+                    variant='outlined'
+                    onClick={() => {
+                      setDialogoDelete(true);
+                      setIdCliente(cliente.idCliente);
+                    }}
+                  >
+                    <span className={clases.btnIcon}>Eliminar</span> <DeleteIcon />
+                  </Button>
+                </MenuItem>
+              </>
+            ) : (
+              ''
+            )}
           </MenuList>
         </Menu>
       </>
@@ -190,12 +199,13 @@ export const RowTableClient = ({
           ) : (
             <Switch
               checked={isActive}
+              disabled={!permisos.newCredito}
               onChange={value => handleActive(value.target.checked)}
               inputProps={{ 'aria-label': 'secondary checkbox' }}
             />
           )}
         </TableCell>
-        <TableCell>{renderOPtions()}</TableCell>
+        <TableCell>{RenderCreditoOPtions()}</TableCell>
       </TableRow>
     </>
   );

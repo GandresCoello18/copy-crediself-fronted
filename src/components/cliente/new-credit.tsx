@@ -74,7 +74,7 @@ export const FormNewCredit = ({ setReloadCredito, setVisible, idCliente }: Props
                     name='tipo'
                     label='Tipo de credito'
                   >
-                    {['tipo 1', 'tipo 2'].map(item => (
+                    {['Auto', 'Bic'].map(item => (
                       <MenuItem value={item} key={item}>
                         {item}
                       </MenuItem>

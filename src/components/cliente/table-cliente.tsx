@@ -25,6 +25,7 @@ import { DialogoForm } from '../DialogoForm';
 import { DeleteCliente } from '../../api/clientes';
 import { RowTableClient } from './row-table-client';
 import { FormNewCredit } from './new-credit';
+import { getPermisoExist } from '../../helpers/renderViewMainRol';
 
 const useStyles = makeStyles((theme: any) => ({
   headTable: {
@@ -41,9 +42,16 @@ interface Props {
   setReloadCliente: Dispatch<SetStateAction<boolean>>;
 }
 
+export interface PermisoTableClient {
+  newCredito: boolean;
+}
+
 export const TablaCliente = ({ clientes, Loading, setReloadCliente }: Props) => {
   const classes = useStyles();
-  const { token } = useContext(MeContext);
+  const { token, me } = useContext(MeContext);
+  const [Permisos, setPermisos] = useState<PermisoTableClient>({
+    newCredito: false,
+  });
   const [IdCliente, setIdCliente] = useState<string>('');
   const [DialogoDelete, setDialogoDelete] = useState<boolean>(false);
   const [DialogoCredit, setDialogoCredit] = useState<boolean>(false);
@@ -72,6 +80,10 @@ export const TablaCliente = ({ clientes, Loading, setReloadCliente }: Props) => 
     };
 
     AceptDialog && IdCliente && FetchDelete();
+
+    setPermisos({
+      newCredito: getPermisoExist({ RolName: me.idRol, permiso: 'NewCredito' }),
+    });
   }, [AceptDialog, token, IdCliente, setReloadCliente]);
 
   useEffect(() => {
@@ -125,6 +137,7 @@ export const TablaCliente = ({ clientes, Loading, setReloadCliente }: Props) => 
                   clientes.map(client => (
                     <RowTableClient
                       cliente={client}
+                      permisos={Permisos}
                       key={client.idCliente}
                       setIdCliente={setIdCliente}
                       setDialogoDelete={setDialogoDelete}

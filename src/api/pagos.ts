@@ -28,3 +28,16 @@ export const GetPagosCreditos = async (options: {
   });
   return response;
 };
+
+export const GetPagosByCredito = async (options: {
+  token: string;
+  findPago?: string;
+  idCredito: string;
+}) => {
+  api.defaults.headers['access-token'] = options.token;
+  const response = await api({
+    method: 'GET',
+    url: `/pago/credito/${options.idCredito}?findPago=${options.findPago || ''}`,
+  });
+  return response;
+};

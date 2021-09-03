@@ -313,7 +313,7 @@ export const DetailsCredito = ({ credito, imgSrc, setSelectCredito }: Props) => 
                 <Grid item>
                   <strong>Sucursal:</strong>
                 </Grid>
-                <Grid item>${credito.idSucursal}</Grid>
+                <Grid item>{credito.idSucursal}</Grid>
               </Grid>
 
               <Grid className={clases.rowSecondary} container spacing={3} justify='space-between'>

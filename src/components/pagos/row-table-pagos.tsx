@@ -9,6 +9,7 @@ import {
   Menu,
   MenuList,
   MenuItem,
+  Chip,
 } from '@material-ui/core';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -89,10 +90,12 @@ export const RowTablePagosByCredito = ({ pagosByCredito }: Props) => {
         <TableCell>
           ( #{pagosByCredito.credito.numeroCredito} ) {pagosByCredito.credito.tipo}
         </TableCell>
-        <TableCell>{pagosByCredito.credito.cuota}</TableCell>
+        <TableCell>${pagosByCredito.credito.cuota}</TableCell>
         <TableCell>{pagosByCredito.numeroPago}</TableCell>
         <TableCell>{pagosByCredito.tipo_de_pago}</TableCell>
-        <TableCell>{pagosByCredito.atrasado ? 'si' : 'no'}</TableCell>
+        <TableCell>
+          <Chip color='secondary' label={pagosByCredito.atrasado ? 'SI' : 'NO'} />
+        </TableCell>
         <TableCell>{pagosByCredito.pagado_el}</TableCell>
         <TableCell>{pagosByCredito.created_at}</TableCell>
         <TableCell>{RenderCreditoOPtions()}</TableCell>

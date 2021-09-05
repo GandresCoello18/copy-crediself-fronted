@@ -11,11 +11,13 @@ import {
   MenuItem,
   Chip,
 } from '@material-ui/core';
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import CardTravelIcon from '@material-ui/icons/CardTravel';
+import PaymentIcon from '@material-ui/icons/Payment';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { PagoByCredito } from '../../interfaces/Pago';
+import { DialogoForm } from '../DialogoForm';
+import { DetailsCreditoPago } from './details-credito-pago';
 
 const useStyles = makeStyles((theme: any) => ({
   btnIcon: {
@@ -34,14 +36,18 @@ const useStyles = makeStyles((theme: any) => ({
 
 interface Props {
   pagosByCredito: PagoByCredito;
+  isModal?: boolean;
 }
 
-export const RowTablePagosByCredito = ({ pagosByCredito }: Props) => {
+export const RowTablePagosByCredito = ({ pagosByCredito, isModal }: Props) => {
   const clases = useStyles();
+  const [Visible, setVisible] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
   const OnClose = () => setAnchorEl(null);
+
+  const VisibleModal = () => isModal && setVisible(true);
 
   const RenderCreditoOPtions = () => {
     return (
@@ -69,9 +75,9 @@ export const RowTablePagosByCredito = ({ pagosByCredito }: Props) => {
         >
           <MenuList>
             <MenuItem selected={false} onClick={OnClose}>
-              <Link to={`/app/creditos/cliente/${0}`}>
+              <Link to={`/app/pagos/credito/${pagosByCredito.credito.idCredito}`}>
                 <Button size='small' title='Ver creditos de cliente' fullWidth variant='outlined'>
-                  <span className={clases.btnIcon}>Creditos</span> <CardTravelIcon />
+                  <span className={clases.btnIcon}>Ver Pagos</span> <PaymentIcon />
                 </Button>
               </Link>
             </MenuItem>
@@ -84,22 +90,30 @@ export const RowTablePagosByCredito = ({ pagosByCredito }: Props) => {
   return (
     <>
       <TableRow hover>
-        <TableCell>
+        <TableCell onClick={VisibleModal}>
           {pagosByCredito.cliente.nombres} {pagosByCredito.cliente.apellidos}
         </TableCell>
-        <TableCell>
+        <TableCell onClick={VisibleModal}>
           ( #{pagosByCredito.credito.numeroCredito} ) {pagosByCredito.credito.tipo}
         </TableCell>
-        <TableCell>${pagosByCredito.credito.cuota}</TableCell>
-        <TableCell>{pagosByCredito.numeroPago}</TableCell>
-        <TableCell>{pagosByCredito.tipo_de_pago}</TableCell>
-        <TableCell>
+        <TableCell onClick={VisibleModal}>${pagosByCredito.credito.cuota}</TableCell>
+        <TableCell onClick={VisibleModal}>{pagosByCredito.numeroPago}</TableCell>
+        <TableCell onClick={VisibleModal}>{pagosByCredito.tipo_de_pago}</TableCell>
+        <TableCell onClick={VisibleModal}>
           <Chip color='secondary' label={pagosByCredito.atrasado ? 'SI' : 'NO'} />
         </TableCell>
-        <TableCell>{pagosByCredito.pagado_el}</TableCell>
-        <TableCell>{pagosByCredito.created_at}</TableCell>
+        <TableCell onClick={VisibleModal}>{pagosByCredito.pagado_el}</TableCell>
+        <TableCell onClick={VisibleModal}>{pagosByCredito.created_at}</TableCell>
         <TableCell>{RenderCreditoOPtions()}</TableCell>
       </TableRow>
+
+      <DialogoForm Open={Visible} setOpen={setVisible} title=''>
+        <DetailsCreditoPago
+          credito={pagosByCredito.credito}
+          cliente={pagosByCredito.cliente}
+          setVisible={setVisible}
+        />
+      </DialogoForm>
     </>
   );
 };

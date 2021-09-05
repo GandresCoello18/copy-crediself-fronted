@@ -18,6 +18,9 @@ import {
   TextField,
   Popover,
   Typography,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
 } from '@material-ui/core';
 import Page from '../components/page';
 import { useState, useEffect, useContext } from 'react';
@@ -34,6 +37,7 @@ import { TablaPagosByCredito } from '../components/pagos/table-pagos';
 import { FormNewPago } from '../components/pagos/new-pago';
 import { Cliente } from '../interfaces/Cliente';
 import { CurrentDate } from '../helpers/fechas';
+// import { DetailsCreditoPago } from '../components/pagos/details-credito-pago';
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -67,6 +71,7 @@ const PagosByCreditoView = () => {
   const [Cliente, setCliente] = useState<Cliente | undefined>(undefined);
   const [Visible, setVisible] = useState<boolean>(false);
   const [Loading, setLoading] = useState<boolean>(false);
+  const [Expanded, setExpanded] = useState<boolean>(false);
   const [ParamsFilter, setParamsFilter] = useState<ParamsFilterPagos>({
     typePayment: undefined,
     atrasado: undefined,
@@ -103,7 +108,6 @@ const PagosByCreditoView = () => {
   }, [ReloadPago, params]);
 
   useEffect(() => {
-    console.log('effect');
     const { typePayment, atrasado, datePayment, dateRegister } = ParamsFilter;
 
     if (Pagos.length && (typePayment || atrasado || datePayment || dateRegister)) {
@@ -252,6 +256,23 @@ const PagosByCreditoView = () => {
               </Box>
             </CardContent>
           </Card>
+        </Box>
+        <Box mt={3}>
+          <Accordion square expanded={Expanded} onChange={() => setExpanded(!Expanded)}>
+            <AccordionSummary aria-controls='panel1d-content' id='panel1d-header'>
+              <Typography>Credito y Estadisticas</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Grid container>
+                <Grid item xs={12} md={6}>
+                  detalles credito
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  grafico
+                </Grid>
+              </Grid>
+            </AccordionDetails>
+          </Accordion>
         </Box>
         <Box mt={3}>
           <TablaPagosByCredito pagosByCreditos={SearchPagos} Loading={Loading} />

@@ -17,6 +17,7 @@ export interface Credito {
   primeraCuota: number;
   total: number;
   idSucursal: string;
+  progress?: number;
 }
 
 export interface CreditoByContrato {

@@ -16,7 +16,6 @@ import {
   Checkbox,
   FormControlLabel,
   TextField,
-  Popover,
   Typography,
   Accordion,
   AccordionDetails,
@@ -29,14 +28,17 @@ import { toast } from 'react-toast';
 import { AxiosError } from 'axios';
 import { HandleError } from '../helpers/handleError';
 import { GetPagosByCredito } from '../api/pagos';
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
-import { PagoByCredito } from '../interfaces/Pago';
+import { Pago } from '../interfaces/Pago';
 import { useParams } from 'react-router';
 import { DialogoForm } from '../components/DialogoForm';
-import { TablaPagosByCredito } from '../components/pagos/table-pagos';
 import { FormNewPago } from '../components/pagos/new-pago';
 import { Cliente } from '../interfaces/Cliente';
 import { CurrentDate } from '../helpers/fechas';
+import Pagination from '@material-ui/lab/Pagination';
+import { TablaPagosByCredito } from '../components/pagos/credito/table-pagos-by-credito';
+import { Credito } from '../interfaces/Credito';
+import { DetailsCreditoPago } from '../components/pagos/details-credito-pago';
+import { Doughnut } from 'react-chartjs-2';
 // import { DetailsCreditoPago } from '../components/pagos/details-credito-pago';
 
 const useStyles = makeStyles((theme: any) => ({
@@ -56,7 +58,7 @@ const useStyles = makeStyles((theme: any) => ({
 
 export interface ParamsFilterPagos {
   typePayment?: string;
-  atrasado?: number;
+  isAtrasado?: number;
   datePayment?: string;
   dateRegister?: string;
 }
@@ -64,35 +66,36 @@ export interface ParamsFilterPagos {
 const PagosByCreditoView = () => {
   const classes = useStyles();
   const params = useParams();
+  const [Count, setCount] = useState<number>(0);
   const { token } = useContext(MeContext);
-  const [Pagos, setPagos] = useState<PagoByCredito[]>([]);
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const [SearchPagos, setSearchPagos] = useState<PagoByCredito[]>([]);
+  const [Pagos, setPagos] = useState<Pago[]>([]);
   const [Cliente, setCliente] = useState<Cliente | undefined>(undefined);
+  const [Credito, setCredito] = useState<Credito | undefined>(undefined);
+  const [Statistics, setStatistics] = useState<{ total: number; atrasado: number }[]>([]);
   const [Visible, setVisible] = useState<boolean>(false);
   const [Loading, setLoading] = useState<boolean>(false);
   const [Expanded, setExpanded] = useState<boolean>(false);
   const [ParamsFilter, setParamsFilter] = useState<ParamsFilterPagos>({
     typePayment: undefined,
-    atrasado: undefined,
+    isAtrasado: 0,
     datePayment: undefined,
     dateRegister: undefined,
   });
   const [ReloadPago, setReloadPago] = useState<boolean>(false);
 
-  const open = Boolean(anchorEl);
-
-  const fetchPagos = async () => {
+  const fetchPagos = async (page: number) => {
     setLoading(true);
 
     try {
-      const { pagos, cliente } = await (
-        await GetPagosByCredito({ token, idCredito: params.idCredito })
+      const { pagos, cliente, credito, statistics, pages } = await (
+        await GetPagosByCredito({ token, idCredito: params.idCredito, page, ParamsFilter })
       ).data;
       setPagos(pagos);
-      setSearchPagos(pagos);
-      setLoading(false);
+      setCredito(credito);
+      setCount(pages || 1);
       setCliente(cliente);
+      setStatistics(statistics);
+      setLoading(false);
     } catch (error) {
       toast.error(HandleError(error as AxiosError));
       setLoading(false);
@@ -100,7 +103,7 @@ const PagosByCreditoView = () => {
   };
 
   useEffect(() => {
-    params.idCredito && fetchPagos();
+    params.idCredito && fetchPagos(1);
 
     if (ReloadPago) {
       setReloadPago(false);
@@ -108,37 +111,20 @@ const PagosByCreditoView = () => {
   }, [ReloadPago, params]);
 
   useEffect(() => {
-    const { typePayment, atrasado, datePayment, dateRegister } = ParamsFilter;
-
-    if (Pagos.length && (typePayment || atrasado || datePayment || dateRegister)) {
-      const filterPago = Pagos.filter(pago => {
-        if (
-          typePayment === pago.tipo_de_pago ||
-          atrasado === pago.atrasado ||
-          datePayment === pago.pagado_el ||
-          (dateRegister && dateRegister.indexOf(pago.created_at) !== -1)
-        ) {
-          return pago;
-        }
-      });
-
-      setSearchPagos(filterPago);
-    }
-  }, [ParamsFilter, Pagos]);
+    fetchPagos(1);
+  }, [ParamsFilter]);
 
   const ResetParams = () => {
     setParamsFilter({
       typePayment: undefined,
-      atrasado: undefined,
+      isAtrasado: 0,
       datePayment: undefined,
       dateRegister: undefined,
     });
-    setSearchPagos(Pagos);
+    fetchPagos(1);
   };
 
-  const handleClickQuestion = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const SelectItemPagination = (page: number) => fetchPagos(page);
 
   return (
     <Page className={classes.root} title='Pagos de credito'>
@@ -184,11 +170,11 @@ const PagosByCreditoView = () => {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={ParamsFilter.atrasado ? true : false}
+                          checked={ParamsFilter.isAtrasado ? true : false}
                           onChange={event =>
                             setParamsFilter({
                               ...ParamsFilter,
-                              atrasado: event.target.checked ? 1 : undefined,
+                              isAtrasado: event.target.checked ? 1 : 0,
                             })
                           }
                         />
@@ -226,31 +212,6 @@ const PagosByCreditoView = () => {
                     <Button color='secondary' variant='outlined' onClick={ResetParams}>
                       Restablecer
                     </Button>
-
-                    <Button aria-describedby='question-params' onClick={handleClickQuestion}>
-                      <HelpOutlineIcon />
-                    </Button>
-                    <Popover
-                      id='question-params'
-                      open={open}
-                      anchorEl={anchorEl}
-                      onClose={() => setAnchorEl(null)}
-                      anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'center',
-                      }}
-                      transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'center',
-                      }}
-                    >
-                      <Typography className={classes.contentPopover}>
-                        Estos parametros solo hacen parte de funcion para la siguiente tabla, si no
-                        hay reacciones en la tabla quiere decir que no encuentra coincidencias. Más
-                        si hay alguna reaccion, quiere decir que por lo menos un parametro si
-                        coincide.
-                      </Typography>
-                    </Popover>
                   </Grid>
                 </Grid>
               </Box>
@@ -265,17 +226,46 @@ const PagosByCreditoView = () => {
             <AccordionDetails>
               <Grid container>
                 <Grid item xs={12} md={6}>
-                  detalles credito
+                  {Credito && Cliente && <DetailsCreditoPago credito={Credito} cliente={Cliente} />}
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  grafico
+                  <Doughnut
+                    data={{
+                      datasets: [
+                        {
+                          backgroundColor: ['#fec4d2', '#696969'],
+                          data: [
+                            Statistics.find(item => item.atrasado)?.total,
+                            Statistics.find(item => !item.atrasado)?.total,
+                          ],
+                          label: 'Pagos del credito',
+                        },
+                      ],
+                      labels: ['Pagos Atrasado', 'Pagos No Atrasado'],
+                    }}
+                    width={100}
+                    height={50}
+                    options={{ maintainAspectRatio: false }}
+                  />
                 </Grid>
               </Grid>
             </AccordionDetails>
           </Accordion>
         </Box>
         <Box mt={3}>
-          <TablaPagosByCredito pagosByCreditos={SearchPagos} Loading={Loading} />
+          <TablaPagosByCredito
+            cliente={Cliente}
+            credito={Credito}
+            pagos={Pagos}
+            Loading={Loading}
+          />
+        </Box>
+        <Box mt={3} display='flex' justifyContent='center'>
+          <Pagination
+            count={Count}
+            color='secondary'
+            onChange={(event, page) => SelectItemPagination(page)}
+          />
         </Box>
       </Container>
 

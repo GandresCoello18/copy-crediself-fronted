@@ -1,4 +1,5 @@
 import { api } from '.';
+import { ParamsFilterPagos } from '../view/pagos-credito';
 
 interface InputAddPago {
   idCredito: string;
@@ -31,13 +32,19 @@ export const GetPagosCreditos = async (options: {
 
 export const GetPagosByCredito = async (options: {
   token: string;
-  findPago?: string;
+  page: number;
   idCredito: string;
+  ParamsFilter: ParamsFilterPagos;
 }) => {
-  api.defaults.headers['access-token'] = options.token;
+  const { token, page, idCredito, ParamsFilter } = options;
+  const { isAtrasado, datePayment, dateRegister, typePayment } = ParamsFilter;
+
+  api.defaults.headers['access-token'] = token;
   const response = await api({
     method: 'GET',
-    url: `/pago/credito/${options.idCredito}?findPago=${options.findPago || ''}`,
+    url: `/pago/credito/${idCredito}?findPago=${typePayment || ''}&page=${page}&isAtrasado=${
+      isAtrasado || 0
+    }&datePayment=${datePayment || ''}&dateRegister=${dateRegister || ''}`,
   });
   return response;
 };

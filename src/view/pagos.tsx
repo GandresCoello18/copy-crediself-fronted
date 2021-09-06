@@ -23,7 +23,7 @@ import { AxiosError } from 'axios';
 import { HandleError } from '../helpers/handleError';
 import { GetPagosCreditos } from '../api/pagos';
 import { PagoByCredito } from '../interfaces/Pago';
-import { TablaPagosByCredito } from '../components/pagos/table-pagos';
+import { TablaPagosByCreditos } from '../components/pagos/table-pagos';
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -99,7 +99,7 @@ const PagosView = () => {
           </Card>
         </Box>
         <Box mt={3}>
-          <TablaPagosByCredito pagosByCreditos={PagosByCreditos} Loading={Loading} />
+          <TablaPagosByCreditos pagosByCreditos={PagosByCreditos} Loading={Loading} />
         </Box>
         <Box mt={3} display='flex' justifyContent='center'>
           <Pagination

@@ -11,13 +11,13 @@ import {
   MenuItem,
   Chip,
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import PaymentIcon from '@material-ui/icons/Payment';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import { PagoByCredito } from '../../interfaces/Pago';
-import { DialogoForm } from '../DialogoForm';
-import { DetailsCreditoPago } from './details-credito-pago';
+import { Pago } from '../../../interfaces/Pago';
+import { Cliente } from '../../../interfaces/Cliente';
+import { Credito } from '../../../interfaces/Credito';
 
 const useStyles = makeStyles((theme: any) => ({
   btnIcon: {
@@ -35,21 +35,19 @@ const useStyles = makeStyles((theme: any) => ({
 }));
 
 interface Props {
-  pagosByCredito: PagoByCredito;
-  isModal?: boolean;
+  pago: Pago;
+  cliente: Cliente | undefined;
+  credito: Credito | undefined;
 }
 
-export const RowTablePagosByCreditos = ({ pagosByCredito, isModal }: Props) => {
+export const RowTablePagosByCredito = ({ pago, credito, cliente }: Props) => {
   const clases = useStyles();
-  const [Visible, setVisible] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
   const OnClose = () => setAnchorEl(null);
 
-  const VisibleModal = () => isModal && setVisible(true);
-
-  const RenderCreditoOPtions = () => {
+  const RenderPagosByCreditoOPtions = () => {
     return (
       <>
         <IconButton
@@ -75,7 +73,7 @@ export const RowTablePagosByCreditos = ({ pagosByCredito, isModal }: Props) => {
         >
           <MenuList>
             <MenuItem selected={false} onClick={OnClose}>
-              <Link to={`/app/pagos/credito/${pagosByCredito.credito.idCredito}`}>
+              <Link to={`/app/pagos/credito/${pago.idCredito}`}>
                 <Button size='small' title='Ver creditos de cliente' fullWidth variant='outlined'>
                   <span className={clases.btnIcon}>Ver Pagos</span> <PaymentIcon />
                 </Button>
@@ -90,30 +88,22 @@ export const RowTablePagosByCreditos = ({ pagosByCredito, isModal }: Props) => {
   return (
     <>
       <TableRow hover>
-        <TableCell onClick={VisibleModal}>
-          {pagosByCredito.cliente.nombres} {pagosByCredito.cliente.apellidos}
+        <TableCell>
+          {cliente ? cliente.nombres : ''} {cliente ? cliente.apellidos : ''}
         </TableCell>
-        <TableCell onClick={VisibleModal}>
-          ( #{pagosByCredito.credito.numeroCredito} ) {pagosByCredito.credito.tipo}
+        <TableCell>
+          ( #{credito ? credito.numeroCredito : ''} ) {credito ? credito.tipo : ''}
         </TableCell>
-        <TableCell onClick={VisibleModal}>${pagosByCredito.credito.cuota}</TableCell>
-        <TableCell onClick={VisibleModal}>{pagosByCredito.numeroPago}</TableCell>
-        <TableCell onClick={VisibleModal}>{pagosByCredito.tipo_de_pago}</TableCell>
-        <TableCell onClick={VisibleModal}>
-          <Chip color='secondary' label={pagosByCredito.atrasado ? 'SI' : 'NO'} />
+        <TableCell>${credito ? credito.cuota : ''}</TableCell>
+        <TableCell>{pago.numeroPago}</TableCell>
+        <TableCell>{pago.tipo_de_pago}</TableCell>
+        <TableCell>
+          <Chip color='secondary' label={pago.atrasado ? 'SI' : 'NO'} />
         </TableCell>
-        <TableCell onClick={VisibleModal}>{pagosByCredito.pagado_el}</TableCell>
-        <TableCell onClick={VisibleModal}>{pagosByCredito.created_at}</TableCell>
-        <TableCell>{RenderCreditoOPtions()}</TableCell>
+        <TableCell>{pago.pagado_el}</TableCell>
+        <TableCell>{pago.created_at}</TableCell>
+        <TableCell>{RenderPagosByCreditoOPtions()}</TableCell>
       </TableRow>
-
-      <DialogoForm Open={Visible} setOpen={setVisible} title=''>
-        <DetailsCreditoPago
-          credito={pagosByCredito.credito}
-          cliente={pagosByCredito.cliente}
-          setVisible={setVisible}
-        />
-      </DialogoForm>
     </>
   );
 };

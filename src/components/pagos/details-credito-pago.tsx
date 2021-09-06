@@ -49,7 +49,7 @@ const useStyles = makeStyles(theme => ({
 interface Props {
   credito: Credito;
   cliente: Cliente;
-  setVisible: Dispatch<SetStateAction<boolean>>;
+  setVisible?: Dispatch<SetStateAction<boolean>>;
 }
 
 export const DetailsCreditoPago = ({ credito, cliente, setVisible }: Props) => {
@@ -69,7 +69,7 @@ export const DetailsCreditoPago = ({ credito, cliente, setVisible }: Props) => {
         >
           <Box display='flex' justifyContent='space-between'>
             <Typography className={clases.title}>Credito #{credito?.numeroCredito}</Typography>
-            <Badge className={clases.point} onClick={() => setVisible(false)}>
+            <Badge className={clases.point} onClick={() => setVisible && setVisible(false)}>
               <VisibilityOffIcon />
             </Badge>
           </Box>

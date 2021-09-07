@@ -38,8 +38,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import { TablaPagosByCredito } from '../components/pagos/credito/table-pagos-by-credito';
 import { Credito } from '../interfaces/Credito';
 import { DetailsCreditoPago } from '../components/pagos/details-credito-pago';
-import { Doughnut } from 'react-chartjs-2';
-// import { DetailsCreditoPago } from '../components/pagos/details-credito-pago';
+import { Doughnut, Line } from 'react-chartjs-2';
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -224,9 +223,28 @@ const PagosByCreditoView = () => {
               <Typography>Credito y Estadisticas</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Grid container>
+              <Grid container justify='flex-end'>
                 <Grid item xs={12} md={6}>
                   {Credito && Cliente && <DetailsCreditoPago credito={Credito} cliente={Cliente} />}
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Line
+                    data={{
+                      datasets: [
+                        {
+                          backgroundColor: ['#fec4d2', '#696969'],
+                          data: [
+                            Statistics.find(item => item.atrasado)?.total,
+                            Statistics.find(item => !item.atrasado)?.total,
+                          ],
+                          label: 'Pagos del credito',
+                        },
+                      ],
+                      labels: ['Pagos Atrasado', 'Pagos No Atrasado'],
+                    }}
+                    width={100}
+                    options={{ maintainAspectRatio: false }}
+                  />
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <Doughnut
@@ -244,7 +262,6 @@ const PagosByCreditoView = () => {
                       labels: ['Pagos Atrasado', 'Pagos No Atrasado'],
                     }}
                     width={100}
-                    height={50}
                     options={{ maintainAspectRatio: false }}
                   />
                 </Grid>

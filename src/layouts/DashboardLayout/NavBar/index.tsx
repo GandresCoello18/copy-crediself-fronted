@@ -18,6 +18,7 @@ import {
 } from '@material-ui/core';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
 import PersonIcon from '@material-ui/icons/Person';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import LockIcon from '@material-ui/icons/Lock';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
@@ -179,6 +180,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           href: '/app/account',
           icon: PersonIcon,
           title: 'Mi cuenta',
+        },
+        {
+          href: '/app/calendario',
+          icon: CalendarTodayIcon,
+          title: 'Calendario',
         },
       ];
       break;

@@ -6,10 +6,15 @@ export interface Pago {
   idCredito: string;
   pagado_el: string;
   created_at: string;
+  mes_correspondiente: string;
   tipo_de_pago: string;
   active: number;
   atrasado: number;
   numeroPago: number;
+  valor: number;
+  estado: 'Completado' | 'Abonado';
+  aprobado: number;
+  source: string | null;
 }
 
 export interface PagoByCredito extends Pago {

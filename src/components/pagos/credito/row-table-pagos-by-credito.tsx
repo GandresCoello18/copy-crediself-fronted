@@ -5,19 +5,23 @@ import {
   TableCell,
   Button,
   makeStyles,
+  Typography,
   IconButton,
   Menu,
   MenuList,
   MenuItem,
   Chip,
 } from '@material-ui/core';
-import React from 'react';
-import { Link } from 'react-router-dom';
-import PaymentIcon from '@material-ui/icons/Payment';
+import React, { useState } from 'react';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { Pago } from '../../../interfaces/Pago';
+import ReceiptIcon from '@material-ui/icons/Receipt';
 import { Cliente } from '../../../interfaces/Cliente';
+import DescriptionIcon from '@material-ui/icons/Description';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import { Credito } from '../../../interfaces/Credito';
+import { DialogoForm } from '../../DialogoForm';
+import { DetailsPago } from '../details-pago';
 
 const useStyles = makeStyles((theme: any) => ({
   btnIcon: {
@@ -32,6 +36,9 @@ const useStyles = makeStyles((theme: any) => ({
     textOverflow: 'ellipsis',
     overflow: 'hidden',
   },
+  textWarning: {
+    color: 'orange',
+  },
 }));
 
 interface Props {
@@ -42,7 +49,8 @@ interface Props {
 
 export const RowTablePagosByCredito = ({ pago, credito, cliente }: Props) => {
   const clases = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [Visible, setVisible] = useState<boolean>(false);
   const open = Boolean(anchorEl);
 
   const OnClose = () => setAnchorEl(null);
@@ -67,17 +75,31 @@ export const RowTablePagosByCredito = ({ pago, credito, cliente }: Props) => {
           PaperProps={{
             style: {
               maxHeight: 48 * 4.5,
-              width: '20ch',
+              width: '25ch',
             },
           }}
         >
           <MenuList>
+            <MenuItem
+              selected={false}
+              onClick={() => {
+                OnClose();
+                setVisible(true);
+              }}
+            >
+              <Button size='small' title='Ver detalles de pago' fullWidth variant='outlined'>
+                <span className={clases.btnIcon}>Detalles</span> <DescriptionIcon />
+              </Button>
+            </MenuItem>
             <MenuItem selected={false} onClick={OnClose}>
-              <Link to={`/app/pagos/credito/${pago.idCredito}`}>
-                <Button size='small' title='Ver creditos de cliente' fullWidth variant='outlined'>
-                  <span className={clases.btnIcon}>Ver Pagos</span> <PaymentIcon />
-                </Button>
-              </Link>
+              <Button size='small' title='Aprobar pago' fullWidth variant='outlined'>
+                <span className={clases.btnIcon}>Aprobar</span> <CheckCircleIcon />
+              </Button>
+            </MenuItem>
+            <MenuItem selected={false} onClick={OnClose}>
+              <Button size='small' title='Subir comprobante de pago' fullWidth variant='outlined'>
+                <span className={clases.btnIcon}>Comprobante</span> <ReceiptIcon />
+              </Button>
             </MenuItem>
           </MenuList>
         </Menu>
@@ -96,14 +118,31 @@ export const RowTablePagosByCredito = ({ pago, credito, cliente }: Props) => {
         </TableCell>
         <TableCell>${credito ? credito.cuota : ''}</TableCell>
         <TableCell>{pago.numeroPago}</TableCell>
-        <TableCell>{pago.tipo_de_pago}</TableCell>
         <TableCell>
-          <Chip color='secondary' label={pago.atrasado ? 'SI' : 'NO'} />
+          <Chip
+            color={pago.aprobado ? 'secondary' : 'default'}
+            label={pago.aprobado ? 'SI' : 'NO'}
+          />
+        </TableCell>
+        <TableCell>
+          <Chip
+            color={pago.atrasado ? 'secondary' : 'default'}
+            label={pago.atrasado ? 'SI' : 'NO'}
+          />
+        </TableCell>
+        <TableCell>
+          <Typography className={`${pago.estado === 'Abonado' ? clases.textWarning : ''}`}>
+            {credito?.cuota !== pago.valor && '$' + pago.valor} ({pago.estado})
+          </Typography>
         </TableCell>
         <TableCell>{pago.pagado_el}</TableCell>
         <TableCell>{pago.created_at}</TableCell>
         <TableCell>{RenderPagosByCreditoOPtions()}</TableCell>
       </TableRow>
+
+      <DialogoForm Open={Visible} setOpen={setVisible} title='Detalles de pago'>
+        <DetailsPago setVisible={setVisible} pago={pago} />
+      </DialogoForm>
     </>
   );
 };

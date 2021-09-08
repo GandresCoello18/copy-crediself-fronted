@@ -10,6 +10,7 @@ import {
   MenuList,
   MenuItem,
   Chip,
+  Typography,
 } from '@material-ui/core';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -31,6 +32,9 @@ const useStyles = makeStyles((theme: any) => ({
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
     overflow: 'hidden',
+  },
+  textWarning: {
+    color: 'orange',
   },
 }));
 
@@ -101,6 +105,14 @@ export const RowTablePagosByCreditos = ({ pagosByCredito, isModal }: Props) => {
         <TableCell onClick={VisibleModal}>{pagosByCredito.tipo_de_pago}</TableCell>
         <TableCell onClick={VisibleModal}>
           <Chip color='secondary' label={pagosByCredito.atrasado ? 'SI' : 'NO'} />
+        </TableCell>
+        <TableCell onClick={VisibleModal}>
+          <Typography
+            className={`${pagosByCredito.estado === 'Abonado' ? clases.textWarning : ''}`}
+          >
+            {pagosByCredito.credito.cuota !== pagosByCredito.valor && '$' + pagosByCredito.valor} (
+            {pagosByCredito.estado})
+          </Typography>
         </TableCell>
         <TableCell onClick={VisibleModal}>{pagosByCredito.pagado_el}</TableCell>
         <TableCell onClick={VisibleModal}>{pagosByCredito.created_at}</TableCell>

@@ -1,13 +1,7 @@
 import { api } from '.';
 import { ParamsFilterPagos } from '../view/pagos-credito';
 
-interface InputAddPago {
-  idCredito: string;
-  pagadoEl: string;
-  tipoDePago: string;
-}
-
-export const AddPagoCredito = async (options: { token: string; data: InputAddPago }) => {
+export const AddPagoCredito = async (options: { token: string; data: FormData }) => {
   api.defaults.headers['access-token'] = options.token;
   const response = await api({
     method: 'POST',
@@ -37,14 +31,16 @@ export const GetPagosByCredito = async (options: {
   ParamsFilter: ParamsFilterPagos;
 }) => {
   const { token, page, idCredito, ParamsFilter } = options;
-  const { isAtrasado, datePayment, dateRegister, typePayment } = ParamsFilter;
+  const { isAtrasado, datePayment, dateRegister, typePayment, dateCorrespondiente } = ParamsFilter;
 
   api.defaults.headers['access-token'] = token;
   const response = await api({
     method: 'GET',
     url: `/pago/credito/${idCredito}?findPago=${typePayment || ''}&page=${page}&isAtrasado=${
       isAtrasado || 0
-    }&datePayment=${datePayment || ''}&dateRegister=${dateRegister || ''}`,
+    }&datePayment=${datePayment || ''}&dateRegister=${dateRegister || ''}&dateCorrespondiente=${
+      dateCorrespondiente || ''
+    }`,
   });
   return response;
 };

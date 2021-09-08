@@ -73,6 +73,9 @@ export const TablaPagosByCreditos = ({ pagosByCreditos, Loading }: Props) => {
                     <strong>Atrasado</strong>
                   </TableCell>
                   <TableCell className={classes.textHeadTable}>
+                    <strong>Valor</strong>
+                  </TableCell>
+                  <TableCell className={classes.textHeadTable}>
                     <strong>Pagado el</strong>
                   </TableCell>
                   <TableCell className={classes.textHeadTable}>

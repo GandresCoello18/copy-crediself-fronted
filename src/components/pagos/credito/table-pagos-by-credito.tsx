@@ -66,10 +66,13 @@ export const TablaPagosByCredito = ({ pagos, cliente, credito, Loading }: Props)
                     <strong># Pago</strong>
                   </TableCell>
                   <TableCell className={classes.textHeadTable}>
-                    <strong>Metodo</strong>
+                    <strong>Aprobado</strong>
                   </TableCell>
                   <TableCell className={classes.textHeadTable}>
                     <strong>Atrasado</strong>
+                  </TableCell>
+                  <TableCell className={classes.textHeadTable}>
+                    <strong>Valor</strong>
                   </TableCell>
                   <TableCell className={classes.textHeadTable}>
                     <strong>Pagado el</strong>

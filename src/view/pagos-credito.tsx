@@ -61,6 +61,7 @@ export interface ParamsFilterPagos {
   isAtrasado?: number;
   datePayment?: string;
   dateRegister?: string;
+  dateCorrespondiente?: string;
 }
 
 const PagosByCreditoView = () => {
@@ -83,6 +84,7 @@ const PagosByCreditoView = () => {
     isAtrasado: 0,
     datePayment: undefined,
     dateRegister: undefined,
+    dateCorrespondiente: undefined,
   });
   const [ReloadPago, setReloadPago] = useState<boolean>(false);
 
@@ -141,7 +143,7 @@ const PagosByCreditoView = () => {
         <Box mt={3}>
           <Card>
             <CardContent>
-              <Box maxWidth={1000}>
+              <Box maxWidth={1300}>
                 <Grid
                   container
                   spacing={3}
@@ -163,7 +165,7 @@ const PagosByCreditoView = () => {
                       }
                       label='Tipo de pago'
                     >
-                      {['Trasnferencia Bancaria', 'Deposito Bancario'].map(item => (
+                      {['Tarjeta', 'Terminal Bancario'].map(item => (
                         <MenuItem value={item} key={item}>
                           {item}
                         </MenuItem>
@@ -210,6 +212,23 @@ const PagosByCreditoView = () => {
                       }
                       defaultValue={CurrentDate()}
                       placeholder={'Seleccione su fecha de registro'}
+                    />
+                  </Grid>
+                  <Grid item>
+                    <TextField
+                      id='date'
+                      label='Mes correspondiente'
+                      type='month'
+                      value={ParamsFilter.dateCorrespondiente}
+                      onChange={event =>
+                        setParamsFilter({
+                          ...ParamsFilter,
+                          dateCorrespondiente: event.target.value,
+                        })
+                      }
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
                     />
                   </Grid>
                   <Grid item>

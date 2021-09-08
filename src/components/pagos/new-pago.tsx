@@ -9,6 +9,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Chip,
   Divider,
   Grid,
   InputLabel,
@@ -17,12 +18,15 @@ import {
   TextField,
 } from '@material-ui/core';
 import { toast } from 'react-toast';
-import { Dispatch, SetStateAction, useContext } from 'react';
+import { Dispatch, SetStateAction, useContext, useState } from 'react';
 import { MeContext } from '../../context/contextMe';
 import { AxiosError } from 'axios';
 import { HandleError } from '../../helpers/handleError';
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import { AddPagoCredito } from '../../api/pagos';
 import { CurrentDate } from '../../helpers/fechas';
+import { UploadImage } from '../UploadImage';
+import { ImageListType } from 'react-images-uploading';
 
 interface Props {
   setReloadPago: Dispatch<SetStateAction<boolean>>;
@@ -33,6 +37,14 @@ interface Props {
 
 export const FormNewPago = ({ setReloadPago, setVisible, idCredito, cliente }: Props) => {
   const { token } = useContext(MeContext);
+  const [images, setImages] = useState<ImageListType>([]);
+
+  const onChange = (imageList: ImageListType) => setImages(imageList as never[]);
+
+  const totalComisionBancaria = (valor: number) => {
+    const comision = (valor * 4) / 100;
+    return comision + valor;
+  };
 
   return (
     <Card>
@@ -41,10 +53,12 @@ export const FormNewPago = ({ setReloadPago, setVisible, idCredito, cliente }: P
           idCredito,
           pagadoEl: '',
           tipoDePago: '',
+          valor: '',
         }}
         validationSchema={Yup.object().shape({
           pagadoEl: Yup.string().max(100).required('El campo es requerido'),
           tipoDePago: Yup.string().max(100).required('El campo es requerido'),
+          valor: Yup.string().max(10).required('El campo es requerido'),
         })}
         onSubmit={async (values, actions) => {
           if (new Date().getTime() < new Date(values.pagadoEl).getTime()) {
@@ -52,8 +66,19 @@ export const FormNewPago = ({ setReloadPago, setVisible, idCredito, cliente }: P
             return;
           }
 
+          if (values.tipoDePago === 'Terminal Bancario') {
+            values.valor = totalComisionBancaria(Number(values.valor)).toString();
+          }
+
+          const data = new FormData();
+          data.append('idCredito', values.idCredito);
+          data.append('pagadoEl', values.pagadoEl);
+          data.append('tipoDePago', values.tipoDePago);
+          data.append('valor', values.valor);
+          data.append('comprobante', images[0].file || '');
+
           try {
-            await AddPagoCredito({ token, data: values });
+            await AddPagoCredito({ token, data });
             setReloadPago(true);
             setVisible(false);
           } catch (error) {
@@ -79,7 +104,7 @@ export const FormNewPago = ({ setReloadPago, setVisible, idCredito, cliente }: P
                     name='tipoDePago'
                     label='Tipo de pago'
                   >
-                    {['Trasnferencia Bancaria', 'Deposito Bancario'].map(item => (
+                    {['Tarjeta', 'Terminal Bancario'].map(item => (
                       <MenuItem value={item} key={item}>
                         {item}
                       </MenuItem>
@@ -103,6 +128,45 @@ export const FormNewPago = ({ setReloadPago, setVisible, idCredito, cliente }: P
                     placeholder={'Seleccione su fecha de pago'}
                   />
                 </Grid>
+                <Grid item md={6} xs={12}>
+                  <TextField
+                    error={Boolean(touched.valor && errors.valor)}
+                    helperText={touched.valor && errors.valor}
+                    fullWidth
+                    name='valor'
+                    type='number'
+                    required
+                    label='Valor pagado'
+                    onBlur={handleBlur}
+                    disabled={isSubmitting}
+                    variant='outlined'
+                    onChange={handleChange}
+                    placeholder={'Escriba el valor pagado'}
+                  />
+                </Grid>
+                {values.tipoDePago === 'Terminal Bancario' && (
+                  <>
+                    <Grid item md={6} xs={12}>
+                      <TextField
+                        fullWidth
+                        label='Comision bancaria'
+                        disabled={true}
+                        value='4%'
+                        variant='outlined'
+                      />
+                    </Grid>
+                    <Grid item md={6} xs={12}>
+                      <Chip
+                        avatar={<MonetizationOnIcon />}
+                        label={`Total: ${totalComisionBancaria(Number(values.valor))}`}
+                        variant='outlined'
+                      />
+                    </Grid>
+                    <Grid item md={6} xs={12}>
+                      <UploadImage images={images} maxNumber={1} onChange={onChange} />
+                    </Grid>
+                  </>
+                )}
               </Grid>
             </CardContent>
             <Divider />

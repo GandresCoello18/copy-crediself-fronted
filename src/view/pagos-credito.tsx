@@ -38,7 +38,8 @@ import Pagination from '@material-ui/lab/Pagination';
 import { TablaPagosByCredito } from '../components/pagos/credito/table-pagos-by-credito';
 import { Credito } from '../interfaces/Credito';
 import { DetailsCreditoPago } from '../components/pagos/details-credito-pago';
-import { Doughnut, Line } from 'react-chartjs-2';
+import { Doughnut } from 'react-chartjs-2';
+import { GraficoPaymentCredito } from '../components/pagos/credito/grafico-pagos-credito';
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -71,6 +72,9 @@ const PagosByCreditoView = () => {
   const [Cliente, setCliente] = useState<Cliente | undefined>(undefined);
   const [Credito, setCredito] = useState<Credito | undefined>(undefined);
   const [Statistics, setStatistics] = useState<{ total: number; atrasado: number }[]>([]);
+  const [StatisticsValue, setStatisticsValue] = useState<{ valor: number; pagado_el: string }[]>(
+    [],
+  );
   const [Visible, setVisible] = useState<boolean>(false);
   const [Loading, setLoading] = useState<boolean>(false);
   const [Expanded, setExpanded] = useState<boolean>(false);
@@ -86,7 +90,7 @@ const PagosByCreditoView = () => {
     setLoading(true);
 
     try {
-      const { pagos, cliente, credito, statistics, pages } = await (
+      const { pagos, cliente, credito, statistics, statisticsValue, pages } = await (
         await GetPagosByCredito({ token, idCredito: params.idCredito, page, ParamsFilter })
       ).data;
       setPagos(pagos);
@@ -94,6 +98,7 @@ const PagosByCreditoView = () => {
       setCount(pages || 1);
       setCliente(cliente);
       setStatistics(statistics);
+      setStatisticsValue(statisticsValue);
       setLoading(false);
     } catch (error) {
       toast.error(HandleError(error as AxiosError));
@@ -223,27 +228,14 @@ const PagosByCreditoView = () => {
               <Typography>Credito y Estadisticas</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Grid container justify='flex-end'>
-                <Grid item xs={12} md={6}>
+              <Grid container justify='space-between'>
+                <Grid item xs={12} md={5}>
                   {Credito && Cliente && <DetailsCreditoPago credito={Credito} cliente={Cliente} />}
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <Line
-                    data={{
-                      datasets: [
-                        {
-                          backgroundColor: ['#fec4d2', '#696969'],
-                          data: [
-                            Statistics.find(item => item.atrasado)?.total,
-                            Statistics.find(item => !item.atrasado)?.total,
-                          ],
-                          label: 'Pagos del credito',
-                        },
-                      ],
-                      labels: ['Pagos Atrasado', 'Pagos No Atrasado'],
-                    }}
-                    width={100}
-                    options={{ maintainAspectRatio: false }}
+                  <GraficoPaymentCredito
+                    data={StatisticsValue.map(item => item.valor)}
+                    labels={StatisticsValue.map(item => item.pagado_el)}
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>

@@ -1,5 +1,6 @@
 import { Cliente } from './Cliente';
 import { Credito } from './Credito';
+import { Usuario } from './Usuario';
 
 export interface Pago {
   idPago: string;
@@ -15,6 +16,7 @@ export interface Pago {
   estado: 'Completado' | 'Abonado';
   aprobado: number;
   source: string | null;
+  user: Usuario;
 }
 
 export interface PagoByCredito extends Pago {

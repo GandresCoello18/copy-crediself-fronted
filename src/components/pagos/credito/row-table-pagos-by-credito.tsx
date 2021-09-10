@@ -141,7 +141,7 @@ export const RowTablePagosByCredito = ({ pago, credito, cliente }: Props) => {
       </TableRow>
 
       <DialogoForm Open={Visible} setOpen={setVisible} title='Detalles de pago'>
-        <DetailsPago setVisible={setVisible} pago={pago} />
+        <DetailsPago setVisible={setVisible} pago={pago} user={pago.user} />
       </DialogoForm>
     </>
   );

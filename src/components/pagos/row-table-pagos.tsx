@@ -123,6 +123,7 @@ export const RowTablePagosByCreditos = ({ pagosByCredito, isModal }: Props) => {
         <DetailsCreditoPago
           credito={pagosByCredito.credito}
           cliente={pagosByCredito.cliente}
+          user={pagosByCredito.user}
           setVisible={setVisible}
         />
       </DialogoForm>

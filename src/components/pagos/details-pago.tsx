@@ -1,9 +1,13 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import { Box, Grid, Typography, makeStyles, Badge, Chip } from '@material-ui/core';
+import { Box, Grid, Typography, makeStyles, Badge, Chip, Avatar } from '@material-ui/core';
 import React, { Dispatch, SetStateAction } from 'react';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import { Pago } from '../../interfaces/Pago';
 import { BASE_API_IMAGES_CLOUDINNARY_SCALE } from '../../api';
+import FaceIcon from '@material-ui/icons/Face';
+import DoneIcon from '@material-ui/icons/Done';
+import { SourceAvatar } from '../../helpers/sourceAvatar';
+import { Usuario } from '../../interfaces/Usuario';
 
 const useStyles = makeStyles(theme => ({
   headDetails: {
@@ -43,14 +47,33 @@ const useStyles = makeStyles(theme => ({
 
 interface Props {
   pago: Pago;
+  user: Usuario;
   setVisible?: Dispatch<SetStateAction<boolean>>;
 }
 
-export const DetailsPago = ({ pago, setVisible }: Props) => {
+export const DetailsPago = ({ pago, user, setVisible }: Props) => {
   const clases = useStyles();
 
   return (
     <Box p={2}>
+      <Box alignItems='center' flexDirection='column' display='flex' mb={4}>
+        <Avatar className={clases.avatar} src={SourceAvatar(user.avatar)} />
+        <Typography color='textPrimary' variant='h5'>
+          {user.nombres + ' ' + user.apellidos}
+        </Typography>
+        <Typography color='textSecondary' variant='body2'>
+          {user.email}
+        </Typography>
+        <Chip
+          style={{ marginTop: 10 }}
+          avatar={<FaceIcon />}
+          label={user.idRol}
+          clickable
+          color='default'
+          deleteIcon={<DoneIcon />}
+          variant='outlined'
+        />
+      </Box>
       <Grid container spacing={2}>
         <Grid
           className={`${clases.marginB} ${clases.rowSecondary}`}

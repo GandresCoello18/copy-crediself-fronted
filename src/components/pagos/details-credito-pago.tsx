@@ -7,6 +7,9 @@ import { Credito } from '../../interfaces/Credito';
 import { Link as RouterLink } from 'react-router-dom';
 import { Cliente } from '../../interfaces/Cliente';
 import { LinearWithValueLabel } from '../LinearProgres';
+import FaceIcon from '@material-ui/icons/Face';
+import DoneIcon from '@material-ui/icons/Done';
+import { Usuario } from '../../interfaces/Usuario';
 
 const useStyles = makeStyles(theme => ({
   headDetails: {
@@ -49,10 +52,11 @@ const useStyles = makeStyles(theme => ({
 interface Props {
   credito: Credito;
   cliente: Cliente;
+  user?: Usuario;
   setVisible?: Dispatch<SetStateAction<boolean>>;
 }
 
-export const DetailsCreditoPago = ({ credito, cliente, setVisible }: Props) => {
+export const DetailsCreditoPago = ({ credito, cliente, user, setVisible }: Props) => {
   const clases = useStyles();
 
   return (
@@ -75,24 +79,52 @@ export const DetailsCreditoPago = ({ credito, cliente, setVisible }: Props) => {
           </Box>
         </Grid>
         <Grid item xs={12}>
-          <Box alignItems='center' display='flex' flexDirection='column' mb={2} p={2}>
-            <Avatar
-              className={clases.avatar}
-              component={RouterLink}
-              src={SourceAvatar('')}
-              to={`/app/creditos/cliente/${cliente.idCliente}`}
-            />
-            <Typography color='textPrimary' variant='h5'>
-              {cliente.nombres + ' ' + cliente.apellidos}
-            </Typography>
-            <Typography color='textSecondary' variant='body2'>
-              {cliente.email}
-            </Typography>
+          <Box alignItems='center' justifyContent='space-between' display='flex' mb={2} p={2}>
+            <Box alignItems='center' flexDirection='column' display='flex'>
+              <Avatar
+                className={clases.avatar}
+                component={RouterLink}
+                src={SourceAvatar('')}
+                to={`/app/creditos/cliente/${cliente.idCliente}`}
+              />
+              <Typography color='textPrimary' variant='h5'>
+                {cliente.nombres + ' ' + cliente.apellidos}
+              </Typography>
+              <Typography color='textSecondary' variant='body2'>
+                {cliente.email}
+              </Typography>
+              <br />
+              <Chip
+                avatar={<FaceIcon />}
+                label='Cliente'
+                clickable
+                color='default'
+                deleteIcon={<DoneIcon />}
+                variant='outlined'
+              />
+            </Box>
 
-            <br />
-
-            <LinearWithValueLabel progress={credito.progress || 0} />
+            <Box alignItems='center' flexDirection='column' display='flex'>
+              <Avatar className={clases.avatar} src={SourceAvatar(user?.avatar || '')} />
+              <Typography color='textPrimary' variant='h5'>
+                {user?.nombres + ' ' + user?.apellidos}
+              </Typography>
+              <Typography color='textSecondary' variant='body2'>
+                {user?.email}
+              </Typography>
+              <br />
+              <Chip
+                avatar={<FaceIcon />}
+                label={user?.idRol}
+                clickable
+                color='default'
+                deleteIcon={<DoneIcon />}
+                variant='outlined'
+              />
+            </Box>
           </Box>
+          <LinearWithValueLabel progress={credito.progress || 0} />
+          <br />
         </Grid>
 
         <Divider />

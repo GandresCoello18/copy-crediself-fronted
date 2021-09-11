@@ -44,3 +44,33 @@ export const GetPagosByCredito = async (options: {
   });
   return response;
 };
+
+export const UpdateAprobarPayment = async (options: {
+  token: string;
+  idPago: string;
+  aprobar: number;
+}) => {
+  api.defaults.headers['access-token'] = options.token;
+  const response = await api({
+    method: 'PUT',
+    url: `/pago/aprobado/${options.idPago}`,
+    data: {
+      aprobar: options.aprobar,
+    },
+  });
+  return response;
+};
+
+export const UpdateComprobantePayment = async (options: {
+  token: string;
+  idPago: string;
+  data: FormData;
+}) => {
+  api.defaults.headers['access-token'] = options.token;
+  const response = await api({
+    method: 'PUT',
+    url: `/pago/comprobante/${options.idPago}`,
+    data: options.data,
+  });
+  return response;
+};

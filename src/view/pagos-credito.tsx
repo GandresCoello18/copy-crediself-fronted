@@ -73,9 +73,9 @@ const PagosByCreditoView = () => {
   const [Cliente, setCliente] = useState<Cliente | undefined>(undefined);
   const [Credito, setCredito] = useState<Credito | undefined>(undefined);
   const [Statistics, setStatistics] = useState<{ total: number; atrasado: number }[]>([]);
-  const [StatisticsValue, setStatisticsValue] = useState<{ valor: number; pagado_el: string }[]>(
-    [],
-  );
+  const [StatisticsValue, setStatisticsValue] = useState<
+    { valor: number; mes_correspondiente: string }[]
+  >([]);
   const [Visible, setVisible] = useState<boolean>(false);
   const [Loading, setLoading] = useState<boolean>(false);
   const [Expanded, setExpanded] = useState<boolean>(false);
@@ -254,7 +254,7 @@ const PagosByCreditoView = () => {
                 <Grid item xs={12} md={6}>
                   <GraficoPaymentCredito
                     data={StatisticsValue.map(item => item.valor)}
-                    labels={StatisticsValue.map(item => item.pagado_el)}
+                    labels={StatisticsValue.map(item => item.mes_correspondiente)}
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
@@ -286,6 +286,7 @@ const PagosByCreditoView = () => {
             credito={Credito}
             pagos={Pagos}
             Loading={Loading}
+            setReloadPago={setReloadPago}
           />
         </Box>
         <Box mt={3} display='flex' justifyContent='center'>

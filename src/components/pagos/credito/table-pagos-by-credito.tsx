@@ -10,6 +10,7 @@ import {
   makeStyles,
   TableHead,
   TableRow,
+  Button,
 } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -19,6 +20,15 @@ import { RowTablePagosByCredito } from './row-table-pagos-by-credito';
 import { Pago } from '../../../interfaces/Pago';
 import { Cliente } from '../../../interfaces/Cliente';
 import { Credito } from '../../../interfaces/Credito';
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
+import { AxiosError } from 'axios';
+import { toast } from 'react-toast';
+import { UpdateAprobarPayment, UpdateComprobantePayment } from '../../../api/pagos';
+import { HandleError } from '../../../helpers/handleError';
+import { MeContext } from '../../../context/contextMe';
+import { ImageListType } from 'react-images-uploading';
+import { DialogoForm } from '../../DialogoForm';
+import { UploadImage } from '../../UploadImage';
 
 const useStyles = makeStyles((theme: any) => ({
   headTable: {
@@ -34,16 +44,80 @@ interface Props {
   cliente: Cliente | undefined;
   credito: Credito | undefined;
   Loading: boolean;
+  setReloadPago: Dispatch<SetStateAction<boolean>>;
 }
 
-export const TablaPagosByCredito = ({ pagos, cliente, credito, Loading }: Props) => {
+export interface AprobarPayment {
+  aprobar: number | undefined;
+  loading: boolean;
+}
+
+export const TablaPagosByCredito = ({ pagos, cliente, credito, Loading, setReloadPago }: Props) => {
   const classes = useStyles();
+  const { token } = useContext(MeContext);
+  const [idPago, setIdPago] = useState<string>('');
+  const [VisibleComprobante, setVisibleComprobante] = useState<boolean>(false);
+  const [LoadingUpload, setLoadingUpload] = useState<boolean>(false);
+  const [images, setImages] = useState<ImageListType>([]);
+  const [PagoAprobar, setPagoAprobar] = useState<AprobarPayment>({
+    aprobar: undefined,
+    loading: false,
+  });
+
+  const onChange = (imageList: ImageListType) => setImages(imageList as never[]);
 
   const SkeletonTablePBC = () => {
     return [0, 1, 2, 3, 4, 5, 6, 7].map(item => (
       <Skeleton key={item} style={{ marginBottom: 10 }} variant='rect' width='100%' height={40} />
     ));
   };
+
+  const handleAprobarPago = async () => {
+    setPagoAprobar({
+      ...PagoAprobar,
+      loading: true,
+    });
+
+    try {
+      await UpdateAprobarPayment({ token, idPago, aprobar: PagoAprobar.aprobar || 0 });
+      setPagoAprobar({
+        aprobar: undefined,
+        loading: false,
+      });
+      setIdPago('');
+      setReloadPago(true);
+    } catch (error) {
+      toast.error(HandleError(error as AxiosError));
+      setPagoAprobar({
+        ...PagoAprobar,
+        loading: false,
+      });
+    }
+  };
+
+  const UploadComprobantePayment = async () => {
+    setLoadingUpload(true);
+
+    try {
+      const data = new FormData();
+      data.append('comprobante', images[0].file || '');
+
+      await UpdateComprobantePayment({ token, idPago, data });
+
+      toast.success('Se actualizo el comprobante de pago');
+      setLoadingUpload(false);
+      setVisibleComprobante(false);
+      setIdPago('');
+      setReloadPago(true);
+    } catch (error) {
+      toast.error(HandleError(error as AxiosError));
+      setLoadingUpload(false);
+    }
+  };
+
+  useEffect(() => {
+    idPago && PagoAprobar.aprobar !== undefined && handleAprobarPago();
+  }, [idPago]);
 
   return (
     <>
@@ -92,6 +166,10 @@ export const TablaPagosByCredito = ({ pagos, cliente, credito, Loading }: Props)
                       cliente={cliente}
                       credito={credito}
                       key={pago.idPago}
+                      setIdPago={setIdPago}
+                      PagoAprobar={PagoAprobar}
+                      setPagoAprobar={setPagoAprobar}
+                      setVisibleComprobante={setVisibleComprobante}
                       pago={pago}
                     />
                   ))}
@@ -107,6 +185,27 @@ export const TablaPagosByCredito = ({ pagos, cliente, credito, Loading }: Props)
             )}
           </Box>
         </PerfectScrollbar>
+
+        <DialogoForm
+          Open={VisibleComprobante}
+          setOpen={setVisibleComprobante}
+          title='Subir comprobante de pago'
+        >
+          <UploadImage images={images} maxNumber={1} onChange={onChange} />
+          {images.length ? (
+            <Button
+              color='secondary'
+              variant='contained'
+              fullWidth
+              disabled={LoadingUpload}
+              onClick={UploadComprobantePayment}
+            >
+              Actualizar Comprobante
+            </Button>
+          ) : (
+            ''
+          )}
+        </DialogoForm>
       </Card>
     </>
   );

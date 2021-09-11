@@ -79,7 +79,13 @@ export const DetailsCreditoPago = ({ credito, cliente, user, setVisible }: Props
           </Box>
         </Grid>
         <Grid item xs={12}>
-          <Box alignItems='center' justifyContent='space-between' display='flex' mb={2} p={2}>
+          <Box
+            alignItems='center'
+            justifyContent={user ? 'space-between' : 'center'}
+            display='flex'
+            mb={2}
+            p={2}
+          >
             <Box alignItems='center' flexDirection='column' display='flex'>
               <Avatar
                 className={clases.avatar}
@@ -104,26 +110,30 @@ export const DetailsCreditoPago = ({ credito, cliente, user, setVisible }: Props
               />
             </Box>
 
-            <Box alignItems='center' flexDirection='column' display='flex'>
-              <Avatar className={clases.avatar} src={SourceAvatar(user?.avatar || '')} />
-              <Typography color='textPrimary' variant='h5'>
-                {user?.nombres + ' ' + user?.apellidos}
-              </Typography>
-              <Typography color='textSecondary' variant='body2'>
-                {user?.email}
-              </Typography>
-              <br />
-              <Chip
-                avatar={<FaceIcon />}
-                label={user?.idRol}
-                clickable
-                color='default'
-                deleteIcon={<DoneIcon />}
-                variant='outlined'
-              />
-            </Box>
+            {user && (
+              <Box alignItems='center' flexDirection='column' display='flex'>
+                <Avatar className={clases.avatar} src={SourceAvatar(user?.avatar || '')} />
+                <Typography color='textPrimary' variant='h5'>
+                  {user?.nombres + ' ' + user?.apellidos}
+                </Typography>
+                <Typography color='textSecondary' variant='body2'>
+                  {user?.email}
+                </Typography>
+                <br />
+                <Chip
+                  avatar={<FaceIcon />}
+                  label={user?.idRol}
+                  clickable
+                  color='default'
+                  deleteIcon={<DoneIcon />}
+                  variant='outlined'
+                />
+              </Box>
+            )}
           </Box>
-          <LinearWithValueLabel progress={credito.progress || 0} />
+          <Box title='Progreso de pagos en credito'>
+            <LinearWithValueLabel progress={credito.progress || 0} />
+          </Box>
           <br />
         </Grid>
 

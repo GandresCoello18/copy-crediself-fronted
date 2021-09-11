@@ -12,7 +12,7 @@ import {
   MenuItem,
   Chip,
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { Pago } from '../../../interfaces/Pago';
 import ReceiptIcon from '@material-ui/icons/Receipt';
@@ -22,6 +22,7 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import { Credito } from '../../../interfaces/Credito';
 import { DialogoForm } from '../../DialogoForm';
 import { DetailsPago } from '../details-pago';
+import { AprobarPayment } from './table-pagos-by-credito';
 
 const useStyles = makeStyles((theme: any) => ({
   btnIcon: {
@@ -45,9 +46,21 @@ interface Props {
   pago: Pago;
   cliente: Cliente | undefined;
   credito: Credito | undefined;
+  setIdPago: Dispatch<SetStateAction<string>>;
+  setPagoAprobar: Dispatch<SetStateAction<AprobarPayment>>;
+  setVisibleComprobante: Dispatch<SetStateAction<boolean>>;
+  PagoAprobar: AprobarPayment;
 }
 
-export const RowTablePagosByCredito = ({ pago, credito, cliente }: Props) => {
+export const RowTablePagosByCredito = ({
+  pago,
+  credito,
+  cliente,
+  setIdPago,
+  setPagoAprobar,
+  setVisibleComprobante,
+  PagoAprobar,
+}: Props) => {
   const clases = useStyles();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [Visible, setVisible] = useState<boolean>(false);
@@ -91,13 +104,44 @@ export const RowTablePagosByCredito = ({ pago, credito, cliente }: Props) => {
                 <span className={clases.btnIcon}>Detalles</span> <DescriptionIcon />
               </Button>
             </MenuItem>
-            <MenuItem selected={false} onClick={OnClose}>
-              <Button size='small' title='Aprobar pago' fullWidth variant='outlined'>
-                <span className={clases.btnIcon}>Aprobar</span> <CheckCircleIcon />
+            <MenuItem
+              selected={false}
+              onClick={() => {
+                setIdPago(pago.idPago);
+                setPagoAprobar({
+                  loading: true,
+                  aprobar: pago.aprobado === 1 ? 0 : 1,
+                });
+              }}
+            >
+              <Button
+                disabled={PagoAprobar.loading}
+                size='small'
+                title='Aprobar pago'
+                fullWidth
+                variant='outlined'
+              >
+                <span className={clases.btnIcon}>
+                  {pago.aprobado ? 'Quitar Aprobra' : 'Aprobar'}
+                </span>{' '}
+                <CheckCircleIcon />
               </Button>
             </MenuItem>
-            <MenuItem selected={false} onClick={OnClose}>
-              <Button size='small' title='Subir comprobante de pago' fullWidth variant='outlined'>
+            <MenuItem
+              selected={false}
+              onClick={() => {
+                setIdPago(pago.idPago);
+                OnClose();
+                setVisibleComprobante(true);
+              }}
+            >
+              <Button
+                disabled={pago.source ? true : false}
+                size='small'
+                title='Subir comprobante de pago'
+                fullWidth
+                variant='outlined'
+              >
                 <span className={clases.btnIcon}>Comprobante</span> <ReceiptIcon />
               </Button>
             </MenuItem>

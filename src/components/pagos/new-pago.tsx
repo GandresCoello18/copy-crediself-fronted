@@ -75,7 +75,10 @@ export const FormNewPago = ({ setReloadPago, setVisible, idCredito, cliente }: P
           data.append('pagadoEl', values.pagadoEl);
           data.append('tipoDePago', values.tipoDePago);
           data.append('valor', values.valor);
-          data.append('comprobante', images[0].file || '');
+
+          if (images.length) {
+            data.append('comprobante', images[0].file || '');
+          }
 
           try {
             await AddPagoCredito({ token, data });

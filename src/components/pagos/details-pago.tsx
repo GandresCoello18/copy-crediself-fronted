@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import { Box, Grid, Typography, makeStyles, Badge, Chip, Avatar } from '@material-ui/core';
+import { Box, Grid, Typography, makeStyles, Badge, Chip, Avatar, Button } from '@material-ui/core';
 import React, { Dispatch, SetStateAction } from 'react';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import { Pago } from '../../interfaces/Pago';
@@ -220,13 +220,19 @@ export const DetailsPago = ({ pago, user, setVisible }: Props) => {
           <Grid item>
             <strong>Comprobante:</strong>
           </Grid>
-          <Grid item>
+          <Grid item md={6}>
             {pago.source ? (
-              <img
-                width='100%'
-                alt='comprobante de pago'
-                src={`${BASE_API_IMAGES_CLOUDINNARY_SCALE}/${pago.source}`}
-              />
+              <>
+                <img
+                  width='100%'
+                  alt='comprobante de pago'
+                  src={`${BASE_API_IMAGES_CLOUDINNARY_SCALE}/${pago.source}`}
+                />
+
+                <Button style={{ color: 'red' }} fullWidth>
+                  Remover Comprobante
+                </Button>
+              </>
             ) : (
               'No hay comprobante'
             )}

@@ -25,6 +25,7 @@ interface NewUsers {
   razonSocial: string;
   idSucursal: string;
   fechaNacimiento: Date | string;
+  idSupervisor: string;
 }
 
 export const GetUsers = async (option: { token?: string; findUser?: string; page: number }) => {
@@ -64,6 +65,15 @@ export const GetMeUser = async (options: { token: string | undefined }) => {
   const response = await api({
     method: 'GET',
     url: '/users/me',
+  });
+  return response;
+};
+
+export const GetSupervidoresUser = async (options: { token: string }) => {
+  api.defaults.headers['access-token'] = options.token;
+  const response = await api({
+    method: 'GET',
+    url: '/users/supervisores',
   });
   return response;
 };

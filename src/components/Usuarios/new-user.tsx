@@ -27,6 +27,8 @@ import { GetRoles } from '../../api/roles';
 import { monthDiff } from '../../helpers/fechas';
 import { GetSucursales } from '../../api/sucursales';
 import { Sucursal } from '../../interfaces/Sucursales';
+import { SelectSupervisor } from './select-supervisor';
+import { Usuario } from '../../interfaces/Usuario';
 
 interface Props {
   setReloadUser: Dispatch<SetStateAction<boolean>>;
@@ -37,6 +39,7 @@ export const FormNewUser = ({ setReloadUser, setVisible }: Props) => {
   const { token, me } = useContext(MeContext);
   const [Sucursales, setSucursales] = useState<Sucursal[]>([]);
   const [Roles, setRoles] = useState<Rol[]>([]);
+  const [Supervisor, setSupervisor] = useState<Usuario | undefined>(undefined);
 
   useEffect(() => {
     const fetchRoles = async () => {
@@ -80,6 +83,7 @@ export const FormNewUser = ({ setReloadUser, setVisible }: Props) => {
           razonSocial: '',
           idSucursal: '',
           fechaNacimiento: '',
+          idSupervisor: '',
         }}
         validationSchema={Yup.object().shape({
           nombres: Yup.string().max(100).required('El campo es requerido'),
@@ -92,8 +96,10 @@ export const FormNewUser = ({ setReloadUser, setVisible }: Props) => {
           razonSocial: Yup.string().max(100).required('El campo es requerido'),
           fechaNacimiento: Yup.string().max(100).required('El campo es requerido'),
           idSucursal: Yup.string().max(100).required('El campo es requerido'),
+          idSupervisor: Yup.string().max(100),
         })}
         onSubmit={async (values, actions) => {
+          console.log('actions');
           if (me.idRol !== 'Director' && (!values.idRol || !Roles.length)) {
             toast.warn('Seleccione el rol');
             return;
@@ -112,6 +118,17 @@ export const FormNewUser = ({ setReloadUser, setVisible }: Props) => {
           if (diffMont < 216) {
             toast.warn('El usuario debe tener como minimo 18 años de edad');
             return;
+          }
+
+          if (Supervisor) {
+            const findRol = Roles.find(rol => rol.idRol === values.idRol);
+
+            if (findRol?.rol !== 'Asesor') {
+              toast.warn('No puedes asignar un supervisor a un usuario que no sea Asesor');
+              return;
+            }
+
+            values.idSupervisor = Supervisor.idUser;
           }
 
           try {
@@ -293,6 +310,17 @@ export const FormNewUser = ({ setReloadUser, setVisible }: Props) => {
                         </MenuItem>
                       ))}
                     </Select>
+                  </Grid>
+                ) : (
+                  ''
+                )}
+                {Roles.find(rol => rol.idRol === values.idRol)?.rol === 'Asesor' ? (
+                  <Grid item xs={12}>
+                    <SelectSupervisor
+                      token={token}
+                      isSubmitting={isSubmitting}
+                      setSupervisor={setSupervisor}
+                    />
                   </Grid>
                 ) : (
                   ''

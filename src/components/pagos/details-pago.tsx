@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import { Box, Grid, Typography, makeStyles, Badge, Chip, Avatar, Button } from '@material-ui/core';
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import { Pago } from '../../interfaces/Pago';
 import { BASE_API_IMAGES_CLOUDINNARY_SCALE } from '../../api';
@@ -8,6 +8,10 @@ import FaceIcon from '@material-ui/icons/Face';
 import DoneIcon from '@material-ui/icons/Done';
 import { SourceAvatar } from '../../helpers/sourceAvatar';
 import { Usuario } from '../../interfaces/Usuario';
+import { AxiosError } from 'axios';
+import { toast } from 'react-toast';
+import { RemoveComprobantePayment } from '../../api/pagos';
+import { HandleError } from '../../helpers/handleError';
 
 const useStyles = makeStyles(theme => ({
   headDetails: {
@@ -46,13 +50,29 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface Props {
+  token: string;
   pago: Pago;
   user: Usuario;
   setVisible?: Dispatch<SetStateAction<boolean>>;
 }
 
-export const DetailsPago = ({ pago, user, setVisible }: Props) => {
+export const DetailsPago = ({ token, pago, user, setVisible }: Props) => {
   const clases = useStyles();
+  const [Loading, setLoading] = useState<boolean>(false);
+
+  const HandleRemoveComprobante = async () => {
+    setLoading(true);
+
+    try {
+      await RemoveComprobantePayment({ token, idPago: pago.idPago });
+      setLoading(false);
+      toast.success('Se removio el comprobante de pago');
+      setVisible && setVisible(false);
+    } catch (error) {
+      toast.error(HandleError(error as AxiosError));
+      setLoading(false);
+    }
+  };
 
   return (
     <Box p={2}>
@@ -229,7 +249,12 @@ export const DetailsPago = ({ pago, user, setVisible }: Props) => {
                   src={`${BASE_API_IMAGES_CLOUDINNARY_SCALE}/${pago.source}`}
                 />
 
-                <Button style={{ color: 'red' }} fullWidth>
+                <Button
+                  disabled={Loading}
+                  onClick={HandleRemoveComprobante}
+                  style={{ color: 'red' }}
+                  fullWidth
+                >
                   Remover Comprobante
                 </Button>
               </>

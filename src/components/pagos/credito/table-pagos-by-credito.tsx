@@ -163,6 +163,7 @@ export const TablaPagosByCredito = ({ pagos, cliente, credito, Loading, setReloa
                 {!Loading &&
                   pagos.map(pago => (
                     <RowTablePagosByCredito
+                      token={token}
                       cliente={cliente}
                       credito={credito}
                       key={pago.idPago}

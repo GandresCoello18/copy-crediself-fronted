@@ -74,3 +74,12 @@ export const UpdateComprobantePayment = async (options: {
   });
   return response;
 };
+
+export const RemoveComprobantePayment = async (options: { token: string; idPago: string }) => {
+  api.defaults.headers['access-token'] = options.token;
+  const response = await api({
+    method: 'DELETE',
+    url: `/pago/comprobante/${options.idPago}`,
+  });
+  return response;
+};

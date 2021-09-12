@@ -43,6 +43,7 @@ const useStyles = makeStyles((theme: any) => ({
 }));
 
 interface Props {
+  token: string;
   pago: Pago;
   cliente: Cliente | undefined;
   credito: Credito | undefined;
@@ -53,6 +54,7 @@ interface Props {
 }
 
 export const RowTablePagosByCredito = ({
+  token,
   pago,
   credito,
   cliente,
@@ -185,7 +187,7 @@ export const RowTablePagosByCredito = ({
       </TableRow>
 
       <DialogoForm Open={Visible} setOpen={setVisible} title='Detalles de pago'>
-        <DetailsPago setVisible={setVisible} pago={pago} user={pago.user} />
+        <DetailsPago token={token} setVisible={setVisible} pago={pago} user={pago.user} />
       </DialogoForm>
     </>
   );

@@ -19,18 +19,22 @@ import { toast } from 'react-toast';
 import { AxiosError } from 'axios';
 import { HandleError } from '../../helpers/handleError';
 import ImportExportIcon from '@material-ui/icons/ImportExport';
-import { Usuario } from '../../interfaces/Usuario';
+import { UsuarioAsignacion } from '../../interfaces/Usuario';
 import getInitials from '../../util/getInitials';
+import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import { SourceAvatar } from '../../helpers/sourceAvatar';
-import { DisableInputUser } from './table-user';
+import { AsignUsusario, DisableInputUser } from './table-user';
 import { UpdateActiveUser } from '../../api/users';
 
-const useStyles = makeStyles((theme: any) => ({
+const useStyles = makeStyles(theme => ({
   btnDelete: {
     backgroundColor: theme.palette.error.main,
   },
   btnEdit: {
     backgroundColor: theme.palette.warning.main,
+  },
+  btnAsign: {
+    backgroundColor: theme.palette.info.main,
   },
   avatar: {
     marginRight: theme.spacing(2),
@@ -38,7 +42,7 @@ const useStyles = makeStyles((theme: any) => ({
 }));
 
 interface Props {
-  user: Usuario;
+  user: UsuarioAsignacion;
   isMe: boolean;
   IdsUser: string[];
   disabledInput: DisableInputUser;
@@ -46,6 +50,8 @@ interface Props {
   setIdsUser: Dispatch<SetStateAction<string[]>>;
   setDialogoDelete: Dispatch<SetStateAction<boolean>>;
   setDialogoUpdateRol: Dispatch<SetStateAction<boolean>>;
+  setDialogoAsignaUser: Dispatch<SetStateAction<boolean>>;
+  setAsignUser: Dispatch<SetStateAction<AsignUsusario>>;
 }
 
 export const RowTableUser = ({
@@ -57,6 +63,8 @@ export const RowTableUser = ({
   setIdsUser,
   setDialogoDelete,
   setDialogoUpdateRol,
+  setDialogoAsignaUser,
+  setAsignUser,
 }: Props) => {
   const clases = useStyles();
   const { token } = useContext(MeContext);
@@ -82,6 +90,24 @@ export const RowTableUser = ({
     } else {
       const newIds = IdsUser.filter(id => id !== user.idUser);
       setIdsUser([...newIds]);
+    }
+  };
+
+  const renderAsing = () => {
+    if (user.asesores.length) {
+      setAsignUser({
+        data: user.asesores,
+        type: 'Asesores',
+      });
+      setDialogoAsignaUser(true);
+    }
+
+    if (user.supervidor) {
+      setAsignUser({
+        data: [user.supervidor],
+        type: 'Supervisor',
+      });
+      setDialogoAsignaUser(true);
     }
   };
 
@@ -164,7 +190,24 @@ export const RowTableUser = ({
             ''
           )}
         </TableCell>
-        <TableCell>{renderAcction()}</TableCell>
+        <TableCell>
+          {user.idRol === 'Supervisor' || user.idRol === 'Asesor' ? (
+            <Button
+              size='small'
+              title='Ver usuarios asignados'
+              className={clases.btnAsign}
+              variant='contained'
+              onClick={() => {
+                renderAsing();
+              }}
+            >
+              <SupervisedUserCircleIcon />
+            </Button>
+          ) : (
+            ''
+          )}
+          {renderAcction()}
+        </TableCell>
       </TableRow>
     </>
   );

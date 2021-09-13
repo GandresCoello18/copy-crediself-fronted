@@ -20,12 +20,13 @@ import { DialogoMessage } from '../DialogoMessage';
 import { toast } from 'react-toast';
 import { HandleError } from '../../helpers/handleError';
 import { AxiosError } from 'axios';
-import { Usuario } from '../../interfaces/Usuario';
+import { Supervisor, Usuario, UsuarioAsignacion } from '../../interfaces/Usuario';
 import { DeleteUser } from '../../api/users';
 import { RowTableUser } from './row-table-user';
 import { getPermisoExist } from '../../helpers/renderViewMainRol';
 import { DialogoForm } from '../DialogoForm';
 import { FormUpdateRol } from './updateRol';
+import { DetailsAsignarUser } from './details-asignar-user';
 
 const useStyles = makeStyles((theme: any) => ({
   headTable: {
@@ -37,7 +38,7 @@ const useStyles = makeStyles((theme: any) => ({
 }));
 
 interface Props {
-  usuarios: Usuario[];
+  usuarios: UsuarioAsignacion[];
   Loading: boolean;
   IdsUser: string[];
   setReloadUser: Dispatch<SetStateAction<boolean>>;
@@ -51,6 +52,11 @@ export interface DisableInputUser {
   updateRol: boolean;
 }
 
+export interface AsignUsusario {
+  data: Usuario[] | Supervisor[];
+  type: string;
+}
+
 export const TableUser = ({ usuarios, Loading, IdsUser, setReloadUser, setIdsUser }: Props) => {
   const classes = useStyles();
   const { token, me } = useContext(MeContext);
@@ -62,7 +68,12 @@ export const TableUser = ({ usuarios, Loading, IdsUser, setReloadUser, setIdsUse
     updateRol: getPermisoExist({ RolName: me.idRol, permiso: 'UpdateRolByUsers' }),
   });
   const [DialogoDelete, setDialogoDelete] = useState<boolean>(false);
+  const [AsignUser, setAsignUser] = useState<AsignUsusario>({
+    data: [],
+    type: '',
+  });
   const [DialogoUpdateRol, setDialogoUpdateRol] = useState<boolean>(false);
+  const [DialogoAsignaUser, setDialogoAsignaUser] = useState<boolean>(false);
   const [AceptDialog, setAceptDialog] = useState<boolean>(false);
 
   const SkeletonUser = () => {
@@ -148,6 +159,8 @@ export const TableUser = ({ usuarios, Loading, IdsUser, setReloadUser, setIdsUse
                       setIdsUser={setIdsUser}
                       setDialogoDelete={setDialogoDelete}
                       setDialogoUpdateRol={setDialogoUpdateRol}
+                      setDialogoAsignaUser={setDialogoAsignaUser}
+                      setAsignUser={setAsignUser}
                     />
                   ))}
               </TableBody>
@@ -177,6 +190,14 @@ export const TableUser = ({ usuarios, Loading, IdsUser, setReloadUser, setIdsUse
           User={usuarios.find(user => user.idUser === IdUser)}
           setReloadUser={setReloadUser}
           setVisible={setDialogoUpdateRol}
+        />
+      </DialogoForm>
+
+      <DialogoForm Open={DialogoAsignaUser} setOpen={setDialogoAsignaUser} title={AsignUser.type}>
+        <DetailsAsignarUser
+          users={AsignUser.data}
+          setReloadUser={setReloadUser}
+          setVisible={setDialogoAsignaUser}
         />
       </DialogoForm>
     </>

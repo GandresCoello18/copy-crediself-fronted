@@ -13,8 +13,8 @@ export interface Credito {
   numeroCredito: number;
   estado: 'Pendiente' | 'Al dia' | 'Completado' | 'Atrasado';
   inscripcion: number;
+  iva: number;
   cuota: number;
-  primeraCuota: number;
   total: number;
   idSucursal: string;
   progress?: number;

@@ -23,7 +23,7 @@ import { MeContext } from '../../context/contextMe';
 import { AxiosError } from 'axios';
 import { HandleError } from '../../helpers/handleError';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
-import { AddPagoCredito } from '../../api/pagos';
+import { AddPagoCredito, AperturaPagoCredito } from '../../api/pagos';
 import { CurrentDate } from '../../helpers/fechas';
 import { UploadImage } from '../UploadImage';
 import { ImageListType } from 'react-images-uploading';
@@ -33,9 +33,10 @@ interface Props {
   setVisible: Dispatch<SetStateAction<boolean>>;
   idCredito: string;
   cliente: string;
+  apertura?: boolean;
 }
 
-export const FormNewPago = ({ setReloadPago, setVisible, idCredito, cliente }: Props) => {
+export const FormNewPago = ({ setReloadPago, setVisible, idCredito, cliente, apertura }: Props) => {
   const { token } = useContext(MeContext);
   const [images, setImages] = useState<ImageListType>([]);
 
@@ -81,7 +82,12 @@ export const FormNewPago = ({ setReloadPago, setVisible, idCredito, cliente }: P
           }
 
           try {
-            await AddPagoCredito({ token, data });
+            if (apertura) {
+              await AperturaPagoCredito({ token, data });
+            } else {
+              await AddPagoCredito({ token, data });
+            }
+
             setReloadPago(true);
             setVisible(false);
           } catch (error) {
@@ -93,7 +99,9 @@ export const FormNewPago = ({ setReloadPago, setVisible, idCredito, cliente }: P
       >
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <form onSubmit={handleSubmit}>
-            <CardHeader title={`Registrar pago de: ${cliente}`} />
+            <CardHeader
+              title={`Registrar pago de ${apertura ? 'apertura para' : ''}: ${cliente}`}
+            />
             <Divider />
             <CardContent>
               <Grid container spacing={3}>

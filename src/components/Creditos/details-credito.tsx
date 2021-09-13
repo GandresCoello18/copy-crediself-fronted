@@ -77,15 +77,25 @@ const useStyles = makeStyles(theme => ({
     color: 'green',
     borderColor: 'green',
   },
+  btnApertura: {
+    color: 'royalblue',
+    borderColor: 'royalblue',
+  },
 }));
 
 interface Props {
   credito?: CreditoByCliente;
   imgSrc: string;
   setSelectCredito: Dispatch<SetStateAction<CreditoByCliente | undefined>>;
+  setVisibleApertura: Dispatch<SetStateAction<boolean>>;
 }
 
-export const DetailsCredito = ({ credito, imgSrc, setSelectCredito }: Props) => {
+export const DetailsCredito = ({
+  credito,
+  imgSrc,
+  setSelectCredito,
+  setVisibleApertura,
+}: Props) => {
   const clases = useStyles();
   const { token, me } = useContext(MeContext);
   const [statusCredit, setStatusCredit] = useState<{ loading: boolean; modific: string }>({
@@ -264,9 +274,9 @@ export const DetailsCredito = ({ credito, imgSrc, setSelectCredito }: Props) => 
                 justify='space-between'
               >
                 <Grid item>
-                  <strong>Cuota:</strong>
+                  <strong>Iva:</strong>
                 </Grid>
-                <Grid item>${credito.cuota}</Grid>
+                <Grid item>${credito.iva}</Grid>
               </Grid>
 
               <Grid
@@ -281,9 +291,9 @@ export const DetailsCredito = ({ credito, imgSrc, setSelectCredito }: Props) => 
                 justify='space-between'
               >
                 <Grid item>
-                  <strong>Primera Cuota:</strong>
+                  <strong>Cuota:</strong>
                 </Grid>
-                <Grid item>${credito.primeraCuota}</Grid>
+                <Grid item>${credito.cuota}</Grid>
               </Grid>
 
               <Grid
@@ -461,23 +471,36 @@ export const DetailsCredito = ({ credito, imgSrc, setSelectCredito }: Props) => 
             <Box mt={1}>
               <Grid container justify='space-between'>
                 {me.idRol === 'Gerente de Sucursal' ? (
-                  <Grid item xs={12} md={5}>
-                    <Button
-                      disabled={credito?.autorizado ? true : false}
-                      className={clases.btnAutorizar}
-                      onClick={NotificarAutorizacion}
-                      fullWidth
-                      variant='outlined'
-                    >
-                      {LoadingSolicitud ? (
-                        <CircularProgress color='secondary' />
-                      ) : credito.autorizado ? (
-                        'Autorizado'
-                      ) : (
-                        'Solicitar Autorización'
-                      )}
-                    </Button>
-                  </Grid>
+                  <>
+                    <Grid item xs={12} md={5}>
+                      <Button
+                        disabled={credito?.autorizado ? true : false}
+                        className={clases.btnAutorizar}
+                        onClick={NotificarAutorizacion}
+                        fullWidth
+                        variant='outlined'
+                      >
+                        {LoadingSolicitud ? (
+                          <CircularProgress color='secondary' />
+                        ) : credito.autorizado ? (
+                          'Autorizado'
+                        ) : (
+                          'Solicitar Autorización'
+                        )}
+                      </Button>
+                    </Grid>
+                    <Grid item xs={12} md={5}>
+                      <Button
+                        disabled={credito?.apertura ? true : false}
+                        className={clases.btnApertura}
+                        onClick={() => setVisibleApertura(true)}
+                        fullWidth
+                        variant='outlined'
+                      >
+                        Pago de apertura
+                      </Button>
+                    </Grid>
+                  </>
                 ) : (
                   ''
                 )}

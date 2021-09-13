@@ -24,7 +24,7 @@ import { AxiosError } from 'axios';
 import { HandleError } from '../helpers/handleError';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { TableUser } from '../components/Usuarios/table-user';
-import { Usuario } from '../interfaces/Usuario';
+import { UsuarioAsignacion } from '../interfaces/Usuario';
 import { DeleteMultiUser, GetUsers } from '../api/users';
 import { DialogoForm } from '../components/DialogoForm';
 import { FormNewUser } from '../components/Usuarios/new-user';
@@ -47,7 +47,7 @@ const UsuariosView = () => {
   const { token, me } = useContext(MeContext);
   const [SearchUser, setSearchUser] = useState<string>('');
   const [IdsUser, setIdsUser] = useState<string[]>([]);
-  const [Usuarios, setUsuarios] = useState<Usuario[]>([]);
+  const [Usuarios, setUsuarios] = useState<UsuarioAsignacion[]>([]);
   const [Count, setCount] = useState<number>(0);
   const [Visible, setVisible] = useState<boolean>(false);
   const [Loading, setLoading] = useState<boolean>(false);

@@ -13,3 +13,22 @@ export interface Usuario {
   razon_social: string;
   idSucursal: string | null;
 }
+
+export interface Supervisor {
+  avatar: string;
+  nombres: string;
+  apellidos: string;
+  idUser: string;
+}
+
+export interface Asesores {
+  avatar: string;
+  nombres: string;
+  apellidos: string;
+  idUser: string;
+}
+
+export interface UsuarioAsignacion extends Usuario {
+  supervidor: Supervisor | null;
+  asesores: Asesores[];
+}

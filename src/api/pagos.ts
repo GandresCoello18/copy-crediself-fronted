@@ -11,6 +11,16 @@ export const AddPagoCredito = async (options: { token: string; data: FormData })
   return response;
 };
 
+export const AperturaPagoCredito = async (options: { token: string; data: FormData }) => {
+  api.defaults.headers['access-token'] = options.token;
+  const response = await api({
+    method: 'POST',
+    url: '/pago/credito/apertura',
+    data: options.data,
+  });
+  return response;
+};
+
 export const GetPagosCreditos = async (options: {
   token: string;
   findPago?: string;

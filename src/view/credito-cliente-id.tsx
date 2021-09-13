@@ -26,6 +26,8 @@ import { TablaCredito } from '../components/Creditos/table-credito';
 import { CreditoByCliente } from '../interfaces/Credito';
 import { GetCreditosCliente } from '../api/credito';
 import { DetailsCredito } from '../components/Creditos/details-credito';
+import { DialogoForm } from '../components/DialogoForm';
+import { FormNewPago } from '../components/pagos/new-pago';
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -49,6 +51,7 @@ const CreditoClienteOnlyView = () => {
   const [Creditos, setCreditos] = useState<CreditoByCliente[]>([]);
   const [SelectCredito, setSelectCredito] = useState<CreditoByCliente | undefined>(undefined);
   const [Loading, setLoading] = useState<boolean>(false);
+  const [VisibleApertura, setVisibleApertura] = useState<boolean>(false);
   const [Count, setCount] = useState<number>(0);
   const [ReloadCredito, setReloadCredito] = useState<boolean>(false);
 
@@ -130,6 +133,7 @@ const CreditoClienteOnlyView = () => {
                 imgSrc='../../../no-data.svg'
                 credito={SelectCredito}
                 setSelectCredito={setSelectCredito}
+                setVisibleApertura={setVisibleApertura}
               />
             </Grid>
           </Grid>
@@ -142,6 +146,16 @@ const CreditoClienteOnlyView = () => {
           />
         </Box>
       </Container>
+
+      <DialogoForm Open={VisibleApertura} setOpen={setVisibleApertura} title=''>
+        <FormNewPago
+          setReloadPago={setReloadCredito}
+          setVisible={setVisibleApertura}
+          idCredito={`${SelectCredito?.idCredito}`}
+          cliente={`${SelectCredito?.cliente.nombres} ${SelectCredito?.cliente.apellidos}`}
+          apertura
+        />
+      </DialogoForm>
     </Page>
   );
 };

@@ -12,7 +12,8 @@ import {
   ListItemText,
   Button,
 } from '@material-ui/core';
-import React, { Dispatch, SetStateAction } from 'react';
+import { Alert } from '@material-ui/lab';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { SourceAvatar } from '../../helpers/sourceAvatar';
 import { Asesores, Supervisor } from '../../interfaces/Usuario';
 
@@ -38,15 +39,30 @@ interface Props {
 
 export const DetailsAsignarUser = ({ users, setVisible, setReloadUser }: Props) => {
   const classes = useStyles();
+  const [idUsers, setIdUsers] = useState<string[]>([]);
 
   const HandleClickRemove = () => {
     setVisible(false);
     setReloadUser(true);
   };
 
+  const handleCheckbox = (idUser: string) => {
+    if (idUsers.includes(idUser)) {
+      const filterIds = idUsers.filter(id => id !== idUser);
+      setIdUsers(filterIds);
+    } else {
+      setIdUsers([...idUsers, idUser]);
+    }
+  };
+
   return (
     <Box p={2}>
       <List dense className={classes.root}>
+        {!users.length && (
+          <Alert severity='info'>
+            No hay <strong>usuarios</strong> para mostrar
+          </Alert>
+        )}
         {users.map(user => {
           const labelId = `checkbox-list-secondary-label-${user.idUser}`;
           return (
@@ -58,8 +74,8 @@ export const DetailsAsignarUser = ({ users, setVisible, setReloadUser }: Props) 
               <ListItemSecondaryAction>
                 <Checkbox
                   edge='end'
-                  onChange={event => console.log(event.target.value)}
-                  checked={true}
+                  onChange={() => handleCheckbox(user.idUser)}
+                  checked={idUsers.includes(user.idUser)}
                   inputProps={{ 'aria-labelledby': labelId }}
                 />
               </ListItemSecondaryAction>
@@ -68,14 +84,18 @@ export const DetailsAsignarUser = ({ users, setVisible, setReloadUser }: Props) 
         })}
       </List>
       <br />
-      <Button
-        onClick={HandleClickRemove}
-        variant='outlined'
-        fullWidth
-        className={classes.btnRemove}
-      >
-        Remover
-      </Button>
+      {idUsers.length ? (
+        <Button
+          onClick={HandleClickRemove}
+          variant='outlined'
+          fullWidth
+          className={classes.btnRemove}
+        >
+          Remover
+        </Button>
+      ) : (
+        ''
+      )}
     </Box>
   );
 };

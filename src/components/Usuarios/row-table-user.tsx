@@ -11,6 +11,11 @@ import {
   Button,
   makeStyles,
   CircularProgress,
+  IconButton,
+  Menu,
+  MenuItem,
+  MenuList,
+  Chip,
 } from '@material-ui/core';
 import React, { useState, Dispatch, SetStateAction, useContext } from 'react';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -21,6 +26,8 @@ import { HandleError } from '../../helpers/handleError';
 import ImportExportIcon from '@material-ui/icons/ImportExport';
 import { UsuarioAsignacion } from '../../interfaces/Usuario';
 import getInitials from '../../util/getInitials';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import { SourceAvatar } from '../../helpers/sourceAvatar';
 import { AsignUsusario, DisableInputUser } from './table-user';
@@ -52,6 +59,7 @@ interface Props {
   setDialogoUpdateRol: Dispatch<SetStateAction<boolean>>;
   setDialogoAsignaUser: Dispatch<SetStateAction<boolean>>;
   setAsignUser: Dispatch<SetStateAction<AsignUsusario>>;
+  setDialogoAddAsesor: Dispatch<SetStateAction<boolean>>;
 }
 
 export const RowTableUser = ({
@@ -65,11 +73,14 @@ export const RowTableUser = ({
   setDialogoUpdateRol,
   setDialogoAsignaUser,
   setAsignUser,
+  setDialogoAddAsesor,
 }: Props) => {
   const clases = useStyles();
-  const { token } = useContext(MeContext);
+  const { token, me } = useContext(MeContext);
   const [isActive, setIsActive] = useState<boolean>(user.active ? true : false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
 
   const handleActive = async (check: boolean) => {
     setLoading(true);
@@ -109,6 +120,70 @@ export const RowTableUser = ({
       });
       setDialogoAsignaUser(true);
     }
+  };
+
+  const OnClose = () => setAnchorEl(null);
+
+  const RenderUsuarioOPtions = () => {
+    return (
+      <>
+        <IconButton
+          aria-label='more'
+          aria-controls='long-menu'
+          aria-haspopup='true'
+          onClick={event => setAnchorEl(event.currentTarget)}
+        >
+          <MoreVertIcon />
+        </IconButton>
+        <Menu
+          id='long-menu'
+          anchorEl={anchorEl}
+          keepMounted
+          open={open}
+          onClose={() => setAnchorEl(null)}
+          PaperProps={{
+            style: {
+              maxHeight: 48 * 5.5,
+              width: '22ch',
+            },
+          }}
+        >
+          <MenuList>
+            <MenuItem selected={false} onClick={OnClose}>
+              <Button
+                size='small'
+                title='Ver usuarios asignados'
+                className={clases.btnAsign}
+                variant='contained'
+                onClick={() => renderAsing()}
+              >
+                Asignados <SupervisedUserCircleIcon />
+              </Button>
+            </MenuItem>
+            {user.idRol === 'Supervisor' ? (
+              <MenuItem selected={false} onClick={OnClose}>
+                <Button
+                  size='small'
+                  title={`Agregar ${user.asesores.length ? 'Asesor' : ''} ${
+                    user.supervidor ? 'Supervisor' : ''
+                  }`}
+                  className={clases.btnEdit}
+                  variant='contained'
+                  onClick={() => {
+                    setDialogoAddAsesor(true);
+                    setIdUser(user.idUser);
+                  }}
+                >
+                  Añadir &nbsp; <PersonAddIcon />
+                </Button>
+              </MenuItem>
+            ) : (
+              ''
+            )}
+          </MenuList>
+        </Menu>
+      </>
+    );
   };
 
   const renderAcction = () => {
@@ -169,7 +244,7 @@ export const RowTableUser = ({
           </Box>
         </TableCell>
         <TableCell>{user.apellidos}</TableCell>
-        <TableCell>{user.userName || 'None'}</TableCell>
+        <TableCell>{user.userName || <Chip color='primary' label='None' />}</TableCell>
         <TableCell>{user.email}</TableCell>
         <TableCell>{user.sexo}</TableCell>
         <TableCell>{user.created_at}</TableCell>
@@ -191,21 +266,9 @@ export const RowTableUser = ({
           )}
         </TableCell>
         <TableCell>
-          {user.idRol === 'Supervisor' || user.idRol === 'Asesor' ? (
-            <Button
-              size='small'
-              title='Ver usuarios asignados'
-              className={clases.btnAsign}
-              variant='contained'
-              onClick={() => {
-                renderAsing();
-              }}
-            >
-              <SupervisedUserCircleIcon />
-            </Button>
-          ) : (
-            ''
-          )}
+          {(user.idRol === 'Supervisor' || user.idRol === 'Asesor') &&
+            me.idRol === 'RRHH' &&
+            RenderUsuarioOPtions()}
           {renderAcction()}
         </TableCell>
       </TableRow>

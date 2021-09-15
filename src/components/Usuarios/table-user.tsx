@@ -11,6 +11,9 @@ import {
   makeStyles,
   TableHead,
   TableRow,
+  Avatar,
+  Chip,
+  Button,
 } from '@material-ui/core';
 import { MeContext } from '../../context/contextMe';
 import Alert from '@material-ui/lab/Alert';
@@ -27,6 +30,7 @@ import { getPermisoExist } from '../../helpers/renderViewMainRol';
 import { DialogoForm } from '../DialogoForm';
 import { FormUpdateRol } from './updateRol';
 import { DetailsAsignarUser } from './details-asignar-user';
+import { AsignAsesores } from './asign-asesores';
 
 const useStyles = makeStyles((theme: any) => ({
   headTable: {
@@ -74,6 +78,7 @@ export const TableUser = ({ usuarios, Loading, IdsUser, setReloadUser, setIdsUse
   });
   const [DialogoUpdateRol, setDialogoUpdateRol] = useState<boolean>(false);
   const [DialogoAsignaUser, setDialogoAsignaUser] = useState<boolean>(false);
+  const [DialogoAddAsesor, setDialogoAddAsesor] = useState<boolean>(false);
   const [AceptDialog, setAceptDialog] = useState<boolean>(false);
 
   const SkeletonUser = () => {
@@ -161,6 +166,7 @@ export const TableUser = ({ usuarios, Loading, IdsUser, setReloadUser, setIdsUse
                       setDialogoUpdateRol={setDialogoUpdateRol}
                       setDialogoAsignaUser={setDialogoAsignaUser}
                       setAsignUser={setAsignUser}
+                      setDialogoAddAsesor={setDialogoAddAsesor}
                     />
                   ))}
               </TableBody>
@@ -199,6 +205,31 @@ export const TableUser = ({ usuarios, Loading, IdsUser, setReloadUser, setIdsUse
           setReloadUser={setReloadUser}
           setVisible={setDialogoAsignaUser}
         />
+      </DialogoForm>
+
+      <DialogoForm
+        Open={DialogoAddAsesor}
+        setOpen={setDialogoAddAsesor}
+        title='Asesores Disponibles'
+      >
+        <AsignAsesores token={token} />
+        <br />
+        {[1, 2, 3, 4, 5, 6].map(item => (
+          <Chip
+            key={item}
+            style={{ margin: 5 }}
+            avatar={
+              <Avatar alt='Natacha' src='https://material-ui.com/static/images/avatar/1.jpg' />
+            }
+            label='Deletable'
+            onDelete={() => console.log('delete')}
+            variant='outlined'
+          />
+        ))}
+
+        <Button style={{ marginTop: 10 }} fullWidth color='primary' variant='outlined'>
+          Asignar Asesores ha ({usuarios.find(user => user.idUser === IdUser)?.nombres})
+        </Button>
       </DialogoForm>
     </>
   );

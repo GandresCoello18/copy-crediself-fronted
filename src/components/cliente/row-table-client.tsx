@@ -26,6 +26,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import { HandleError } from '../../helpers/handleError';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { Cliente } from '../../interfaces/Cliente';
+import BackupIcon from '@material-ui/icons/Backup';
 import { UpdateActiveUser } from '../../api/users';
 import { PermisoTableClient } from './table-cliente';
 
@@ -51,6 +52,7 @@ interface Props {
   setDialogoDelete: Dispatch<SetStateAction<boolean>>;
   setDialogoCredit: Dispatch<SetStateAction<boolean>>;
   setDialogoUpdateClient: Dispatch<SetStateAction<boolean>>;
+  setDialogoComprobantes: Dispatch<SetStateAction<boolean>>;
 }
 
 export const RowTableClient = ({
@@ -60,6 +62,7 @@ export const RowTableClient = ({
   setDialogoDelete,
   setDialogoCredit,
   setDialogoUpdateClient,
+  setDialogoComprobantes,
 }: Props) => {
   const clases = useStyles();
   const { token } = useContext(MeContext);
@@ -102,24 +105,15 @@ export const RowTableClient = ({
           onClose={() => setAnchorEl(null)}
           PaperProps={{
             style: {
-              maxHeight: 48 * 4.5,
-              width: '20ch',
+              maxHeight: 48 * 5.5,
+              width: '22ch',
             },
           }}
         >
           <MenuList>
             <MenuItem selected={false} onClick={OnClose}>
               <Link to={`/app/creditos/cliente/${cliente.idCliente}`}>
-                <Button
-                  size='small'
-                  title='Ver creditos de cliente'
-                  fullWidth
-                  variant='outlined'
-                  onClick={() => {
-                    setDialogoCredit(true);
-                    setIdCliente(cliente.idCliente);
-                  }}
-                >
+                <Button size='small' title='Ver creditos de cliente' fullWidth variant='outlined'>
                   <span className={clases.btnIcon}>Creditos</span> <CardTravelIcon />
                 </Button>
               </Link>
@@ -138,6 +132,20 @@ export const RowTableClient = ({
                     }}
                   >
                     <span className={clases.btnIcon}>Solicitar</span> <PostAddIcon />
+                  </Button>
+                </MenuItem>
+                <MenuItem selected={false} onClick={OnClose}>
+                  <Button
+                    size='small'
+                    title='Subir Comprobantes'
+                    variant='outlined'
+                    fullWidth
+                    onClick={() => {
+                      setDialogoComprobantes(true);
+                      setIdCliente(cliente.idCliente);
+                    }}
+                  >
+                    <span className={clases.btnIcon}>Archivos</span> <BackupIcon />
                   </Button>
                 </MenuItem>
                 <MenuItem selected={false} onClick={OnClose}>

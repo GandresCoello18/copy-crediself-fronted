@@ -57,7 +57,6 @@ export const SelectSupervisor = ({ token, isSubmitting, setSupervisor }: Props) 
           {...params}
           fullWidth
           name='idSupervisor'
-          required
           label='Supervisor'
           disabled={isSubmitting}
           variant='outlined'

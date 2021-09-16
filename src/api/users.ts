@@ -97,6 +97,23 @@ export const NewUser = async (options: { token: string; data: NewUsers }) => {
   return response;
 };
 
+export const AssignAsesores = async (options: {
+  token: string;
+  Supervisor: string;
+  AsesoresId: string[];
+}) => {
+  api.defaults.headers['access-token'] = options.token;
+  const response = await api({
+    method: 'POST',
+    url: '/users/assign',
+    data: {
+      Supervisor: options.Supervisor,
+      AsesoresId: options.AsesoresId,
+    },
+  });
+  return response;
+};
+
 export const UpdateUser = async (options: { token: string; data: UpdateMeUser }) => {
   api.defaults.headers['access-token'] = options.token;
   const response = await api({

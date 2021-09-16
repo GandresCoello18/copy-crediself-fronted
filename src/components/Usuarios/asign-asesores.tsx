@@ -10,11 +10,12 @@ import { Usuario } from '../../interfaces/Usuario';
 
 interface Props {
   token: string;
-  selectAsesores?: Dispatch<SetStateAction<Usuario[]>>;
+  Asesores: Usuario[];
+  setAsesoresSelect: Dispatch<SetStateAction<Usuario[]>>;
 }
 
-export const AsignAsesores = ({ token }: Props) => {
-  const [Asesores, setAsesores] = useState<Usuario[]>([]);
+export const AsignAsesores = ({ token, Asesores, setAsesoresSelect }: Props) => {
+  const [AsesoresData, setAsesores] = useState<Usuario[]>([]);
   const [Loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -42,13 +43,14 @@ export const AsignAsesores = ({ token }: Props) => {
   ) : (
     <Autocomplete
       id='combo-box-demo'
-      options={Asesores}
+      options={AsesoresData}
       getOptionLabel={option =>
-        option.nombres + ' ' + option.apellidos + ' (' + option.userName + ') '
+        `${option.nombres} ${option.apellidos} ( ${option?.userName || 'Sin user name'} )`
       }
       getOptionSelected={(option, value) => {
-        // setSupervisor(value);
-        console.log(value);
+        if (!Asesores.find(user => user.idUser === value.idUser)) {
+          setAsesoresSelect([...Asesores, value]);
+        }
         return true;
       }}
       style={{ width: '100%' }}

@@ -59,7 +59,7 @@ export interface DisableInputUser {
 
 export interface AsignUsusario {
   data: Usuario[] | Supervisor[];
-  type: string;
+  type: 'Asesores' | 'Supervisor' | undefined;
 }
 
 export const TableUser = ({ usuarios, Loading, IdsUser, setReloadUser, setIdsUser }: Props) => {
@@ -76,7 +76,7 @@ export const TableUser = ({ usuarios, Loading, IdsUser, setReloadUser, setIdsUse
   const [DialogoDelete, setDialogoDelete] = useState<boolean>(false);
   const [AsignUser, setAsignUser] = useState<AsignUsusario>({
     data: [],
-    type: '',
+    type: undefined,
   });
   const [DialogoUpdateRol, setDialogoUpdateRol] = useState<boolean>(false);
   const [DialogoAsignaUser, setDialogoAsignaUser] = useState<boolean>(false);
@@ -229,8 +229,14 @@ export const TableUser = ({ usuarios, Loading, IdsUser, setReloadUser, setIdsUse
         />
       </DialogoForm>
 
-      <DialogoForm Open={DialogoAsignaUser} setOpen={setDialogoAsignaUser} title={AsignUser.type}>
+      <DialogoForm
+        Open={DialogoAsignaUser}
+        setOpen={setDialogoAsignaUser}
+        title={AsignUser.type || ''}
+      >
         <DetailsAsignarUser
+          token={token}
+          type={AsignUser.type}
           users={AsignUser.data}
           setReloadUser={setReloadUser}
           setVisible={setDialogoAsignaUser}

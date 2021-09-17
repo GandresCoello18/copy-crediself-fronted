@@ -114,6 +114,21 @@ export const AssignAsesores = async (options: {
   return response;
 };
 
+export const UpdateNullAssignAsesores = async (options: {
+  token: string;
+  AsesoresId: string[];
+}) => {
+  api.defaults.headers['access-token'] = options.token;
+  const response = await api({
+    method: 'PUT',
+    url: '/users/assign/remove',
+    data: {
+      AsesoresId: options.AsesoresId,
+    },
+  });
+  return response;
+};
+
 export const UpdateUser = async (options: { token: string; data: UpdateMeUser }) => {
   api.defaults.headers['access-token'] = options.token;
   const response = await api({

@@ -13,7 +13,11 @@ import {
   Button,
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
+import { AxiosError } from 'axios';
 import React, { Dispatch, SetStateAction, useState } from 'react';
+import { toast } from 'react-toast';
+import { UpdateNullAssignAsesores } from '../../api/users';
+import { HandleError } from '../../helpers/handleError';
 import { SourceAvatar } from '../../helpers/sourceAvatar';
 import { Asesores, Supervisor } from '../../interfaces/Usuario';
 
@@ -32,18 +36,25 @@ const useStyles = makeStyles(theme =>
 );
 
 interface Props {
+  token: string;
+  type: 'Supervisor' | 'Asesores' | undefined;
   users: Asesores[] | Supervisor[];
   setVisible: Dispatch<SetStateAction<boolean>>;
   setReloadUser: Dispatch<SetStateAction<boolean>>;
 }
 
-export const DetailsAsignarUser = ({ users, setVisible, setReloadUser }: Props) => {
+export const DetailsAsignarUser = ({ token, type, users, setVisible, setReloadUser }: Props) => {
   const classes = useStyles();
   const [idUsers, setIdUsers] = useState<string[]>([]);
 
-  const HandleClickRemove = () => {
-    setVisible(false);
-    setReloadUser(true);
+  const HandleClickRemove = async () => {
+    try {
+      await UpdateNullAssignAsesores({ token, AsesoresId: idUsers });
+      setVisible(false);
+      setReloadUser(true);
+    } catch (error) {
+      toast.error(HandleError(error as AxiosError));
+    }
   };
 
   const handleCheckbox = (idUser: string) => {
@@ -74,6 +85,7 @@ export const DetailsAsignarUser = ({ users, setVisible, setReloadUser }: Props) 
               <ListItemSecondaryAction>
                 <Checkbox
                   edge='end'
+                  disabled={type === 'Supervisor'}
                   onChange={() => handleCheckbox(user.idUser)}
                   checked={idUsers.includes(user.idUser)}
                   inputProps={{ 'aria-labelledby': labelId }}

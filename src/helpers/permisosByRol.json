@@ -5,7 +5,7 @@
     },
     {
         "rol": "Administrativo",
-        "permisos": ["UpdateMeUser", "NewPayment", "ViewPayment", "ViewClientes", "ViewCredito"]
+        "permisos": ["UpdateMeUser", "NewPayment", "ViewPayment", "AprobarPayment", "UpdateComprobantePayment", "DeleteComprobantePayment", "ViewClientes", "ViewCredito"]
     },
     {
         "rol": "Gerente Regional",
@@ -13,15 +13,15 @@
     },
     {
         "rol": "Gerente de Sucursal",
-        "permisos": ["UpdateMeUser", "ViewClientes", "ViewNotification", "NewCliente", "UpdateCliente", "DelCliente", "NewCredito", "ViewCredito", "DelCredito", "UpdateCredito", "UpdateContratoCredito"]
+        "permisos": ["UpdateMeUser", "ViewClientes", "ViewNotification", "NewCliente", "UpdateCliente", "DelCliente", "NewCredito", "ViewCredito", "DelCredito", "UpdateCredito", "UpdateContratoCredito", "AperturaPayment", "AddFileExpediente", "RemoveFileExpediente"]
     },
     {
         "rol": "Supervisor",
-        "permisos": []
+        "permisos": ["UpdateMeUser", "ViewClientes", "ViewNotification", "NewCliente", "UpdateCliente", "NewCredito", "ViewCredito", "UpdateContratoCredito", "AperturaPayment", "AddFileExpediente", "RemoveFileExpediente", "ViewUsers"]
     },
     {
         "rol": "Asesor",
-        "permisos": []
+        "permisos": ["UpdateMeUser", "ViewClientes", "ViewNotification", "NewCliente", "UpdateCliente", "NewCredito", "ViewCredito", "UpdateContratoCredito", "AperturaPayment", "AddFileExpediente", "RemoveFileExpediente"]
     },
     {
         "rol": "Cobranza",

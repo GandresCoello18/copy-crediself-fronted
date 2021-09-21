@@ -145,7 +145,11 @@ const TopBar = ({ onMobileNavOpen, ...rest }: Props) => {
             </Box>
           ))}
         </List>
-        <ActionNotification setOpen={setOpen} setReloadNotificacion={setReloadNotificacion} />
+        <ActionNotification
+          disabled={Notificaciones.length === 0}
+          setOpen={setOpen}
+          setReloadNotificacion={setReloadNotificacion}
+        />
       </SwipeableDrawer>
     </>
   );

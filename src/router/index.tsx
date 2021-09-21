@@ -26,6 +26,7 @@ const PermisosView = lazy(() => import('../view/permisos'));
 const AccountView = lazy(() => import('../view/account'));
 const RolesView = lazy(() => import('../view/roles'));
 const UsuariosView = lazy(() => import('../view/usuarios'));
+const AsesoresView = lazy(() => import('../view/asesores'));
 const NotificacionesView = lazy(() => import('../view/notificacion'));
 const ClientesView = lazy(() => import('../view/clientes'));
 const ClienteOnlyView = lazy(() => import('../view/cliente-id'));
@@ -65,6 +66,7 @@ const routes = [
       { path: 'pagos', element: PathSesion(PagosView) },
       { path: 'pagos/credito/:idCredito', element: PathSesion(PagosByCreditoView) },
       { path: 'usuarios', element: PathSesion(UsuariosView) },
+      { path: 'asesores', element: PathSesion(AsesoresView) },
       { path: 'calendario', element: PathSesion(CalendarioView) },
       { path: 'notificaciones', element: PathSesion(NotificacionesView) },
       { path: '*', element: <Navigate to='/404' /> },

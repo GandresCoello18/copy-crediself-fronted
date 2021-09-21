@@ -110,6 +110,7 @@ const NotificacionView = () => {
           >
             <Box mt={3}>
               <ActionNotification
+                disabled={Notificaciones.length === 0}
                 VisibleViewAll={false}
                 setReloadNotificacion={setReloadNotificacion}
               />

@@ -19,10 +19,10 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { Link } from 'react-router-dom';
 import { MeContext } from '../../context/contextMe';
 import { toast } from 'react-toast';
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import CardTravelIcon from '@material-ui/icons/CardTravel';
 import { AxiosError } from 'axios';
-import EditIcon from '@material-ui/icons/Edit';
 import { HandleError } from '../../helpers/handleError';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { Cliente } from '../../interfaces/Cliente';
@@ -115,8 +115,8 @@ export const RowTableClient = ({
             </MenuItem>
             <MenuItem selected={false} onClick={OnClose}>
               <Link to={`/app/clientes/${cliente.idCliente}`}>
-                <Button size='small' title='Editar Cliente' variant='outlined' fullWidth>
-                  <span className={clases.btnIcon}>Detalles</span> <EditIcon />
+                <Button size='small' title='Ver Cliente' variant='outlined' fullWidth>
+                  <span className={clases.btnIcon}>Detalles</span> <AccountBoxIcon />
                 </Button>
               </Link>
             </MenuItem>

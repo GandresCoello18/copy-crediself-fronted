@@ -11,12 +11,14 @@ import { HandleError } from '../../helpers/handleError';
 interface Props {
   VisibleViewAll?: boolean;
   setOpen?: Dispatch<SetStateAction<boolean>>;
+  disabled?: boolean;
   setReloadNotificacion: Dispatch<SetStateAction<boolean>>;
 }
 
 export const ActionNotification = ({
   VisibleViewAll = true,
   setOpen,
+  disabled,
   setReloadNotificacion,
 }: Props) => {
   const { token } = useContext(MeContext);
@@ -37,7 +39,7 @@ export const ActionNotification = ({
 
   return (
     <Box p={3} display='flex' justifyContent='space-between'>
-      <Button style={{ fontSize: 12 }} onClick={handleReadAll}>
+      <Button disabled={disabled} style={{ fontSize: 12 }} onClick={handleReadAll}>
         {Loading ? <CircularProgress color='secondary' /> : 'Marcar todas como leidas'}
       </Button>
       {VisibleViewAll ? (

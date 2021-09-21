@@ -27,6 +27,7 @@ import PaymentIcon from '@material-ui/icons/Payment';
 import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
 import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import NavItem from './NavItem';
+import GroupIcon from '@material-ui/icons/Group';
 import MoneyOffIcon from '@material-ui/icons/MoneyOff';
 import { MeContext } from '../../../context/contextMe';
 import Cookies from 'js-cookie';
@@ -188,6 +189,44 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
         },
       ];
       break;
+    case 'Supervisor':
+      items = [
+        {
+          href: '/app/clientes',
+          icon: EmojiPeopleIcon,
+          title: 'Clientes',
+        },
+        {
+          href: '/app/creditos',
+          icon: CardTravelIcon,
+          title: 'Creditos',
+        },
+        {
+          href: '/app/asesores',
+          icon: GroupIcon,
+          title: 'Asesores',
+        },
+        {
+          href: '/app/account',
+          icon: PersonIcon,
+          title: 'Mi cuenta',
+        },
+      ];
+      break;
+    case 'Asesor':
+      items = [
+        {
+          href: '/app/clientes',
+          icon: EmojiPeopleIcon,
+          title: 'Clientes',
+        },
+        {
+          href: '/app/account',
+          icon: PersonIcon,
+          title: 'Mi cuenta',
+        },
+      ];
+      break;
     default:
       items = [
         {
@@ -226,6 +265,17 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           {me.idRol}
         </Typography>
       </Box>
+      <Divider />
+      {me.supervisor && me.idRol === 'Asesor' && (
+        <Box p={2} textAlign='center'>
+          <Typography color='textPrimary' variant='h5'>
+            {me.supervisor}
+          </Typography>
+          <Typography color='textSecondary' variant='body2'>
+            Supervisor
+          </Typography>
+        </Box>
+      )}
       <Divider />
       <Box p={2}>
         <List>

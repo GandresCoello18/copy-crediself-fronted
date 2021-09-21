@@ -87,6 +87,15 @@ export const GetAsesoresDisponiblesUser = async (options: { token: string }) => 
   return response;
 };
 
+export const GetMisAsesoresUser = async (options: { token: string }) => {
+  api.defaults.headers['access-token'] = options.token;
+  const response = await api({
+    method: 'GET',
+    url: '/users/mis-asesores',
+  });
+  return response;
+};
+
 export const NewUser = async (options: { token: string; data: NewUsers }) => {
   api.defaults.headers['access-token'] = options.token;
   const response = await api({

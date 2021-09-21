@@ -14,6 +14,7 @@ interface Me {
   avatar: string;
   active: number;
   idRol: string;
+  supervisor: string;
 }
 
 const templeate: Me = {
@@ -26,6 +27,7 @@ const templeate: Me = {
   avatar: '',
   active: 0,
   idRol: '',
+  supervisor: '',
 };
 
 interface Props {

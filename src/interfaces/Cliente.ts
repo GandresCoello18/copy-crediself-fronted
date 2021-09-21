@@ -13,3 +13,12 @@ export interface Cliente {
   rfc: string;
   numeroCliente: number;
 }
+
+export interface Expediente {
+  idExpedienteClient: string;
+  comprobanteExp: string;
+  sourceExp: string;
+  created_at: string | Date;
+  idCliente: string;
+  kind: 'img' | 'pdf';
+}

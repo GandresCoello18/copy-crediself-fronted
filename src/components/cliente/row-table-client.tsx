@@ -27,8 +27,8 @@ import { HandleError } from '../../helpers/handleError';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { Cliente } from '../../interfaces/Cliente';
 import BackupIcon from '@material-ui/icons/Backup';
-import { UpdateActiveUser } from '../../api/users';
 import { PermisoTableClient } from './table-cliente';
+import { UpdateActiveCliente } from '../../api/clientes';
 
 const useStyles = makeStyles((theme: any) => ({
   btnIcon: {
@@ -51,7 +51,6 @@ interface Props {
   setIdCliente: Dispatch<SetStateAction<string>>;
   setDialogoDelete: Dispatch<SetStateAction<boolean>>;
   setDialogoCredit: Dispatch<SetStateAction<boolean>>;
-  setDialogoUpdateClient: Dispatch<SetStateAction<boolean>>;
   setDialogoComprobantes: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -61,7 +60,6 @@ export const RowTableClient = ({
   setIdCliente,
   setDialogoDelete,
   setDialogoCredit,
-  setDialogoUpdateClient,
   setDialogoComprobantes,
 }: Props) => {
   const clases = useStyles();
@@ -75,7 +73,7 @@ export const RowTableClient = ({
     setLoading(true);
 
     try {
-      await UpdateActiveUser({ token, active: check, IdUser: cliente.idCliente });
+      await UpdateActiveCliente({ token, active: check, idCliente: cliente.idCliente });
       setLoading(false);
       setIsActive(check);
     } catch (error) {
@@ -149,18 +147,11 @@ export const RowTableClient = ({
                   </Button>
                 </MenuItem>
                 <MenuItem selected={false} onClick={OnClose}>
-                  <Button
-                    size='small'
-                    title='Editar Cliente'
-                    variant='outlined'
-                    fullWidth
-                    onClick={() => {
-                      setDialogoUpdateClient(true);
-                      setIdCliente(cliente.idCliente);
-                    }}
-                  >
-                    <span className={clases.btnIcon}>Editar</span> <EditIcon />
-                  </Button>
+                  <Link to={`/app/clientes/${cliente.idCliente}`}>
+                    <Button size='small' title='Editar Cliente' variant='outlined' fullWidth>
+                      <span className={clases.btnIcon}>Detalles</span> <EditIcon />
+                    </Button>
+                  </Link>
                 </MenuItem>
                 <MenuItem selected={false} onClick={OnClose}>
                   <Button

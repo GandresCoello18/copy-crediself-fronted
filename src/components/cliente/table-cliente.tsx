@@ -58,7 +58,6 @@ export const TablaCliente = ({ clientes, Loading, setReloadCliente }: Props) => 
   const [DialogoDelete, setDialogoDelete] = useState<boolean>(false);
   const [DialogoCredit, setDialogoCredit] = useState<boolean>(false);
   const [DialogoComprobantes, setDialogoComprobantes] = useState<boolean>(false);
-  const [DialogoUpdateClient, setDialogoUpdateClient] = useState<boolean>(false);
   const [AceptDialog, setAceptDialog] = useState<boolean>(false);
   const [images, setImages] = useState<ImageListType>([]);
 
@@ -148,7 +147,6 @@ export const TablaCliente = ({ clientes, Loading, setReloadCliente }: Props) => 
                       setIdCliente={setIdCliente}
                       setDialogoDelete={setDialogoDelete}
                       setDialogoCredit={setDialogoCredit}
-                      setDialogoUpdateClient={setDialogoUpdateClient}
                       setDialogoComprobantes={setDialogoComprobantes}
                     />
                   ))}
@@ -173,10 +171,6 @@ export const TablaCliente = ({ clientes, Loading, setReloadCliente }: Props) => 
         setAceptDialog={setAceptDialog}
         content='¿Esta seguro que deseas eliminar este registro?, una vez hecho sera irrecuperable.'
       />
-
-      <DialogoForm Open={DialogoUpdateClient} setOpen={setDialogoUpdateClient} title=''>
-        update
-      </DialogoForm>
 
       <DialogoForm Open={DialogoCredit} setOpen={setDialogoCredit} title=''>
         <FormNewCredit setVisible={setDialogoCredit} idCliente={IdCliente} />

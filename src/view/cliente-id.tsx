@@ -336,7 +336,7 @@ const ClientOnlyView = () => {
                     xs={12}
                     md={4}
                   >
-                    <CardFile file={item} />
+                    <CardFile file={item} token={token} setReloadCliente={setReloadCliente} />
                   </Grid>
                 ))}
             <Grid item xs={12}>

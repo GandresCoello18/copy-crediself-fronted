@@ -26,8 +26,6 @@ import { DeleteCliente } from '../../api/clientes';
 import { RowTableClient } from './row-table-client';
 import { FormNewCredit } from './new-credit';
 import { getPermisoExist } from '../../helpers/renderViewMainRol';
-import { UploadImage } from '../UploadImage';
-import { ImageListType } from 'react-images-uploading';
 
 const useStyles = makeStyles((theme: any) => ({
   headTable: {
@@ -57,11 +55,7 @@ export const TablaCliente = ({ clientes, Loading, setReloadCliente }: Props) => 
   const [IdCliente, setIdCliente] = useState<string>('');
   const [DialogoDelete, setDialogoDelete] = useState<boolean>(false);
   const [DialogoCredit, setDialogoCredit] = useState<boolean>(false);
-  const [DialogoComprobantes, setDialogoComprobantes] = useState<boolean>(false);
   const [AceptDialog, setAceptDialog] = useState<boolean>(false);
-  const [images, setImages] = useState<ImageListType>([]);
-
-  const onChange = (imageList: ImageListType) => setImages(imageList as never[]);
 
   const SkeletonUser = () => {
     return [0, 1, 2, 3, 4, 5, 6, 7].map(item => (
@@ -147,7 +141,6 @@ export const TablaCliente = ({ clientes, Loading, setReloadCliente }: Props) => 
                       setIdCliente={setIdCliente}
                       setDialogoDelete={setDialogoDelete}
                       setDialogoCredit={setDialogoCredit}
-                      setDialogoComprobantes={setDialogoComprobantes}
                     />
                   ))}
               </TableBody>
@@ -174,14 +167,6 @@ export const TablaCliente = ({ clientes, Loading, setReloadCliente }: Props) => 
 
       <DialogoForm Open={DialogoCredit} setOpen={setDialogoCredit} title=''>
         <FormNewCredit setVisible={setDialogoCredit} idCliente={IdCliente} />
-      </DialogoForm>
-
-      <DialogoForm
-        Open={DialogoComprobantes}
-        setOpen={setDialogoComprobantes}
-        title='Subir comprobantes'
-      >
-        <UploadImage images={images} maxNumber={4} onChange={onChange} />
       </DialogoForm>
     </>
   );

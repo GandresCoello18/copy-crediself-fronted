@@ -26,7 +26,6 @@ import EditIcon from '@material-ui/icons/Edit';
 import { HandleError } from '../../helpers/handleError';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { Cliente } from '../../interfaces/Cliente';
-import BackupIcon from '@material-ui/icons/Backup';
 import { PermisoTableClient } from './table-cliente';
 import { UpdateActiveCliente } from '../../api/clientes';
 
@@ -51,7 +50,6 @@ interface Props {
   setIdCliente: Dispatch<SetStateAction<string>>;
   setDialogoDelete: Dispatch<SetStateAction<boolean>>;
   setDialogoCredit: Dispatch<SetStateAction<boolean>>;
-  setDialogoComprobantes: Dispatch<SetStateAction<boolean>>;
 }
 
 export const RowTableClient = ({
@@ -60,7 +58,6 @@ export const RowTableClient = ({
   setIdCliente,
   setDialogoDelete,
   setDialogoCredit,
-  setDialogoComprobantes,
 }: Props) => {
   const clases = useStyles();
   const { token } = useContext(MeContext);
@@ -116,6 +113,13 @@ export const RowTableClient = ({
                 </Button>
               </Link>
             </MenuItem>
+            <MenuItem selected={false} onClick={OnClose}>
+              <Link to={`/app/clientes/${cliente.idCliente}`}>
+                <Button size='small' title='Editar Cliente' variant='outlined' fullWidth>
+                  <span className={clases.btnIcon}>Detalles</span> <EditIcon />
+                </Button>
+              </Link>
+            </MenuItem>
             {permisos.newCredito ? (
               <>
                 <MenuItem selected={false} onClick={OnClose}>
@@ -131,27 +135,6 @@ export const RowTableClient = ({
                   >
                     <span className={clases.btnIcon}>Solicitar</span> <PostAddIcon />
                   </Button>
-                </MenuItem>
-                <MenuItem selected={false} onClick={OnClose}>
-                  <Button
-                    size='small'
-                    title='Subir Comprobantes'
-                    variant='outlined'
-                    fullWidth
-                    onClick={() => {
-                      setDialogoComprobantes(true);
-                      setIdCliente(cliente.idCliente);
-                    }}
-                  >
-                    <span className={clases.btnIcon}>Archivos</span> <BackupIcon />
-                  </Button>
-                </MenuItem>
-                <MenuItem selected={false} onClick={OnClose}>
-                  <Link to={`/app/clientes/${cliente.idCliente}`}>
-                    <Button size='small' title='Editar Cliente' variant='outlined' fullWidth>
-                      <span className={clases.btnIcon}>Detalles</span> <EditIcon />
-                    </Button>
-                  </Link>
                 </MenuItem>
                 <MenuItem selected={false} onClick={OnClose}>
                   <Button

@@ -68,35 +68,43 @@ export const FormNewCliente = ({ setReloadCliente, setVisible }: Props) => {
         validationSchema={Yup.object().shape({
           nombres: Yup.string().max(100).required('El campo es requerido'),
           apellidos: Yup.string().max(100).required('El campo es requerido'),
-          telefono: Yup.string().required('El campo es requerido').max(15).min(9),
+          telefono: Yup.string().max(15),
           email: Yup.string().email('Email invalido').max(100).required('El campo es requerido'),
           ciudad: Yup.string().max(50),
           direccion: Yup.string().max(200),
-          sexo: Yup.string().max(100).required('El campo es requerido'),
-          fechaNacimiento: Yup.string().max(100).required('El campo es requerido'),
-          rfc: Yup.string().max(25).required('El campo es requerido'),
+          sexo: Yup.string().max(100),
+          fechaNacimiento: Yup.string().max(100),
+          rfc: Yup.string().max(25),
         })}
         onSubmit={async (values, actions) => {
-          if (new Date().getTime() < new Date(values.fechaNacimiento).getTime()) {
-            toast.warn('La fecha de nacimiento debe ser menor a la fecha actual');
-            return;
+          if (values.fechaNacimiento) {
+            if (new Date().getTime() < new Date(values.fechaNacimiento).getTime()) {
+              toast.warn('La fecha de nacimiento debe ser menor a la fecha actual');
+              return;
+            }
+
+            const diffMont = monthDiff({
+              hasta: new Date(),
+              desde: new Date(values.fechaNacimiento),
+            });
+
+            if (diffMont < 216) {
+              toast.warn('El usuario debe tener como minimo 18 años de edad');
+              return;
+            }
           }
 
-          const diffMont = monthDiff({
-            hasta: new Date(),
-            desde: new Date(values.fechaNacimiento),
-          });
+          if (selectCity) {
+            values.ciudad = Ciudades.find(city => city.ciudad === selectCity)?.idCiudad || '';
 
-          if (diffMont < 216) {
-            toast.warn('El usuario debe tener como minimo 18 años de edad');
-            return;
+            if (!values.ciudad) {
+              toast.warn('Seleccione una ciudad');
+              return;
+            }
           }
 
-          values.ciudad = Ciudades.find(city => city.ciudad === selectCity)?.idCiudad || '';
-
-          if (!values.ciudad) {
-            toast.warn('Seleccione una ciudad');
-            return;
+          if (!values.sexo) {
+            values.sexo = 'No especificado';
           }
 
           try {
@@ -188,7 +196,6 @@ export const FormNewCliente = ({ setReloadCliente, setVisible }: Props) => {
                     fullWidth
                     name='fechaNacimiento'
                     type='date'
-                    required
                     label='Nacimiento'
                     onBlur={handleBlur}
                     disabled={isSubmitting}
@@ -204,7 +211,6 @@ export const FormNewCliente = ({ setReloadCliente, setVisible }: Props) => {
                     helperText={touched.rfc && errors.rfc}
                     fullWidth
                     name='rfc'
-                    required
                     label='RFC'
                     onBlur={handleBlur}
                     disabled={isSubmitting}
@@ -246,7 +252,6 @@ export const FormNewCliente = ({ setReloadCliente, setVisible }: Props) => {
                         {...params}
                         fullWidth
                         name='ciudad'
-                        required
                         label='Ciudad'
                         disabled={isSubmitting}
                         variant='outlined'
@@ -261,7 +266,6 @@ export const FormNewCliente = ({ setReloadCliente, setVisible }: Props) => {
                     helperText={touched.direccion && errors.direccion}
                     fullWidth
                     name='direccion'
-                    required
                     multiline
                     onBlur={handleBlur}
                     disabled={isSubmitting}

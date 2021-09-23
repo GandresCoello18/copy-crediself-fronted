@@ -78,6 +78,15 @@ export const GetSupervidoresUser = async (options: { token: string }) => {
   return response;
 };
 
+export const GetUserByRol = async (options: { token: string; name: string }) => {
+  api.defaults.headers['access-token'] = options.token;
+  const response = await api({
+    method: 'GET',
+    url: `/users/rol/${options.name}`,
+  });
+  return response;
+};
+
 export const GetAsesoresDisponiblesUser = async (options: { token: string }) => {
   api.defaults.headers['access-token'] = options.token;
   const response = await api({

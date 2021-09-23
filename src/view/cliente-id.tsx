@@ -12,6 +12,7 @@ import {
   Typography,
   Switch,
   Button,
+  Chip,
 } from '@material-ui/core';
 import Page from '../components/page';
 import { useState, useEffect, useContext } from 'react';
@@ -30,6 +31,8 @@ import { DialogoMessage } from '../components/DialogoMessage';
 import { UploadExpediente } from '../components/cliente/upload-expediente';
 import { FormUpdateCliente } from '../components/cliente/update-client';
 import { CardFile } from '../components/cliente/card-file';
+import { Usuario } from '../interfaces/Usuario';
+import { AutorizarCliente } from '../components/cliente/Autorizar-cliente';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -85,6 +88,7 @@ const ClientOnlyView = () => {
   const { token, me } = useContext(MeContext);
   const [Archivos, setArchivos] = useState<Expediente[]>([]);
   const [isActive, setIsActive] = useState<boolean>(false);
+  const [UsuarioRegister, setUsuarioRegister] = useState<Usuario | undefined>(undefined);
   const [Numbers, setNumbers] = useState<NumbersDetails>({
     creditos: 0,
     pagos: 0,
@@ -101,12 +105,13 @@ const ClientOnlyView = () => {
     setLoading(true);
 
     try {
-      const { cliente, numbers, expediente } = await (
+      const { cliente, numbers, expediente, usuario } = await (
         await GetCliente({ token, IdCliente: params.idCliente })
       ).data;
 
       setCliente(cliente);
       setArchivos(expediente);
+      setUsuarioRegister(usuario);
       setLoading(false);
       setNumbers(numbers);
 
@@ -166,11 +171,29 @@ const ClientOnlyView = () => {
           <br />
           <Divider />
           <br />
-          <Box alignItems='center' display='flex' flexDirection='column'>
+          <Box alignItems='center' display='flex' justifyContent='center'>
             {Loading ? (
               <Skeleton variant='circle' width={100} height={100} />
             ) : (
-              <Avatar className={classes.avatar} src={SourceAvatar('')} />
+              <>
+                <Box alignItems='center' display='flex' flexDirection='column' mr={3}>
+                  <Avatar
+                    title={Cliente?.nombres + ' ' + Cliente?.apellidos}
+                    className={classes.avatar}
+                    src={SourceAvatar('')}
+                  />
+                  <span className={classes.subTitle}>Cliente</span>
+                </Box>
+
+                <Box alignItems='center' display='flex' flexDirection='column' ml={3}>
+                  <Avatar
+                    title={UsuarioRegister?.nombres + ' ' + UsuarioRegister?.apellidos}
+                    className={classes.avatar}
+                    src={SourceAvatar(UsuarioRegister?.avatar || '')}
+                  />
+                  <span className={classes.subTitle}>{UsuarioRegister?.idRol}</span>
+                </Box>
+              </>
             )}
           </Box>
           <Box mt={2}>
@@ -205,7 +228,9 @@ const ClientOnlyView = () => {
             {Loading ? (
               <Skeleton variant='text' width={300} height={20} />
             ) : (
-              <Typography className={classes.textTop}>{Cliente?.telefono}</Typography>
+              <Typography className={classes.textTop}>
+                {Cliente?.telefono || <Chip label='No especificado' />}
+              </Typography>
             )}
           </Box>
 
@@ -214,7 +239,9 @@ const ClientOnlyView = () => {
             {Loading ? (
               <Skeleton variant='text' width={300} height={20} />
             ) : (
-              <Typography className={classes.textTop}>{Cliente?.fecha_nacimiento}</Typography>
+              <Typography className={classes.textTop}>
+                {Cliente?.fecha_nacimiento || <Chip label='No especificado' />}
+              </Typography>
             )}
           </Box>
 
@@ -237,7 +264,9 @@ const ClientOnlyView = () => {
             {Loading ? (
               <Skeleton variant='text' width={300} height={20} />
             ) : (
-              <Typography className={classes.textTop}>{Cliente?.rfc}</Typography>
+              <Typography className={classes.textTop}>
+                {Cliente?.rfc || <Chip label='No especificado' />}
+              </Typography>
             )}
           </Box>
 
@@ -255,7 +284,9 @@ const ClientOnlyView = () => {
             {Loading ? (
               <Skeleton variant='text' width={300} height={20} />
             ) : (
-              <Typography className={classes.textTop}>{Cliente?.ciudad}</Typography>
+              <Typography className={classes.textTop}>
+                {Cliente?.ciudad || <Chip label='No especificado' />}
+              </Typography>
             )}
           </Box>
 
@@ -264,7 +295,23 @@ const ClientOnlyView = () => {
             {Loading ? (
               <Skeleton variant='text' width={500} height={100} />
             ) : (
-              <Typography className={classes.textTop}>{Cliente?.direccion}</Typography>
+              <Typography className={classes.textTop}>
+                {Cliente?.direccion || <Chip label='No especificado' />}
+              </Typography>
+            )}
+          </Box>
+
+          <Box mt={2}>
+            <strong className={classes.subTitle}>Autorizado</strong>
+            {Loading ? (
+              <Skeleton variant='text' width={300} height={20} />
+            ) : (
+              <Typography className={classes.textTop}>
+                <Chip
+                  label={Cliente?.autorizado ? 'Si' : 'No'}
+                  color={Cliente?.autorizado ? 'primary' : 'default'}
+                />
+              </Typography>
             )}
           </Box>
         </Grid>
@@ -365,6 +412,15 @@ const ClientOnlyView = () => {
             </Grid>
             <Grid item>
               <Button variant='outlined'>Estado de cuenta</Button>
+            </Grid>
+            <Grid item>
+              <AutorizarCliente
+                token={token}
+                rol={me.idRol}
+                idCliente={params.idCliente}
+                isAutorizado={Cliente?.autorizado === 1}
+                clientRefNombres={Cliente?.nombres || ''}
+              />
             </Grid>
             <Grid item>
               <Button

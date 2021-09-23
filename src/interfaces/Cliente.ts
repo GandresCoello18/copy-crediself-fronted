@@ -2,16 +2,18 @@ export interface Cliente {
   idCliente: string;
   nombres: string;
   apellidos: string;
-  telefono: number;
-  fecha_nacimiento: string | Date;
+  telefono: number | null;
+  fecha_nacimiento: string | Date | null;
   created_at: string | Date;
   email: string;
   active: number;
-  ciudad: string;
-  direccion: string;
-  sexo: 'Masculino' | 'Femenino';
-  rfc: string;
+  ciudad: string | null;
+  direccion: string | null;
+  sexo: 'Masculino' | 'Femenino' | 'No especificado';
+  rfc: string | null;
   numeroCliente: number;
+  idUser: string;
+  autorizado: number;
 }
 
 export interface Expediente {

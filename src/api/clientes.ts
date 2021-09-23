@@ -15,13 +15,13 @@ export interface NewClients {
 interface UpdateClient {
   nombres: string;
   apellidos: string;
-  telefono: number;
-  fechaNacimiento: string | Date;
+  telefono?: number | null;
+  fechaNacimiento?: string | Date | null;
   email: string;
-  direccion: string;
-  rfc: string;
+  direccion?: string | null;
+  rfc?: string | null;
   sexo: string;
-  ciudad: string;
+  ciudad?: string | null;
 }
 
 export const GetClientes = async (option: {
@@ -80,6 +80,22 @@ export const UpdateActiveCliente = async (options: {
     url: `/cliente/active/${options.idCliente}`,
     data: {
       active: options.active,
+    },
+  });
+  return response;
+};
+
+export const UpdateAutorizarCliente = async (options: {
+  token: string;
+  idCliente: string;
+  autorizar: boolean;
+}) => {
+  api.defaults.headers['access-token'] = options.token;
+  const response = await api({
+    method: 'PUT',
+    url: `/cliente/autorizar/${options.idCliente}`,
+    data: {
+      autorizar: options.autorizar,
     },
   });
   return response;

@@ -13,6 +13,7 @@ import {
   Menu,
   MenuList,
   MenuItem,
+  Chip,
 } from '@material-ui/core';
 import React, { useState, Dispatch, SetStateAction, useContext } from 'react';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -165,14 +166,16 @@ export const RowTableClient = ({
       <TableRow hover>
         <TableCell>{cliente.nombres}</TableCell>
         <TableCell>{cliente.apellidos}</TableCell>
-        <TableCell>{cliente.email || 'None'}</TableCell>
-        <TableCell>{cliente.telefono}</TableCell>
+        <TableCell>{cliente.email}</TableCell>
+        <TableCell>{cliente.telefono || <Chip label='None' color='primary' />}</TableCell>
         <TableCell>{cliente.sexo}</TableCell>
         <TableCell>{cliente.created_at}</TableCell>
-        <TableCell>{cliente.ciudad}</TableCell>
+        <TableCell>{cliente.ciudad || <Chip label='None' color='primary' />}</TableCell>
         <TableCell>
-          <Tooltip title={cliente.direccion}>
-            <Typography className={clases.cutText}>{cliente.direccion}</Typography>
+          <Tooltip title={cliente.direccion || ''}>
+            <Typography className={clases.cutText}>
+              {cliente.direccion || <Chip label='None' color='primary' />}
+            </Typography>
           </Tooltip>
         </TableCell>
         <TableCell>

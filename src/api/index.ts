@@ -8,6 +8,10 @@ export const BASE_API_IMAGES_CLOUDINNARY_SCALE =
 
 export const BASE_API_FILE_DOCUMENT = 'http://localhost:9000/static';
 
+export const BASE_FRONTEND_DEV = 'http://localhost';
+export const BASE_FRONTEND_PROD = '';
+export const BASE_FRONTEND = BASE_FRONTEND_DEV;
+
 const apiDev = 'http://localhost:9000';
 // const apiProd = '';
 

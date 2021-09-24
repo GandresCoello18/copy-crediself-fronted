@@ -12,6 +12,8 @@ export const RenderMainViewRol = (Rol: string) => {
       return '/app/clientes';
     case 'Administrativo':
       return '/app/pagos';
+    case 'Supervisor':
+      return '/app/clientes';
     default:
       return '/app/dashboard';
   }

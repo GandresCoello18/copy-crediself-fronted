@@ -420,6 +420,9 @@ const ClientOnlyView = () => {
                 idCliente={params.idCliente}
                 isAutorizado={Cliente?.autorizado === 1}
                 clientRefNombres={Cliente?.nombres || ''}
+                meId={me.idUser}
+                clientId={Cliente?.idCliente || ''}
+                setReloadCliente={setReloadCliente}
               />
             </Grid>
             <Grid item>

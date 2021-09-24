@@ -5,7 +5,7 @@ export interface Notificacion {
   sendingUser?: string;
   receiptUser: string;
   created_at: string | Date;
-  title: 'Solicitud para la autorización de credito';
+  title: 'Solicitud para la autorización de credito' | 'Solicitud para la autorización de cliente';
   body: string;
   link: string;
   isRead: number;

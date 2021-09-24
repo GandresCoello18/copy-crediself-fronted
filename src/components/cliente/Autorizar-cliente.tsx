@@ -2,9 +2,11 @@
 import { Avatar, Button, Chip, CircularProgress, TextField, Typography } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import { AxiosError } from 'axios';
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { toast } from 'react-toast';
+import { BASE_FRONTEND } from '../../api';
 import { UpdateAutorizarCliente } from '../../api/clientes';
+import { NewNoti, NewNotificacion } from '../../api/notificacion';
 import { GetUserByRol } from '../../api/users';
 import { HandleError } from '../../helpers/handleError';
 import { SourceAvatar } from '../../helpers/sourceAvatar';
@@ -16,7 +18,10 @@ interface Props {
   isAutorizado: boolean;
   idCliente: string;
   token: string;
+  meId: string;
   clientRefNombres: string;
+  clientId: string;
+  setReloadCliente: Dispatch<SetStateAction<boolean>>;
 }
 
 export const AutorizarCliente = ({
@@ -24,20 +29,26 @@ export const AutorizarCliente = ({
   isAutorizado,
   idCliente,
   token,
+  meId,
   clientRefNombres,
+  clientId,
+  setReloadCliente,
 }: Props) => {
   const [Loading, setLoading] = useState<boolean>(false);
+  const [LoadingNoti, setLoadingNoti] = useState<boolean>(false);
   const [LoadignUser, setLoadingUser] = useState<boolean>(false);
   const [SelectUser, setSelectUser] = useState<Usuario | undefined>(undefined);
   const [Visible, setVisible] = useState<boolean>(false);
   const [Users, setUsers] = useState<Usuario[]>([]);
 
   const handleAutorizar = async () => {
-    if (rol !== 'Gerente de Sucursal') {
+    if (rol === 'Gerente de Sucursal') {
       setLoading(true);
       try {
         await UpdateAutorizarCliente({ token, idCliente, autorizar: !isAutorizado });
         setLoading(false);
+        setReloadCliente(true);
+        toast.success('Cliente autorizado correctamente');
       } catch (error) {
         toast.error(HandleError(error as AxiosError));
         setLoading(false);
@@ -63,8 +74,29 @@ export const AutorizarCliente = ({
   };
 
   const handleDelete = () => {
-    console.log('remove ' + SelectUser);
     setSelectUser(undefined);
+  };
+
+  const sendNotification = async () => {
+    setLoadingNoti(true);
+
+    try {
+      const notificacion: NewNoti = {
+        sendingUser: meId,
+        receiptUser: SelectUser?.idUser || '',
+        title: 'Solicitud para la autorización de cliente',
+        body: `Hola ${SelectUser?.nombres}, requiero que sea revisado y aprobado la solicitud de aprobacion para el cliente ${clientRefNombres}`,
+        link: `${BASE_FRONTEND}/app/clientes/${clientId}`,
+      };
+
+      await NewNotificacion({ token, data: notificacion });
+      setLoadingNoti(false);
+      setVisible(false);
+      toast.success(`Se envio una notificacion ha: ${SelectUser?.nombres}`);
+    } catch (error) {
+      toast.error(HandleError(error as AxiosError));
+      setLoadingNoti(false);
+    }
   };
 
   return (
@@ -126,7 +158,12 @@ export const AutorizarCliente = ({
 
                 <br />
 
-                <Button variant='outlined' fullWidth>
+                <Button
+                  onClick={sendNotification}
+                  disabled={LoadingNoti}
+                  variant='outlined'
+                  fullWidth
+                >
                   Enviar solicitud de autorización
                 </Button>
               </>

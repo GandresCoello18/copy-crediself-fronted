@@ -9,6 +9,7 @@ import { HandleError } from '../../helpers/handleError';
 import { UpdateReadNotificacion } from '../../api/notificacion';
 import { NotificacionByMe } from '../../interfaces/Notificacion';
 import { SolicitudCredito } from './template/solicitud-de-credito';
+import { TemplateAutorizacionCliente } from './template/autorizacion-cliente';
 
 interface Props {
   notifiacion: NotificacionByMe | undefined;
@@ -33,6 +34,8 @@ export const DetailsNotificacion = ({ notifiacion }: Props) => {
     switch (notifiacion.title) {
       case 'Solicitud para la autorización de credito':
         return <SolicitudCredito notifiacion={notifiacion} />;
+      case 'Solicitud para la autorización de cliente':
+        return <TemplateAutorizacionCliente notificacion={notifiacion} />;
       default:
         return <p>No hay plantilla programada</p>;
     }

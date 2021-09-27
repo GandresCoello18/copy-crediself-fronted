@@ -469,10 +469,10 @@ export const DetailsCredito = ({
               </Grid>
             </Box>
             <Box mt={1}>
-              <Grid container justify='space-between'>
+              <Grid container spacing={3} justify='center'>
                 {me.idRol === 'Gerente de Sucursal' ? (
                   <>
-                    <Grid item xs={12} md={5}>
+                    <Grid item>
                       <Button
                         disabled={credito?.autorizado ? true : false}
                         className={clases.btnAutorizar}
@@ -489,7 +489,7 @@ export const DetailsCredito = ({
                         )}
                       </Button>
                     </Grid>
-                    <Grid item xs={12} md={5}>
+                    <Grid item>
                       <Button
                         disabled={credito?.apertura ? true : false}
                         className={clases.btnApertura}
@@ -505,21 +505,22 @@ export const DetailsCredito = ({
                   ''
                 )}
 
-                {me.idRol === 'Administrativo' ? (
-                  <Grid item xs={12} md={5}>
-                    <Link to={`/app/pagos/credito/${credito.idCredito}`}>
-                      <Button className={clases.btnAutorizar} fullWidth variant='outlined'>
-                        Ver Pagos
-                      </Button>
-                    </Link>
-                  </Grid>
-                ) : (
-                  ''
-                )}
+                <Grid item>
+                  <Link to={`/app/pagos/credito/${credito.idCredito}`}>
+                    <Button
+                      disabled={credito?.apertura === 0}
+                      className={clases.btnAutorizar}
+                      fullWidth
+                      variant='outlined'
+                    >
+                      Ver Pagos
+                    </Button>
+                  </Link>
+                </Grid>
 
                 {getPermisoExist({ RolName: me.idRol, permiso: 'AutorizarCredito' }) &&
                 !credito?.autorizado ? (
-                  <Grid item xs={12} md={5}>
+                  <Grid item>
                     <Button
                       disabled={LoadingSolicitud}
                       className={clases.btnAutorizar}

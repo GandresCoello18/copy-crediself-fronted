@@ -40,6 +40,8 @@ import { Credito } from '../interfaces/Credito';
 import { DetailsCreditoPago } from '../components/pagos/details-credito-pago';
 import { Doughnut } from 'react-chartjs-2';
 import { GraficoPaymentCredito } from '../components/pagos/credito/grafico-pagos-credito';
+import { DialogoScreenFull } from '../components/DialogoScreenFull';
+import { ReciboPagoView } from '../components/pagos/credito/recibo-pago';
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -76,6 +78,7 @@ const PagosByCreditoView = () => {
   const [StatisticsValue, setStatisticsValue] = useState<
     { valor: number; mes_correspondiente: string }[]
   >([]);
+  const [VisibleFullScreen, setVisibleFullScreen] = useState<boolean>(false);
   const [Visible, setVisible] = useState<boolean>(false);
   const [Loading, setLoading] = useState<boolean>(false);
   const [Expanded, setExpanded] = useState<boolean>(false);
@@ -135,7 +138,10 @@ const PagosByCreditoView = () => {
   return (
     <Page className={classes.root} title='Pagos de credito'>
       <Container maxWidth='xl'>
-        <Box display='flex' justifyContent='flex-end'>
+        <Box display='flex' justifyContent='space-between'>
+          <Button color='secondary' variant='contained' onClick={() => setVisibleFullScreen(true)}>
+            Recibo
+          </Button>
           <Button color='secondary' variant='contained' onClick={() => setVisible(true)}>
             Registrar pago
           </Button>
@@ -306,6 +312,10 @@ const PagosByCreditoView = () => {
           cliente={`${Cliente?.nombres.toUpperCase()} ${Cliente?.apellidos.toUpperCase()}`}
         />
       </DialogoForm>
+
+      <DialogoScreenFull Open={VisibleFullScreen} setOpen={setVisibleFullScreen}>
+        <ReciboPagoView />
+      </DialogoScreenFull>
     </Page>
   );
 };

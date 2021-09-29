@@ -17,6 +17,7 @@ export interface Pago {
   aprobado: number;
   source: string | null;
   user: Usuario;
+  observaciones: string | null;
 }
 
 export interface PagoByCredito extends Pago {

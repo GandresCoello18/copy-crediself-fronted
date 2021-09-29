@@ -1,6 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import {
+  Box,
   Button,
+  CircularProgress,
   Grid,
   makeStyles,
   Table,
@@ -10,7 +14,19 @@ import {
   TableRow,
 } from '@material-ui/core';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import React from 'react';
+import { useParams } from 'react-router';
+import React, { useContext, useEffect, useState } from 'react';
+import { AxiosError } from 'axios';
+import { toast } from 'react-toast';
+import { GetPagosByCredito } from '../../../api/pagos';
+import { HandleError } from '../../../helpers/handleError';
+import { Pagination } from '@material-ui/lab';
+import { Cliente } from '../../../interfaces/Cliente';
+import { Pago } from '../../../interfaces/Pago';
+import { MeContext } from '../../../context/contextMe';
+import { ParamsFilterPagos } from '../../../view/pagos-credito';
+import { Credito } from '../../../interfaces/Credito';
+import { NumeroALetras } from '../../../helpers/number';
 
 const useStyles = makeStyles(() => ({
   title: {
@@ -25,6 +41,44 @@ const useStyles = makeStyles(() => ({
 
 export const ReciboPagoView = () => {
   const classes = useStyles();
+  const params = useParams();
+  const { token, me } = useContext(MeContext);
+  const [Loading, setLoading] = useState<boolean>(false);
+  const [Count, setCount] = useState<number>(0);
+  const [Pagos, setPagos] = useState<Pago[]>([]);
+  const [CreditoData, setCredito] = useState<Credito | undefined>(undefined);
+  const [ParamsFilter] = useState<ParamsFilterPagos>({
+    typePayment: undefined,
+    isAtrasado: 0,
+    datePayment: undefined,
+    dateRegister: undefined,
+    dateCorrespondiente: undefined,
+  });
+  const [ClienteData, setCliente] = useState<Cliente | undefined>(undefined);
+
+  const fetchPagos = async (page: number) => {
+    setLoading(true);
+
+    try {
+      const { pagos, cliente, credito, pages } = await (
+        await GetPagosByCredito({ token, idCredito: params.idCredito, page, ParamsFilter })
+      ).data;
+      setPagos(pagos);
+      setCount(pages || 1);
+      setCredito(credito);
+      setCliente(cliente);
+      setLoading(false);
+    } catch (error) {
+      toast.error(HandleError(error as AxiosError));
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    params.idCredito && fetchPagos(1);
+  }, [params]);
+
+  const SelectItemPagination = (page: number) => fetchPagos(page);
 
   const renderRowEmpty = () => {
     return (
@@ -45,157 +99,161 @@ export const ReciboPagoView = () => {
     <>
       <br />
       <Grid container spacing={3} justify='center'>
-        <Grid item>
-          <img
-            src='https://res.cloudinary.com/cici/image/upload/v1629142872/util/ri_1_gwjs1t.png'
-            alt='logo crediself'
-            width={300}
-          />
-        </Grid>
-        <Grid item>
-          <h2 className={classes.title}>RECIBO DE PAGO</h2>
-        </Grid>
+        <Grid item xs={7}>
+          <Grid container spacing={3} justify='center'>
+            <Grid item>
+              <img
+                src='https://res.cloudinary.com/cici/image/upload/v1629142872/util/ri_1_gwjs1t.png'
+                alt='logo crediself'
+                width={300}
+              />
+            </Grid>
+            <Grid item>
+              <h2 className={classes.title}>RECIBO DE PAGO</h2>
+            </Grid>
+          </Grid>
 
-        <br />
-        <br />
-
-        <Grid item xs={10}>
-          <PerfectScrollbar>
-            <Table aria-label='spanning table'>
-              <TableHead>
-                <TableRow>
-                  <TableCell className={classes.celda} align='center'>
-                    <strong>Nombre:</strong>
-                  </TableCell>
-                  <TableCell colSpan={2} className={classes.celda} align='center'>
-                    Andres Coello
-                  </TableCell>
-                  <TableCell className={classes.celda} align='center'>
-                    <strong>Folio:</strong>
-                  </TableCell>
-                  <TableCell colSpan={2} className={classes.celda} align='center'>
-                    000
-                  </TableCell>
-                  <TableCell className={classes.celda} align='center' rowSpan={2}>
-                    <strong>Recibo:</strong>
-                  </TableCell>
-                  <TableCell className={classes.celda} align='center' rowSpan={2}>
-                    000
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className={classes.celda} align='center'>
-                    <strong>R.F.C:</strong>
-                  </TableCell>
-                  <TableCell colSpan={2} className={classes.celda} align='center'>
-                    FECA710426
-                  </TableCell>
-                  <TableCell className={classes.celda} align='center'>
-                    <strong>Lugar de expediciòn:</strong>
-                  </TableCell>
-                  <TableCell colSpan={2} className={classes.celda} align='center'>
-                    VillaHermosa Tabasco
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className={classes.celda}></TableCell>
-                  <TableCell className={classes.celda}></TableCell>
-                  <TableCell className={classes.celda}></TableCell>
-                  <TableCell className={classes.celda}></TableCell>
-                  <TableCell className={classes.celda}></TableCell>
-                  <TableCell className={classes.celda}></TableCell>
-                  <TableCell className={classes.celda} align='right'>
-                    <strong>Monto</strong>
-                  </TableCell>
-                  <TableCell className={classes.celda} align='center'>
-                    $456.400.00
-                  </TableCell>
-                </TableRow>
-                {renderRowEmpty()}
-                <TableRow>
-                  <TableCell align='center' className={classes.celda}>
-                    <strong>Concepto</strong>
-                  </TableCell>
-                  <TableCell align='center' className={classes.celda}>
-                    <strong>Unidad Medida</strong>
-                  </TableCell>
-                  <TableCell align='center' className={classes.celda}>
-                    <strong>Importe</strong>
-                  </TableCell>
-                  <TableCell align='center' className={classes.celda}>
-                    <strong>Gasto</strong>
-                  </TableCell>
-                  <TableCell align='center' className={classes.celda}>
-                    <strong>I.V.A</strong>
-                  </TableCell>
-                  <TableCell align='center' className={classes.celda}>
-                    <strong>Seguro</strong>
-                  </TableCell>
-                  <TableCell align='center' className={classes.celda}>
-                    <strong>Fondo</strong>
-                  </TableCell>
-                  <TableCell align='center' className={classes.celda}>
-                    <strong>Total</strong>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <TableRow>
-                  <TableCell className={classes.celda} align='center'>
-                    Apertura
-                  </TableCell>
-                  <TableCell className={classes.celda} align='center'>
-                    Servicio
-                  </TableCell>
-                  <TableCell className={classes.celda} align='center'>
-                    $3,000.00
-                  </TableCell>
-                  <TableCell className={classes.celda} align='center'></TableCell>
-                  <TableCell className={classes.celda} align='center'>
-                    $480.00
-                  </TableCell>
-                  <TableCell className={classes.celda} align='center'></TableCell>
-                  <TableCell className={classes.celda} align='center'></TableCell>
-                  <TableCell className={classes.celda}>$3,480.00</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className={classes.celda} align='center'>
-                    Pago #1
-                  </TableCell>
-                  <TableCell className={classes.celda} align='center'>
-                    Servicio
-                  </TableCell>
-                  <TableCell className={classes.celda} align='center'>
-                    $9,128.00
-                  </TableCell>
-                  <TableCell className={classes.celda} align='center'></TableCell>
-                  <TableCell className={classes.celda} align='center'>
-                    $9,128.00
-                  </TableCell>
-                  <TableCell className={classes.celda} align='center'></TableCell>
-                  <TableCell className={classes.celda} align='center'></TableCell>
-                  <TableCell className={classes.celda}>$3,480.00</TableCell>
-                </TableRow>
-                {renderRowEmpty()}
-                {renderRowEmpty()}
-                <TableRow>
-                  <TableCell className={classes.celda}>
-                    <strong>Cantidad en letra:</strong>
-                  </TableCell>
-                  <TableCell colSpan={5} className={classes.celda}>
-                    Son DOCE MIL SEISCIENTOS OCHO PESOS
-                  </TableCell>
-                  <TableCell className={classes.celda}>
-                    <strong>Total:</strong>
-                  </TableCell>
-                  <TableCell className={classes.celda}>$12,608.00</TableCell>
-                </TableRow>
-                {renderRowEmpty()}
-              </TableBody>
-            </Table>
-          </PerfectScrollbar>
+          <br />
+          <br />
+          {Loading ? (
+            <CircularProgress />
+          ) : (
+            <PerfectScrollbar>
+              <Table aria-label='spanning table'>
+                <TableHead>
+                  <TableRow>
+                    <TableCell className={classes.celda} align='center'>
+                      <strong>Nombre:</strong>
+                    </TableCell>
+                    <TableCell colSpan={2} className={classes.celda} align='center'>
+                      {ClienteData?.nombres} {ClienteData?.apellidos}
+                    </TableCell>
+                    <TableCell className={classes.celda} align='center'>
+                      <strong>Folio:</strong>
+                    </TableCell>
+                    <TableCell colSpan={2} className={classes.celda} align='center'>
+                      {CreditoData?.numeroCredito}
+                    </TableCell>
+                    <TableCell className={classes.celda} align='center' rowSpan={2}>
+                      <strong>Recibo:</strong>
+                    </TableCell>
+                    <TableCell className={classes.celda} align='center' rowSpan={2}>
+                      000
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className={classes.celda} align='center'>
+                      <strong>R.F.C:</strong>
+                    </TableCell>
+                    <TableCell colSpan={2} className={classes.celda} align='center'>
+                      {ClienteData?.rfc}
+                    </TableCell>
+                    <TableCell className={classes.celda} align='center'>
+                      <strong>Lugar de expediciòn:</strong>
+                    </TableCell>
+                    <TableCell colSpan={2} className={classes.celda} align='center'>
+                      {me.idSucursal}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className={classes.celda}></TableCell>
+                    <TableCell className={classes.celda}></TableCell>
+                    <TableCell className={classes.celda}></TableCell>
+                    <TableCell className={classes.celda}></TableCell>
+                    <TableCell className={classes.celda}></TableCell>
+                    <TableCell className={classes.celda}></TableCell>
+                    <TableCell className={classes.celda} align='right'>
+                      <strong>Monto</strong>
+                    </TableCell>
+                    <TableCell className={classes.celda} align='center'>
+                      ${CreditoData?.monto}
+                    </TableCell>
+                  </TableRow>
+                  {renderRowEmpty()}
+                  <TableRow>
+                    <TableCell align='center' className={classes.celda}>
+                      <strong>Concepto</strong>
+                    </TableCell>
+                    <TableCell align='center' className={classes.celda}>
+                      <strong>Unidad Medida</strong>
+                    </TableCell>
+                    <TableCell align='center' className={classes.celda}>
+                      <strong>Importe</strong>
+                    </TableCell>
+                    <TableCell align='center' className={classes.celda}>
+                      <strong>Gasto</strong>
+                    </TableCell>
+                    <TableCell align='center' className={classes.celda}>
+                      <strong>I.V.A</strong>
+                    </TableCell>
+                    <TableCell align='center' className={classes.celda}>
+                      <strong>Seguro</strong>
+                    </TableCell>
+                    <TableCell align='center' className={classes.celda}>
+                      <strong>Fondo</strong>
+                    </TableCell>
+                    <TableCell align='center' className={classes.celda}>
+                      <strong>Total</strong>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {Pagos.sort((a, b) => a.numeroPago - b.numeroPago).map(pago => (
+                    <TableRow key={pago.idPago}>
+                      <TableCell className={classes.celda} align='center'>
+                        {pago.numeroPago === 0 ? 'Apertura' : 'Pago' + ' ' + pago.numeroPago}
+                      </TableCell>
+                      <TableCell className={classes.celda} align='center'>
+                        Servicio
+                      </TableCell>
+                      <TableCell className={classes.celda} align='center'>
+                        ${pago.valor}
+                      </TableCell>
+                      <TableCell className={classes.celda} align='center'>
+                        {pago.estado}
+                      </TableCell>
+                      <TableCell className={classes.celda} align='center'>
+                        {pago.numeroPago === 0 ? '$' + CreditoData?.iva : ''}
+                      </TableCell>
+                      <TableCell className={classes.celda} align='center'></TableCell>
+                      <TableCell className={classes.celda} align='center'></TableCell>
+                      <TableCell className={classes.celda} align='center'>
+                        $
+                        {pago.numeroPago === 0 ? pago.valor + Number(CreditoData?.iva) : pago.valor}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {renderRowEmpty()}
+                  {renderRowEmpty()}
+                  <TableRow>
+                    <TableCell className={classes.celda}>
+                      <strong>Cantidad en letra:</strong>
+                    </TableCell>
+                    <TableCell colSpan={5} className={classes.celda}>
+                      {NumeroALetras(Pagos.reduce((a, b) => a + b.valor, 0))}
+                    </TableCell>
+                    <TableCell className={classes.celda}>
+                      <strong>Total:</strong>
+                    </TableCell>
+                    <TableCell className={classes.celda}>
+                      ${Pagos.reduce((a, b) => a + b.valor, 0)}
+                    </TableCell>
+                  </TableRow>
+                  {renderRowEmpty()}
+                </TableBody>
+              </Table>
+            </PerfectScrollbar>
+          )}
         </Grid>
       </Grid>
+
+      <Box mt={3} display='flex' justifyContent='center'>
+        <Pagination
+          count={Count}
+          color='secondary'
+          onChange={(event, page) => SelectItemPagination(page)}
+        />
+      </Box>
 
       <br />
       <br />
@@ -203,7 +261,12 @@ export const ReciboPagoView = () => {
       <Grid container spacing={3} justify='center'>
         <Grid item>
           <Button color='primary' variant='contained'>
-            Descargar Recibo
+            Descargar Recibo por sección
+          </Button>
+        </Grid>
+        <Grid item>
+          <Button color='primary' variant='contained'>
+            Descargar Recibo Completo
           </Button>
         </Grid>
       </Grid>

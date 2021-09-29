@@ -13,15 +13,15 @@
     },
     {
         "rol": "Gerente de Sucursal",
-        "permisos": ["UpdateMeUser", "ViewClientes", "ViewNotification", "NewCliente", "UpdateCliente", "DelCliente", "NewCredito", "ViewCredito", "DelCredito", "UpdateCredito", "UpdateContratoCredito", "AperturaPayment", "AddFileExpediente", "RemoveFileExpediente"]
+        "permisos": ["UpdateMeUser", "ViewClientes", "ViewNotification", "NewCliente", "UpdateCliente", "DelCliente", "NewCredito", "ViewCredito", "DelCredito", "UpdateCredito", "UpdateContratoCredito", "AperturaPayment", "AddFileExpediente", "ViewPayment", "RemoveFileExpediente", "NewNotification"]
     },
     {
         "rol": "Supervisor",
-        "permisos": ["UpdateMeUser", "ViewClientes", "ViewNotification", "NewCliente", "UpdateCliente", "NewCredito", "ViewCredito", "UpdateContratoCredito", "AperturaPayment", "AddFileExpediente", "RemoveFileExpediente", "ViewUsers"]
+        "permisos": ["UpdateMeUser", "ViewClientes", "ViewNotification", "NewCliente", "UpdateCliente", "NewCredito", "ViewCredito", "UpdateContratoCredito", "AperturaPayment", "AddFileExpediente", "RemoveFileExpediente", "ViewUsers", "ViewPayment", "NewNotification"]
     },
     {
         "rol": "Asesor",
-        "permisos": ["UpdateMeUser", "ViewClientes", "ViewNotification", "NewCliente", "UpdateCliente", "NewCredito", "ViewCredito", "UpdateContratoCredito", "AperturaPayment", "AddFileExpediente", "RemoveFileExpediente"]
+        "permisos": ["UpdateMeUser", "ViewClientes", "ViewNotification", "NewCliente", "UpdateCliente", "NewCredito", "ViewCredito", "UpdateContratoCredito", "AperturaPayment", "AddFileExpediente", "RemoveFileExpediente", "ViewPayment", "NewNotification"]
     },
     {
         "rol": "Cobranza",

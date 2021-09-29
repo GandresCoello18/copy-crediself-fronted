@@ -233,6 +233,19 @@ export const DetailsPago = ({ token, pago, user, setVisible }: Props) => {
             pago.aprobado ? clases.backGroundHeadTrue : clases.backGroundHeadFalse
           }`}
           container
+          spacing={3}
+          justify='space-between'
+          alignItems='center'
+        >
+          <Grid item>
+            <strong>Observaciones:</strong>
+          </Grid>
+          <Grid item>{pago.observaciones || <Chip label='Ninguna' color='primary' />}</Grid>
+        </Grid>
+
+        <Grid
+          className={clases.rowSecondary}
+          container
           alignItems='center'
           spacing={3}
           justify='space-between'

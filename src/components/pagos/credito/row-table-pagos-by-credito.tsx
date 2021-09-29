@@ -160,10 +160,12 @@ export const RowTablePagosByCredito = ({
           {cliente ? cliente.nombres : ''} {cliente ? cliente.apellidos : ''}
         </TableCell>
         <TableCell>
-          ( #{credito ? credito.numeroCredito : ''} ) {credito ? credito.tipo : ''}
+          ( #{credito?.numeroCredito || ''} ) {credito ? credito.tipo : ''}
         </TableCell>
-        <TableCell>${credito ? credito.cuota : ''}</TableCell>
-        <TableCell>{pago.numeroPago}</TableCell>
+        <TableCell>
+          ${credito?.cuota || ''} {pago?.numeroPago === 0 && '+ iva'}
+        </TableCell>
+        <TableCell>{pago.numeroPago === 0 ? 'APT' : pago.numeroPago}</TableCell>
         <TableCell>
           <Chip
             color={pago.aprobado ? 'secondary' : 'default'}

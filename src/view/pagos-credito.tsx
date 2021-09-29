@@ -42,6 +42,7 @@ import { Doughnut } from 'react-chartjs-2';
 import { GraficoPaymentCredito } from '../components/pagos/credito/grafico-pagos-credito';
 import { DialogoScreenFull } from '../components/DialogoScreenFull';
 import { ReciboPagoView } from '../components/pagos/credito/recibo-pago';
+import { getPermisoExist } from '../helpers/renderViewMainRol';
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -70,7 +71,7 @@ const PagosByCreditoView = () => {
   const classes = useStyles();
   const params = useParams();
   const [Count, setCount] = useState<number>(0);
-  const { token } = useContext(MeContext);
+  const { token, me } = useContext(MeContext);
   const [Pagos, setPagos] = useState<Pago[]>([]);
   const [Cliente, setCliente] = useState<Cliente | undefined>(undefined);
   const [Credito, setCredito] = useState<Credito | undefined>(undefined);
@@ -142,9 +143,11 @@ const PagosByCreditoView = () => {
           <Button color='secondary' variant='contained' onClick={() => setVisibleFullScreen(true)}>
             Recibo
           </Button>
-          <Button color='secondary' variant='contained' onClick={() => setVisible(true)}>
-            Registrar pago
-          </Button>
+          {getPermisoExist({ permiso: 'NewPayment', RolName: me.idRol }) && (
+            <Button color='secondary' variant='contained' onClick={() => setVisible(true)}>
+              Registrar pago
+            </Button>
+          )}
         </Box>
         <Box mt={3}>
           <Card>

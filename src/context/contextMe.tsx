@@ -14,6 +14,7 @@ interface Me {
   avatar: string;
   active: number;
   idRol: string;
+  idSucursal: string;
   supervisor: string;
 }
 
@@ -27,6 +28,7 @@ const templeate: Me = {
   avatar: '',
   active: 0,
   idRol: '',
+  idSucursal: '',
   supervisor: '',
 };
 

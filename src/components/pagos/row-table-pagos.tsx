@@ -18,6 +18,7 @@ import PaymentIcon from '@material-ui/icons/Payment';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { PagoByCredito } from '../../interfaces/Pago';
 import { DialogoForm } from '../DialogoForm';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import { DetailsCreditoPago } from './details-credito-pago';
 
 const useStyles = makeStyles((theme: any) => ({
@@ -80,8 +81,15 @@ export const RowTablePagosByCreditos = ({ pagosByCredito, isModal }: Props) => {
           <MenuList>
             <MenuItem selected={false} onClick={OnClose}>
               <Link to={`/app/pagos/credito/${pagosByCredito.credito.idCredito}`}>
-                <Button size='small' title='Ver creditos de cliente' fullWidth variant='outlined'>
+                <Button size='small' title='Ver pagos del credito' fullWidth variant='outlined'>
                   <span className={clases.btnIcon}>Ver Pagos</span> <PaymentIcon />
+                </Button>
+              </Link>
+            </MenuItem>
+            <MenuItem selected={false} onClick={OnClose}>
+              <Link to={`/app/creditos/${pagosByCredito.credito.idCredito}`}>
+                <Button size='small' title='Ver creditos del cliente' fullWidth variant='outlined'>
+                  <span className={clases.btnIcon}>Ver Credito</span> <AssignmentIndIcon />
                 </Button>
               </Link>
             </MenuItem>
@@ -100,7 +108,9 @@ export const RowTablePagosByCreditos = ({ pagosByCredito, isModal }: Props) => {
         <TableCell onClick={VisibleModal}>
           ( #{pagosByCredito.credito.numeroCredito} ) {pagosByCredito.credito.tipo}
         </TableCell>
-        <TableCell onClick={VisibleModal}>${pagosByCredito.credito.cuota}</TableCell>
+        <TableCell onClick={VisibleModal}>
+          ${pagosByCredito.credito.cuota} {pagosByCredito.numeroPago === 0 && '+ Iva'}
+        </TableCell>
         <TableCell onClick={VisibleModal}>{pagosByCredito.numeroPago}</TableCell>
         <TableCell onClick={VisibleModal}>{pagosByCredito.tipo_de_pago}</TableCell>
         <TableCell onClick={VisibleModal}>

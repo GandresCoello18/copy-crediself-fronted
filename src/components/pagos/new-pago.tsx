@@ -55,11 +55,13 @@ export const FormNewPago = ({ setReloadPago, setVisible, idCredito, cliente, ape
           pagadoEl: '',
           tipoDePago: '',
           valor: '',
+          observaciones: '',
         }}
         validationSchema={Yup.object().shape({
           pagadoEl: Yup.string().max(100).required('El campo es requerido'),
           tipoDePago: Yup.string().max(100).required('El campo es requerido'),
           valor: Yup.string().max(10).required('El campo es requerido'),
+          observaciones: Yup.string().max(100),
         })}
         onSubmit={async (values, actions) => {
           if (new Date().getTime() < new Date(values.pagadoEl).getTime()) {
@@ -76,6 +78,7 @@ export const FormNewPago = ({ setReloadPago, setVisible, idCredito, cliente, ape
           data.append('pagadoEl', values.pagadoEl);
           data.append('tipoDePago', values.tipoDePago);
           data.append('valor', values.valor);
+          data.append('observaciones', values.observaciones);
 
           if (images.length) {
             data.append('comprobante', images[0].file || '');
@@ -178,6 +181,23 @@ export const FormNewPago = ({ setReloadPago, setVisible, idCredito, cliente, ape
                     </Grid>
                   </>
                 )}
+                <Grid item xs={12}>
+                  <TextField
+                    error={Boolean(touched.observaciones && errors.observaciones)}
+                    helperText={touched.observaciones && errors.observaciones}
+                    fullWidth
+                    name='observaciones'
+                    type='number'
+                    multiline
+                    label='Observaciones'
+                    onBlur={handleBlur}
+                    rows={4}
+                    disabled={isSubmitting}
+                    variant='outlined'
+                    onChange={handleChange}
+                    placeholder={'Escriba alguna observaciòn (opcional)'}
+                  />
+                </Grid>
               </Grid>
             </CardContent>
             <Divider />

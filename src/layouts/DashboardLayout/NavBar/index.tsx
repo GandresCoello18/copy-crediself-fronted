@@ -27,6 +27,7 @@ import PaymentIcon from '@material-ui/icons/Payment';
 import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
 import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import NavItem from './NavItem';
+import BugReportIcon from '@material-ui/icons/BugReport';
 import GroupIcon from '@material-ui/icons/Group';
 import MoneyOffIcon from '@material-ui/icons/MoneyOff';
 import { MeContext } from '../../../context/contextMe';
@@ -91,6 +92,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           icon: PersonIcon,
           title: 'Mi cuenta',
         },
+        {
+          href: '/app/reportes-error',
+          icon: BugReportIcon,
+          title: 'Problemas',
+        },
       ];
       break;
     case 'RRHH':
@@ -104,6 +110,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           href: '/app/account',
           icon: PersonIcon,
           title: 'Mi cuenta',
+        },
+        {
+          href: '/app/reportes-error',
+          icon: BugReportIcon,
+          title: 'Problemas',
         },
       ];
       break;
@@ -134,6 +145,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           icon: PersonIcon,
           title: 'Mi cuenta',
         },
+        {
+          href: '/app/reportes-error',
+          icon: BugReportIcon,
+          title: 'Problemas',
+        },
       ];
       break;
     case 'Director':
@@ -163,6 +179,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           icon: PersonIcon,
           title: 'Mi cuenta',
         },
+        {
+          href: '/app/reportes-error',
+          icon: BugReportIcon,
+          title: 'Problemas',
+        },
       ];
       break;
     case 'Administrativo':
@@ -186,6 +207,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           href: '/app/calendario',
           icon: CalendarTodayIcon,
           title: 'Calendario',
+        },
+        {
+          href: '/app/reportes-error',
+          icon: BugReportIcon,
+          title: 'Problemas',
         },
       ];
       break;
@@ -211,6 +237,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           icon: PersonIcon,
           title: 'Mi cuenta',
         },
+        {
+          href: '/app/reportes-error',
+          icon: BugReportIcon,
+          title: 'Problemas',
+        },
       ];
       break;
     case 'Asesor':
@@ -225,6 +256,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           icon: PersonIcon,
           title: 'Mi cuenta',
         },
+        {
+          href: '/app/reportes-error',
+          icon: BugReportIcon,
+          title: 'Problemas',
+        },
       ];
       break;
     default:
@@ -233,6 +269,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           href: '/app/dashboard',
           icon: EqualizerIcon,
           title: 'Panel',
+        },
+        {
+          href: '/app/reportes-error',
+          icon: BugReportIcon,
+          title: 'Problemas',
         },
       ];
       break;

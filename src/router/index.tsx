@@ -37,6 +37,7 @@ const GastosView = lazy(() => import('../view/gastos'));
 const PagosView = lazy(() => import('../view/pagos'));
 const PagosByCreditoView = lazy(() => import('../view/pagos-credito'));
 const CalendarioView = lazy(() => import('../view/calendar'));
+const ErrorAppView = lazy(() => import('../view/errorApp'));
 
 const token = Cookies.get('access-token-crediself');
 
@@ -69,6 +70,7 @@ const routes = [
       { path: 'asesores', element: PathSesion(AsesoresView) },
       { path: 'calendario', element: PathSesion(CalendarioView) },
       { path: 'notificaciones', element: PathSesion(NotificacionesView) },
+      { path: 'reportes-error', element: PathSesion(ErrorAppView) },
       { path: '*', element: <Navigate to='/404' /> },
     ],
   },

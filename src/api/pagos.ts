@@ -34,6 +34,19 @@ export const GetPagosCreditos = async (options: {
   return response;
 };
 
+export const GetReciboPagos = async (options: {
+  token: string;
+  page?: number;
+  idCredito: string;
+}) => {
+  api.defaults.headers['access-token'] = options.token;
+  const response = await api({
+    method: 'GET',
+    url: `/pago/recibo/${options.idCredito}?page=${options.page || ''}`,
+  });
+  return response;
+};
+
 export const GetPagosByCredito = async (options: {
   token: string;
   page: number;

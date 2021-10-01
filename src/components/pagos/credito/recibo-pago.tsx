@@ -18,7 +18,7 @@ import { useParams } from 'react-router';
 import React, { useContext, useEffect, useState } from 'react';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toast';
-import { GetPagosByCredito } from '../../../api/pagos';
+import { GetPagosByCredito, GetReciboPagos } from '../../../api/pagos';
 import { HandleError } from '../../../helpers/handleError';
 import { Pagination } from '@material-ui/lab';
 import { Cliente } from '../../../interfaces/Cliente';
@@ -27,6 +27,7 @@ import { MeContext } from '../../../context/contextMe';
 import { ParamsFilterPagos } from '../../../view/pagos-credito';
 import { Credito } from '../../../interfaces/Credito';
 import { NumeroALetras } from '../../../helpers/number';
+import { BASE_API_FILE_DOCUMENT } from '../../../api';
 
 const useStyles = makeStyles(() => ({
   title: {
@@ -43,7 +44,10 @@ export const ReciboPagoView = () => {
   const classes = useStyles();
   const params = useParams();
   const { token, me } = useContext(MeContext);
+  const [FileName, setFileName] = useState<string>('');
+  const [SelectPage, setSelectPage] = useState<number>(0);
   const [Loading, setLoading] = useState<boolean>(false);
+  const [LoadingDownload, setLoadingDownload] = useState<boolean>(false);
   const [Count, setCount] = useState<number>(0);
   const [Pagos, setPagos] = useState<Pago[]>([]);
   const [CreditoData, setCredito] = useState<Credito | undefined>(undefined);
@@ -65,6 +69,7 @@ export const ReciboPagoView = () => {
       ).data;
       setPagos(pagos);
       setCount(pages || 1);
+      setSelectPage(1);
       setCredito(credito);
       setCliente(cliente);
       setLoading(false);
@@ -78,7 +83,32 @@ export const ReciboPagoView = () => {
     params.idCredito && fetchPagos(1);
   }, [params]);
 
-  const SelectItemPagination = (page: number) => fetchPagos(page);
+  const SelectItemPagination = (page: number) => {
+    fetchPagos(page);
+    setSelectPage(page);
+  };
+
+  const DownloadRecibo = async (page: number) => {
+    setLoadingDownload(true);
+
+    try {
+      const { fileName } = await (
+        await GetReciboPagos({ token, idCredito: params.idCredito, page })
+      ).data;
+
+      setTimeout(() => {
+        const element = document.createElement('a');
+        element.target = '_blank';
+        element.href = `${BASE_API_FILE_DOCUMENT}/doc/${fileName}`;
+        element.click();
+        setLoadingDownload(false);
+        setFileName(fileName);
+      }, 4000);
+    } catch (error) {
+      toast.error(HandleError(error as AxiosError));
+      setLoadingDownload(false);
+    }
+  };
 
   const renderRowEmpty = () => {
     return (
@@ -259,16 +289,38 @@ export const ReciboPagoView = () => {
       <br />
 
       <Grid container spacing={3} justify='center'>
-        <Grid item>
-          <Button color='primary' variant='contained'>
-            Descargar Recibo por sección
-          </Button>
-        </Grid>
-        <Grid item>
-          <Button color='primary' variant='contained'>
-            Descargar Recibo Completo
-          </Button>
-        </Grid>
+        {FileName ? (
+          <Grid item>
+            <a target='_blank' rel='noreferrer' href={`${BASE_API_FILE_DOCUMENT}/doc/${FileName}`}>
+              <Button color='secondary' variant='contained'>
+                Ver Recibo
+              </Button>
+            </a>
+          </Grid>
+        ) : (
+          <>
+            <Grid item>
+              <Button
+                onClick={() => DownloadRecibo(SelectPage)}
+                color='primary'
+                disabled={LoadingDownload}
+                variant='contained'
+              >
+                Generar Recibo por sección
+              </Button>
+            </Grid>
+            <Grid item>
+              <Button
+                onClick={() => DownloadRecibo(0)}
+                color='primary'
+                disabled={LoadingDownload}
+                variant='contained'
+              >
+                Generar Recibo Completo
+              </Button>
+            </Grid>
+          </>
+        )}
       </Grid>
     </>
   );

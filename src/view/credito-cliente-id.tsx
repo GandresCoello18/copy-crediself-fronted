@@ -132,6 +132,7 @@ const CreditoClienteOnlyView = () => {
               <DetailsCredito
                 imgSrc='../../../no-data.svg'
                 credito={SelectCredito}
+                setReloadCredito={setReloadCredito}
                 setSelectCredito={setSelectCredito}
                 setVisibleApertura={setVisibleApertura}
               />

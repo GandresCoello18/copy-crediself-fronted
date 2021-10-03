@@ -29,6 +29,7 @@ import { toast } from 'react-toast';
 import { HandleError } from '../../helpers/handleError';
 import { MeContext } from '../../context/contextMe';
 import {
+  GenerarPaqueteBienvenida,
   NotificarAutorizarCredito,
   UpdateActiveCredito,
   UpdateAutorizarCredito,
@@ -82,6 +83,10 @@ const useStyles = makeStyles(theme => ({
     color: 'green',
     borderColor: 'green',
   },
+  btnPaquete: {
+    color: '#5794f0',
+    borderColor: '#5794f0',
+  },
   btnApertura: {
     color: 'royalblue',
     borderColor: 'royalblue',
@@ -100,6 +105,7 @@ const useStyles = makeStyles(theme => ({
 interface Props {
   credito?: CreditoByCliente;
   imgSrc: string;
+  setReloadCredito?: Dispatch<SetStateAction<boolean>>;
   setSelectCredito: Dispatch<SetStateAction<CreditoByCliente | undefined>>;
   setVisibleApertura: Dispatch<SetStateAction<boolean>>;
 }
@@ -107,6 +113,7 @@ interface Props {
 export const DetailsCredito = ({
   credito,
   imgSrc,
+  setReloadCredito,
   setSelectCredito,
   setVisibleApertura,
 }: Props) => {
@@ -118,6 +125,7 @@ export const DetailsCredito = ({
     modific: '',
   });
   const [Loading, setLoading] = useState<boolean>(false);
+  const [LoadingPackage, setLoadingPackage] = useState<boolean>(false);
   const [LoadingSolicitud, setLoadingSolicitud] = useState<boolean>(false);
   const [isActive, setIsActive] = useState<boolean>(credito?.active ? true : false);
 
@@ -197,6 +205,19 @@ export const DetailsCredito = ({
         loading: false,
       });
       toast.error(HandleError(error as AxiosError));
+    }
+  };
+
+  const HandlePackageWelcome = async () => {
+    setLoadingPackage(true);
+
+    try {
+      await GenerarPaqueteBienvenida({ token, idCredito: credito?.idCredito || '' });
+      setLoadingPackage(false);
+      setReloadCredito && setReloadCredito(true);
+    } catch (error) {
+      toast.error(HandleError(error as AxiosError));
+      setLoadingPackage(false);
     }
   };
 
@@ -501,13 +522,13 @@ export const DetailsCredito = ({
 
                 <Grid item xs={12}>
                   <Accordion
-                    expanded={Expanded === 'contratros'}
-                    onChange={handleChangeAcordion('contratros')}
+                    expanded={Expanded === 'paquete-welcome'}
+                    onChange={handleChangeAcordion('paquete-welcome')}
                   >
                     <AccordionSummary
                       expandIcon={<ExpandMoreIcon />}
-                      aria-controls='contratros-content'
-                      id='contratros-header'
+                      aria-controls='paquete-welcome-content'
+                      id='paquete-welcome-header'
                     >
                       <Typography className={clases.heading}>Paquete de Bienvenida</Typography>
                       <Typography className={clases.secondaryHeading}>
@@ -584,6 +605,22 @@ export const DetailsCredito = ({
                       variant='outlined'
                     >
                       Autorizar Credito
+                    </Button>
+                  </Grid>
+                ) : (
+                  ''
+                )}
+
+                {me.idRol === 'Administrativo' ? (
+                  <Grid item>
+                    <Button
+                      className={clases.btnPaquete}
+                      disabled={LoadingPackage}
+                      onClick={HandlePackageWelcome}
+                      fullWidth
+                      variant='outlined'
+                    >
+                      Generar Paquete de bienvenida
                     </Button>
                   </Grid>
                 ) : (

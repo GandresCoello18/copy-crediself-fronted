@@ -16,6 +16,15 @@ export const NewContrato = async (options: { token: string; data: InputContrato 
   return response;
 };
 
+export const GenerarPaqueteBienvenida = async (options: { token: string; idCredito: string }) => {
+  api.defaults.headers['access-token'] = options.token;
+  const response = await api({
+    method: 'POST',
+    url: `/credito/paquete-de-bienvenida/${options.idCredito}`,
+  });
+  return response;
+};
+
 export const NotificarAutorizarCredito = async (options: { token: string; IdCredito: string }) => {
   api.defaults.headers['access-token'] = options.token;
   const response = await api({

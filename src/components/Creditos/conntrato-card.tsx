@@ -20,6 +20,11 @@ const useStyles = makeStyles(() =>
     input: {
       display: 'none',
     },
+    textCard: {
+      fontSize: 18,
+      width: '100%',
+      marginBottom: 10,
+    },
   }),
 );
 
@@ -58,7 +63,7 @@ export const ContratoCard = ({ contrato }: Props) => {
   };
 
   return (
-    <>
+    <Box style={{ width: '100%' }}>
       <a
         target='_blank'
         rel='noreferrer'
@@ -66,7 +71,7 @@ export const ContratoCard = ({ contrato }: Props) => {
         key={contrato.id_credito_contrato}
       >
         <Paper elevation={3}>
-          <Box p={1} textAlign='center'>
+          <Box p={1} textAlign='center' className={classes.textCard}>
             <InsertDriveFileIcon style={{ fontSize: 40 }} />
             <br />
             <strong>Contrato: </strong>
@@ -105,6 +110,6 @@ export const ContratoCard = ({ contrato }: Props) => {
       ) : (
         ''
       )}
-    </>
+    </Box>
   );
 };

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import {
   Grid,
@@ -13,6 +14,9 @@ import {
   MenuItem,
   Select,
   Button,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
@@ -30,6 +34,7 @@ import {
   UpdateAutorizarCredito,
   UpdateStatusCredito,
 } from '../../api/credito';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { ContratoCard } from './conntrato-card';
 import { getPermisoExist } from '../../helpers/renderViewMainRol';
 
@@ -81,6 +86,15 @@ const useStyles = makeStyles(theme => ({
     color: 'royalblue',
     borderColor: 'royalblue',
   },
+  heading: {
+    fontSize: theme.typography.pxToRem(15),
+    flexBasis: '33.33%',
+    flexShrink: 0,
+  },
+  secondaryHeading: {
+    fontSize: theme.typography.pxToRem(15),
+    color: theme.palette.text.secondary,
+  },
 }));
 
 interface Props {
@@ -98,6 +112,7 @@ export const DetailsCredito = ({
 }: Props) => {
   const clases = useStyles();
   const { token, me } = useContext(MeContext);
+  const [Expanded, setExpanded] = useState<string>('');
   const [statusCredit, setStatusCredit] = useState<{ loading: boolean; modific: string }>({
     loading: false,
     modific: '',
@@ -105,6 +120,10 @@ export const DetailsCredito = ({
   const [Loading, setLoading] = useState<boolean>(false);
   const [LoadingSolicitud, setLoadingSolicitud] = useState<boolean>(false);
   const [isActive, setIsActive] = useState<boolean>(credito?.active ? true : false);
+
+  const handleChangeAcordion = (panel: string) => (event: any, isExpanded: any) => {
+    setExpanded(isExpanded ? panel : '');
+  };
 
   const handleActive = async (check: boolean) => {
     setLoading(true);
@@ -455,26 +474,62 @@ export const DetailsCredito = ({
 
               <Grid alignItems='center' container spacing={3} justify='space-between'>
                 <Grid item xs={12} className={clases.titleContrato}>
-                  <strong>Contratos</strong>
+                  <strong>Archivos Fuentes</strong>
                 </Grid>
                 <Grid item xs={12}>
-                  {credito.contratos.map(contrato => (
-                    <>
-                      <ContratoCard contrato={contrato} />
-                      <br />
-                      <br />
-                    </>
-                  ))}
+                  <Accordion
+                    expanded={Expanded === 'contratros'}
+                    onChange={handleChangeAcordion('contratros')}
+                  >
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls='contratros-content'
+                      id='contratros-header'
+                    >
+                      <Typography className={clases.heading}>Contratos</Typography>
+                      <Typography className={clases.secondaryHeading}>
+                        Documentos del contrato
+                      </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      {credito.contratos.map(contrato => (
+                        <ContratoCard key={contrato.idContrato} contrato={contrato} />
+                      ))}
+                    </AccordionDetails>
+                  </Accordion>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Accordion
+                    expanded={Expanded === 'contratros'}
+                    onChange={handleChangeAcordion('contratros')}
+                  >
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls='contratros-content'
+                      id='contratros-header'
+                    >
+                      <Typography className={clases.heading}>Paquete de Bienvenida</Typography>
+                      <Typography className={clases.secondaryHeading}>
+                        Documentos del contrato
+                      </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      {credito.contratos.map(contrato => (
+                        <ContratoCard key={contrato.idContrato} contrato={contrato} />
+                      ))}
+                    </AccordionDetails>
+                  </Accordion>
                 </Grid>
               </Grid>
             </Box>
-            <Box mt={1}>
+            <Box mt={3}>
               <Grid container spacing={3} justify='center'>
                 {me.idRol === 'Gerente de Sucursal' ? (
                   <>
                     <Grid item>
                       <Button
-                        disabled={credito?.autorizado ? true : false}
+                        disabled={credito?.autorizado ? true : true}
                         className={clases.btnAutorizar}
                         onClick={NotificarAutorizacion}
                         fullWidth

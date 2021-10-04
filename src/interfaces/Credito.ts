@@ -28,6 +28,7 @@ export interface CreditoByContrato {
   idContrato: string;
   source: string;
   updated_at: string | Date;
+  isPackageWelcome: number;
 }
 
 export interface CreditoByCliente extends Credito {

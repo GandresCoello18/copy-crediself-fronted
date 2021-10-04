@@ -213,8 +213,13 @@ export const DetailsCredito = ({
 
     try {
       await GenerarPaqueteBienvenida({ token, idCredito: credito?.idCredito || '' });
-      setLoadingPackage(false);
-      setReloadCredito && setReloadCredito(true);
+
+      if (setReloadCredito) {
+        setTimeout(() => {
+          setReloadCredito(true);
+          setLoadingPackage(false);
+        }, 2000);
+      }
     } catch (error) {
       toast.error(HandleError(error as AxiosError));
       setLoadingPackage(false);
@@ -513,9 +518,15 @@ export const DetailsCredito = ({
                       </Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      {credito.contratos.map(contrato => (
-                        <ContratoCard key={contrato.idContrato} contrato={contrato} />
-                      ))}
+                      <Grid container>
+                        {credito.contratos
+                          .filter(item => item.isPackageWelcome === 0)
+                          .map(contrato => (
+                            <Grid item xs={12} key={contrato.idContrato}>
+                              <ContratoCard contrato={contrato} />
+                            </Grid>
+                          ))}
+                      </Grid>
                     </AccordionDetails>
                   </Accordion>
                 </Grid>
@@ -536,9 +547,15 @@ export const DetailsCredito = ({
                       </Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      {credito.contratos.map(contrato => (
-                        <ContratoCard key={contrato.idContrato} contrato={contrato} />
-                      ))}
+                      <Grid container>
+                        {credito.contratos
+                          .filter(item => item.isPackageWelcome === 1)
+                          .map(contrato => (
+                            <Grid item xs={12} key={contrato.idContrato}>
+                              <ContratoCard contrato={contrato} />
+                            </Grid>
+                          ))}
+                      </Grid>
                     </AccordionDetails>
                   </Accordion>
                 </Grid>
@@ -615,7 +632,10 @@ export const DetailsCredito = ({
                   <Grid item>
                     <Button
                       className={clases.btnPaquete}
-                      disabled={LoadingPackage}
+                      disabled={
+                        LoadingPackage ||
+                        credito.contratos.some(item => item.isPackageWelcome === 1)
+                      }
                       onClick={HandlePackageWelcome}
                       fullWidth
                       variant='outlined'

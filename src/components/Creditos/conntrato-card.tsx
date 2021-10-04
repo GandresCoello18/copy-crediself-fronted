@@ -63,7 +63,7 @@ export const ContratoCard = ({ contrato }: Props) => {
   };
 
   return (
-    <Box style={{ width: '100%' }}>
+    <Box style={{ width: '100%' }} display='block'>
       <a
         target='_blank'
         rel='noreferrer'
@@ -74,7 +74,7 @@ export const ContratoCard = ({ contrato }: Props) => {
           <Box p={1} textAlign='center' className={classes.textCard}>
             <InsertDriveFileIcon style={{ fontSize: 40 }} />
             <br />
-            <strong>Contrato: </strong>
+            <strong>{contrato.isPackageWelcome === 0 ? 'Contrato:' : 'Archivo:'} </strong>
             <span>{contrato.contrato}</span>
             <br />
             <strong>Actualizado el: </strong>

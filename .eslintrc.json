@@ -1,6 +1,6 @@
 {
   "parser": "@typescript-eslint/parser",
-  "plugins": ["cypress"],
+  "plugins": ["prettier", "cypress"],
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
@@ -30,6 +30,8 @@
     "quotes": ["error", "single"],
     "prettier/prettier": "error",
     "import/extensions": "off",
-    "jest/expect-expect": "off"
+    "jest/expect-expect": "off",
+    "arrow-body-style": "off",
+    "prefer-arrow-callback": "off"
   }
 }

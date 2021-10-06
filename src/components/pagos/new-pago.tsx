@@ -69,10 +69,6 @@ export const FormNewPago = ({ setReloadPago, setVisible, idCredito, cliente, ape
             return;
           }
 
-          if (values.tipoDePago === 'Terminal Bancario') {
-            values.valor = totalComisionBancaria(Number(values.valor)).toString();
-          }
-
           const data = new FormData();
           data.append('idCredito', values.idCredito);
           data.append('pagadoEl', values.pagadoEl);

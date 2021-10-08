@@ -16,6 +16,8 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { ErrorAppByUser } from '../../interfaces/Error';
 import { RowTableError } from './row-table-error';
+import { Dispatch, SetStateAction, useContext } from 'react';
+import { MeContext } from '../../context/contextMe';
 
 const useStyles = makeStyles((theme: any) => ({
   headTable: {
@@ -27,12 +29,14 @@ const useStyles = makeStyles((theme: any) => ({
 }));
 
 interface Props {
+  setReloadError: Dispatch<SetStateAction<boolean>>;
   reportesError: ErrorAppByUser[];
   Loading: boolean;
 }
 
-export const TablaError = ({ reportesError, Loading }: Props) => {
+export const TablaError = ({ setReloadError, reportesError, Loading }: Props) => {
   const classes = useStyles();
+  const { token } = useContext(MeContext);
 
   const SkeletonTableError = () => {
     return [0, 1, 2, 3, 4, 5, 6, 7].map(item => (
@@ -74,7 +78,12 @@ export const TablaError = ({ reportesError, Loading }: Props) => {
               <TableBody>
                 {!Loading &&
                   reportesError.map(reporte => (
-                    <RowTableError key={reporte.idError} reporte={reporte} />
+                    <RowTableError
+                      key={reporte.idError}
+                      setReloadError={setReloadError}
+                      token={token}
+                      reporte={reporte}
+                    />
                   ))}
               </TableBody>
             </Table>

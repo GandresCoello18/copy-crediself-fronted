@@ -242,7 +242,6 @@ export const FormNewCliente = ({ setReloadCliente, setVisible }: Props) => {
                     options={Ciudades}
                     getOptionLabel={option => option.ciudad}
                     getOptionSelected={(option, value) => {
-                      console.log(value.ciudad);
                       setSelectCity(value.ciudad);
                       return true;
                     }}

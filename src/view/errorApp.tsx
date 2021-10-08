@@ -99,7 +99,7 @@ const ErrorAppView = () => {
           </Card>
         </Box>
         <Box mt={3}>
-          <TablaError reportesError={Error} Loading={Loading} />
+          <TablaError setReloadError={setReloadError} reportesError={Error} Loading={Loading} />
         </Box>
         <Box mt={3} display='flex' justifyContent='center'>
           <Pagination

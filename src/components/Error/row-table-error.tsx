@@ -11,11 +11,15 @@ import {
   MenuItem,
   Chip,
 } from '@material-ui/core';
-import React from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { ErrorAppByUser } from '../../interfaces/Error';
 import { BASE_API_IMAGES_CLOUDINNARY } from '../../api';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { RemoveErrorApp } from '../../api/errores';
+import { AxiosError } from 'axios';
+import { toast } from 'react-toast';
+import { HandleError } from '../../helpers/handleError';
 
 const useStyles = makeStyles((theme: any) => ({
   btnIcon: {
@@ -40,15 +44,31 @@ const useStyles = makeStyles((theme: any) => ({
 }));
 
 interface Props {
+  setReloadError: Dispatch<SetStateAction<boolean>>;
   reporte: ErrorAppByUser;
+  token: string;
 }
 
-export const RowTableError = ({ reporte }: Props) => {
+export const RowTableError = ({ setReloadError, reporte, token }: Props) => {
   const clases = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [Loading, setLoading] = useState<boolean>(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
   const OnClose = () => setAnchorEl(null);
+
+  const RemoveError = async () => {
+    setLoading(true);
+
+    try {
+      await RemoveErrorApp({ token, idError: reporte.idError });
+      setLoading(false);
+      setReloadError(true);
+    } catch (error) {
+      toast.error(HandleError(error as AxiosError));
+      setLoading(false);
+    }
+  };
 
   const RenderErrorOPtions = () => {
     return (
@@ -79,6 +99,8 @@ export const RowTableError = ({ reporte }: Props) => {
               <Button
                 className={clases.btnRemove}
                 size='small'
+                disabled={Loading}
+                onClick={RemoveError}
                 title='ELiminar registro'
                 fullWidth
                 variant='outlined'

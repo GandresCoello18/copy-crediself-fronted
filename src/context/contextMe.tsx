@@ -4,7 +4,7 @@
 import Cookies from 'js-cookie';
 import { createContext, Dispatch, ReactNode, SetStateAction, useState } from 'react';
 
-interface Me {
+export interface Me {
   idUser: string;
   nombres: string;
   apellidos: string;

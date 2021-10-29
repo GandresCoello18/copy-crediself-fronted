@@ -5,7 +5,7 @@
     },
     {
         "rol": "Administrativo",
-        "permisos": ["UpdateMeUser", "NewPayment", "ViewPayment", "AprobarPayment", "UpdateComprobantePayment", "DeleteComprobantePayment", "ViewClientes", "ViewCredito"]
+        "permisos": ["UpdateMeUser", "NewPayment", "ViewPayment", "AprobarPayment", "UpdateComprobantePayment", "DeleteComprobantePayment", "ViewClientes", "ViewCredito", "ViewNotification"]
     },
     {
         "rol": "Gerente Regional",

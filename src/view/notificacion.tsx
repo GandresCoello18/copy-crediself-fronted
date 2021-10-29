@@ -109,11 +109,13 @@ const NotificacionView = () => {
             style={{ backgroundColor: '#fff', borderBottom: '1px solid #cdcdcd' }}
           >
             <Box mt={3}>
-              <ActionNotification
-                disabled={Notificaciones.length === 0}
-                VisibleViewAll={false}
-                setReloadNotificacion={setReloadNotificacion}
-              />
+              {!Loading && (
+                <ActionNotification
+                  disabled={Notificaciones.length === 0}
+                  VisibleViewAll={false}
+                  setReloadNotificacion={setReloadNotificacion}
+                />
+              )}
               <List className={classes.containerList}>
                 {!Loading && !Notificaciones.length && (
                   <Alert severity='info'>
@@ -141,9 +143,11 @@ const NotificacionView = () => {
               />
             </Box>
           </Grid>
-          <Grid item xs={12} lg={5} style={{ backgroundColor: '#fff' }}>
-            <DetailsNotificacion notifiacion={Notification} />
-          </Grid>
+          {!Loading && (
+            <Grid item xs={12} lg={5} style={{ backgroundColor: '#fff' }}>
+              <DetailsNotificacion notifiacion={Notification} />
+            </Grid>
+          )}
         </Grid>
       </Container>
     </Page>

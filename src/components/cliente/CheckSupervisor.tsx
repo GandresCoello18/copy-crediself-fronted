@@ -1,37 +1,44 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import { Avatar, Button, Chip, CircularProgress, TextField, Typography } from '@material-ui/core';
+import {
+  Avatar,
+  Button,
+  Chip,
+  Box,
+  CircularProgress,
+  TextField,
+  Typography,
+} from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import { AxiosError } from 'axios';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import { toast } from 'react-toast';
 import { BASE_FRONTEND } from '../../api';
-import { UpdateAutorizarCliente } from '../../api/clientes';
+import { UpdatecheckSupervisorCliente } from '../../api/clientes';
 import { NewNoti, NewNotificacion } from '../../api/notificacion';
 import { GetUserByRol } from '../../api/users';
+import { Me } from '../../context/contextMe';
 import { HandleError } from '../../helpers/handleError';
 import { SourceAvatar } from '../../helpers/sourceAvatar';
 import { Usuario } from '../../interfaces/Usuario';
 import { DialogoForm } from '../DialogoForm';
 
 interface Props {
-  rol: string;
-  isAutorizado: boolean;
+  disabled: boolean;
+  isCheckSupervisor: boolean;
   idCliente: string;
+  me: Me;
   token: string;
-  meId: string;
   clientRefNombres: string;
-  clientId: string;
   setReloadCliente: Dispatch<SetStateAction<boolean>>;
 }
 
-export const AutorizarCliente = ({
-  rol,
-  isAutorizado,
+export const CheckeSupervisor = ({
+  disabled,
+  isCheckSupervisor,
   idCliente,
+  me,
   token,
-  meId,
   clientRefNombres,
-  clientId,
   setReloadCliente,
 }: Props) => {
   const [Loading, setLoading] = useState<boolean>(false);
@@ -39,26 +46,28 @@ export const AutorizarCliente = ({
   const [LoadignUser, setLoadingUser] = useState<boolean>(false);
   const [SelectUser, setSelectUser] = useState<Usuario | undefined>(undefined);
   const [Visible, setVisible] = useState<boolean>(false);
+  const [VisibleQuestion, setVisibleQuestion] = useState<boolean>(false);
   const [Users, setUsers] = useState<Usuario[]>([]);
 
-  const handleAutorizar = async () => {
-    if (rol === 'Gerente de Sucursal') {
-      setLoading(true);
-      try {
-        await UpdateAutorizarCliente({ token, idCliente, autorizar: !isAutorizado });
-        setLoading(false);
-        setReloadCliente(true);
-        toast.success('Cliente autorizado correctamente');
-      } catch (error) {
-        toast.error(HandleError(error as AxiosError));
-        setLoading(false);
-      }
+  const HanldeUpdateCheck = async (isNotificar: boolean) => {
+    setLoading(true);
+    const check = isCheckSupervisor ? false : true;
 
-      return;
+    try {
+      await UpdatecheckSupervisorCliente({ token, check, idCliente });
+      setLoading(false);
+      setReloadCliente(true);
+    } catch (error) {
+      setLoading(false);
+      toast.error(HandleError(error as AxiosError));
     }
 
-    setVisible(true);
-    FetchGerenteSucursal();
+    if (isNotificar) {
+      FetchGerenteSucursal();
+      setVisible(true);
+    }
+
+    setVisibleQuestion(false);
   };
 
   const FetchGerenteSucursal = async () => {
@@ -73,20 +82,16 @@ export const AutorizarCliente = ({
     }
   };
 
-  const handleDelete = () => {
-    setSelectUser(undefined);
-  };
-
   const sendNotification = async () => {
     setLoadingNoti(true);
 
     try {
       const notificacion: NewNoti = {
-        sendingUser: meId,
+        sendingUser: me.idUser,
         receiptUser: SelectUser?.idUser || '',
-        title: 'Solicitud para la autorización de cliente',
-        body: `Hola ${SelectUser?.nombres}, requiero que sea revisado y aprobado la solicitud de aprobacion para el cliente ${clientRefNombres}`,
-        link: `${BASE_FRONTEND}/app/clientes/${clientId}`,
+        title: `${me.nombres.toUpperCase()} ${me.apellidos.toUpperCase()} te invita ha revisar la documentación de un cliente.`,
+        body: `Hola ${SelectUser?.nombres}, requiero que sea revisado los documentos del cliente ${clientRefNombres}.`,
+        link: `${BASE_FRONTEND}/app/clientes/${idCliente}`,
       };
 
       await NewNotificacion({ token, data: notificacion });
@@ -99,10 +104,19 @@ export const AutorizarCliente = ({
     }
   };
 
+  const handleDelete = () => {
+    setSelectUser(undefined);
+  };
+
   return (
     <>
-      <Button variant='outlined' onClick={handleAutorizar} disabled={isAutorizado || Loading}>
-        Autorizar
+      <Button
+        disabled={disabled || Loading}
+        title='Marcar como revisado los documentos y datos'
+        variant='outlined'
+        onClick={() => setVisibleQuestion(true)}
+      >
+        Validación de documentos y datos
       </Button>
 
       <DialogoForm Open={Visible} setOpen={setVisible} title='Selecciona el usuario a notificar'>
@@ -138,12 +152,6 @@ export const AutorizarCliente = ({
             {SelectUser && (
               <>
                 <Typography>
-                  Notificar la autorización del cliente{' '}
-                  <Chip
-                    avatar={<Avatar alt={clientRefNombres} src={SourceAvatar('')} />}
-                    label={clientRefNombres}
-                  />{' '}
-                  ha:{' '}
                   <Chip
                     avatar={
                       <Avatar
@@ -170,6 +178,22 @@ export const AutorizarCliente = ({
             )}
           </>
         )}
+      </DialogoForm>
+
+      <DialogoForm
+        Open={VisibleQuestion}
+        setOpen={setVisibleQuestion}
+        title='¿Quires notificar a un Gerente Sucursal?'
+      >
+        <Box p={3} display='flex' justifyContent='space-between'>
+          <Button onClick={() => HanldeUpdateCheck(true)} variant='outlined' fullWidth>
+            Si
+          </Button>
+
+          <Button onClick={() => HanldeUpdateCheck(false)} variant='outlined' fullWidth>
+            No
+          </Button>
+        </Box>
       </DialogoForm>
     </>
   );

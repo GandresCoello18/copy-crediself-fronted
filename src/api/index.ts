@@ -8,14 +8,14 @@ export const BASE_API_IMAGES_CLOUDINNARY_SCALE =
 
 export const BASE_FRONTEND_DEV = 'http://localhost:3000';
 export const BASE_FRONTEND_PROD = 'https://copy-crediself-fronted.vercel.app';
-export const BASE_FRONTEND = BASE_FRONTEND_PROD;
+export const BASE_FRONTEND = BASE_FRONTEND_DEV;
 
-// const apiDev = 'http://localhost:9000';
-const apiProd = 'https://crediself-api.herokuapp.com';
+const apiDev = 'http://localhost:9000';
+// const apiProd = 'https://crediself-api.herokuapp.com';
 
-export const BASE_API_FILE_DOCUMENT = `${apiProd}/static`;
+export const BASE_API_FILE_DOCUMENT = `${apiDev}/static`;
 
-export const BASE_API = apiProd;
+export const BASE_API = apiDev;
 
 export const api = axios.default.create({
   baseURL: `${BASE_API}/api`,

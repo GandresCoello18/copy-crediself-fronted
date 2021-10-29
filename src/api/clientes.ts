@@ -101,6 +101,38 @@ export const UpdateAutorizarCliente = async (options: {
   return response;
 };
 
+export const UpdatecheckSupervisorCliente = async (options: {
+  token: string;
+  idCliente: string;
+  check: boolean;
+}) => {
+  api.defaults.headers['access-token'] = options.token;
+  const response = await api({
+    method: 'PUT',
+    url: `/cliente/checkSupervisor/${options.idCliente}`,
+    data: {
+      check: options.check,
+    },
+  });
+  return response;
+};
+
+export const UpdatecheckGerenteSucCliente = async (options: {
+  token: string;
+  idCliente: string;
+  check: boolean;
+}) => {
+  api.defaults.headers['access-token'] = options.token;
+  const response = await api({
+    method: 'PUT',
+    url: `/cliente/checkGerenteSuc/${options.idCliente}`,
+    data: {
+      check: options.check,
+    },
+  });
+  return response;
+};
+
 export const UpdateCliente = async (options: {
   token: string;
   idCliente: string;

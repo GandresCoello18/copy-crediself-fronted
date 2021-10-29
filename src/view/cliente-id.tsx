@@ -23,7 +23,12 @@ import { AxiosError } from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { HandleError } from '../helpers/handleError';
 import { DialogoForm } from '../components/DialogoForm';
-import { DeleteCliente, GetCliente, UpdateActiveCliente } from '../api/clientes';
+import {
+  DeleteCliente,
+  GetCliente,
+  UpdateActiveCliente,
+  UpdateAutorizarCliente,
+} from '../api/clientes';
 import { Cliente, Expediente } from '../interfaces/Cliente';
 import { SourceAvatar } from '../helpers/sourceAvatar';
 import { Alert, Skeleton } from '@material-ui/lab';
@@ -32,7 +37,8 @@ import { UploadExpediente } from '../components/cliente/upload-expediente';
 import { FormUpdateCliente } from '../components/cliente/update-client';
 import { CardFile } from '../components/cliente/card-file';
 import { Usuario } from '../interfaces/Usuario';
-import { AutorizarCliente } from '../components/cliente/Autorizar-cliente';
+import { CheckGerenteSuc } from '../components/cliente/CheckGerenteSuc';
+import { CheckeSupervisor } from '../components/cliente/CheckSupervisor';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -159,6 +165,17 @@ const ClientOnlyView = () => {
       setIsActive(check);
     } catch (error) {
       setLoading(false);
+      toast.error(HandleError(error as AxiosError));
+    }
+  };
+
+  const handleAutorizar = async () => {
+    const autorizar = Cliente?.autorizado ? false : true;
+
+    try {
+      await UpdateAutorizarCliente({ token, idCliente: params.idCliente, autorizar });
+      setReloadCliente(true);
+    } catch (error) {
       toast.error(HandleError(error as AxiosError));
     }
   };
@@ -302,7 +319,7 @@ const ClientOnlyView = () => {
           </Box>
 
           <Box mt={2}>
-            <strong className={classes.subTitle}>Autorizado</strong>
+            <strong className={classes.subTitle}>Autorizado Por Administrador</strong>
             {Loading ? (
               <Skeleton variant='text' width={300} height={20} />
             ) : (
@@ -311,6 +328,54 @@ const ClientOnlyView = () => {
                   label={Cliente?.autorizado ? 'Si' : 'No'}
                   color={Cliente?.autorizado ? 'primary' : 'default'}
                 />
+              </Typography>
+            )}
+          </Box>
+
+          <Box mt={2}>
+            <strong className={classes.subTitle}>Revisado Por Supervidor</strong>
+            {Loading ? (
+              <Skeleton variant='text' width={300} height={20} />
+            ) : (
+              <Typography className={classes.textTop}>
+                {Cliente?.checkSupervisor ? (
+                  <Chip
+                    avatar={
+                      <Avatar
+                        title={`${Cliente?.checkSupervisor.nombres} ${Cliente?.checkSupervisor.apellidos}`}
+                        src={SourceAvatar(Cliente?.checkSupervisor.avatar || '')}
+                      />
+                    }
+                    label={`${Cliente?.checkSupervisor.nombres} ${Cliente?.checkSupervisor.apellidos}`}
+                    variant='outlined'
+                  />
+                ) : (
+                  <Chip label='No' color='default' />
+                )}
+              </Typography>
+            )}
+          </Box>
+
+          <Box mt={2}>
+            <strong className={classes.subTitle}>Revisado Por Gerente de Sucursal</strong>
+            {Loading ? (
+              <Skeleton variant='text' width={300} height={20} />
+            ) : (
+              <Typography className={classes.textTop}>
+                {Cliente?.checkGerenteSuc ? (
+                  <Chip
+                    avatar={
+                      <Avatar
+                        title={`${Cliente?.checkGerenteSuc.nombres} ${Cliente?.checkGerenteSuc.apellidos}`}
+                        src={SourceAvatar(Cliente?.checkGerenteSuc.avatar || '')}
+                      />
+                    }
+                    label={`${Cliente?.checkGerenteSuc.nombres} ${Cliente?.checkGerenteSuc.apellidos}`}
+                    variant='outlined'
+                  />
+                ) : (
+                  <Chip label='No' color='default' />
+                )}
               </Typography>
             )}
           </Box>
@@ -414,16 +479,40 @@ const ClientOnlyView = () => {
               <Button variant='outlined'>Estado de cuenta</Button>
             </Grid>
             <Grid item>
-              <AutorizarCliente
-                token={token}
-                rol={me.idRol}
-                idCliente={params.idCliente}
-                isAutorizado={Cliente?.autorizado === 1}
-                clientRefNombres={Cliente?.nombres || ''}
-                meId={me.idUser}
-                clientId={Cliente?.idCliente || ''}
-                setReloadCliente={setReloadCliente}
-              />
+              {me.idRol === 'Administrativo' && Cliente?.checkSupervisor && (
+                <Button
+                  disabled={Archivos.length || Cliente?.autorizado ? true : false}
+                  variant='outlined'
+                  title='Marcar como revisado y autorización de comisiones'
+                  onClick={handleAutorizar}
+                >
+                  Autorizar
+                </Button>
+              )}
+
+              {me.idRol === 'Supervisor' && (
+                <CheckeSupervisor
+                  token={token}
+                  idCliente={params.idCliente}
+                  isCheckSupervisor={Cliente?.checkSupervisor ? true : false}
+                  clientRefNombres={`${Cliente?.nombres} ${Cliente?.apellidos}`}
+                  me={me}
+                  setReloadCliente={setReloadCliente}
+                  disabled={!!Archivos.length}
+                />
+              )}
+
+              {me.idRol === 'Gerente de Sucursal' && (
+                <CheckGerenteSuc
+                  token={token}
+                  idCliente={params.idCliente}
+                  isCheckGerenteSuc={Cliente?.checkGerenteSuc ? true : false}
+                  clientRefNombres={Cliente?.nombres || ''}
+                  me={me}
+                  clientId={Cliente?.idCliente || ''}
+                  setReloadCliente={setReloadCliente}
+                />
+              )}
             </Grid>
             <Grid item>
               <Button

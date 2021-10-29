@@ -31,14 +31,19 @@ export const DetailsNotificacion = ({ notifiacion }: Props) => {
   }, [notifiacion, token]);
 
   const renderTemplate = (notifiacion: NotificacionByMe) => {
-    switch (notifiacion.title) {
-      case 'Solicitud para la autorización de credito':
-        return <SolicitudCredito notifiacion={notifiacion} />;
-      case 'Solicitud para la autorización de cliente':
-        return <TemplateAutorizacionCliente notificacion={notifiacion} />;
-      default:
-        return <p>No hay plantilla programada</p>;
+    if (notifiacion.title === 'Solicitud para la autorización de credito') {
+      return <SolicitudCredito notifiacion={notifiacion} />;
     }
+
+    if (notifiacion.title === 'Solicitud para la autorización de cliente') {
+      return <TemplateAutorizacionCliente notificacion={notifiacion} />;
+    }
+
+    if (notifiacion.title.includes('te invita ha revisar la documentación de un cliente')) {
+      return <TemplateAutorizacionCliente notificacion={notifiacion} />;
+    }
+
+    return <p>No hay plantilla programada</p>;
   };
 
   return (

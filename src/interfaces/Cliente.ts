@@ -1,3 +1,10 @@
+export interface CheckCliente {
+  idUser: string;
+  avatar: string | null;
+  nombres: string;
+  apellidos: string;
+}
+
 export interface Cliente {
   idCliente: string;
   nombres: string;
@@ -14,6 +21,8 @@ export interface Cliente {
   numeroCliente: number;
   idUser: string;
   autorizado: number;
+  checkSupervisor: CheckCliente;
+  checkGerenteSuc: CheckCliente;
 }
 
 export interface Expediente {

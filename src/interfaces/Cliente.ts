@@ -20,7 +20,7 @@ export interface Cliente {
   rfc: string | null;
   numeroCliente: number;
   idUser: string;
-  autorizado: number;
+  autorizado: CheckCliente;
   checkSupervisor: CheckCliente;
   checkGerenteSuc: CheckCliente;
 }

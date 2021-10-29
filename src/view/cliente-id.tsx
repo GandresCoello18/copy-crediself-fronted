@@ -324,10 +324,20 @@ const ClientOnlyView = () => {
               <Skeleton variant='text' width={300} height={20} />
             ) : (
               <Typography className={classes.textTop}>
-                <Chip
-                  label={Cliente?.autorizado ? 'Si' : 'No'}
-                  color={Cliente?.autorizado ? 'primary' : 'default'}
-                />
+                {Cliente?.autorizado ? (
+                  <Chip
+                    avatar={
+                      <Avatar
+                        title={`${Cliente?.autorizado.nombres} ${Cliente?.autorizado.apellidos}`}
+                        src={SourceAvatar(Cliente?.autorizado.avatar || '')}
+                      />
+                    }
+                    label={`${Cliente?.autorizado.nombres} ${Cliente?.autorizado.apellidos}`}
+                    variant='outlined'
+                  />
+                ) : (
+                  <Chip label='No' color='default' />
+                )}
               </Typography>
             )}
           </Box>

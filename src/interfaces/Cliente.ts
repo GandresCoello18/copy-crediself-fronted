@@ -23,6 +23,8 @@ export interface Cliente {
   autorizado: CheckCliente;
   checkSupervisor: CheckCliente;
   checkGerenteSuc: CheckCliente;
+  notificarSms: number;
+  notificarEmail: number;
 }
 
 export interface Expediente {

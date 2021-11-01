@@ -74,8 +74,8 @@ export const UploadExpediente = ({ token, idCliente, setReloadCliente }: Props) 
           onChange={event => setComprobanteExp(event.target.value as string)}
         >
           <MenuItem value='Factura Telefonica'>Factura Telefonica</MenuItem>
-          <MenuItem value='Factura de gas'>Factura de gas</MenuItem>
-          <MenuItem value='Factura de energia'>Factura de energia</MenuItem>
+          <MenuItem value='Factura de gas'>Factura de Internet</MenuItem>
+          <MenuItem value='Factura de energia'>Factura de Energia</MenuItem>
         </Select>
       </>
     );

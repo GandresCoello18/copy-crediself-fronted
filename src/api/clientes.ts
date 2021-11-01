@@ -10,6 +10,8 @@ export interface NewClients {
   ciudad: string;
   fechaNacimiento: Date | string;
   rfc: string;
+  notificarSms: boolean;
+  notificarEmail: boolean;
 }
 
 interface UpdateClient {

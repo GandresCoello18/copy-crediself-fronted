@@ -9,7 +9,12 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Checkbox,
   Divider,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  FormLabel,
   Grid,
   InputLabel,
   MenuItem,
@@ -34,6 +39,10 @@ interface Props {
 
 export const FormNewCliente = ({ setReloadCliente, setVisible }: Props) => {
   const { token, me } = useContext(MeContext);
+  const [NotificationClient, setNotificationClient] = useState<{ sms: boolean; email: boolean }>({
+    sms: false,
+    email: false,
+  });
   const [Ciudades, setCiudades] = useState<Ciudad[]>([]);
   const [selectCity, setSelectCity] = useState<string>('');
 
@@ -64,6 +73,8 @@ export const FormNewCliente = ({ setReloadCliente, setVisible }: Props) => {
           sexo: '',
           fechaNacimiento: '',
           rfc: '',
+          notificarEmail: false,
+          notificarSms: false,
         }}
         validationSchema={Yup.object().shape({
           nombres: Yup.string().max(100).required('El campo es requerido'),
@@ -75,6 +86,8 @@ export const FormNewCliente = ({ setReloadCliente, setVisible }: Props) => {
           sexo: Yup.string().max(100),
           fechaNacimiento: Yup.string().max(100),
           rfc: Yup.string().max(25),
+          notificarEmail: Yup.boolean(),
+          notificarSms: Yup.boolean(),
         })}
         onSubmit={async (values, actions) => {
           if (values.fechaNacimiento) {
@@ -107,8 +120,19 @@ export const FormNewCliente = ({ setReloadCliente, setVisible }: Props) => {
             values.sexo = 'No especificado';
           }
 
+          if (NotificationClient.email) {
+            values.notificarEmail = true;
+          }
+
+          if (NotificationClient.sms) {
+            values.notificarSms = true;
+          }
+
           try {
-            await NewCliente({ token, data: values });
+            const { mensaje } = await (await NewCliente({ token, data: values })).data;
+
+            mensaje && toast.warn(mensaje);
+
             setReloadCliente(true);
             setVisible(false);
           } catch (error) {
@@ -273,6 +297,45 @@ export const FormNewCliente = ({ setReloadCliente, setVisible }: Props) => {
                     onChange={handleChange}
                     placeholder={'Especifique la dirección'}
                   />
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl component='fieldset'>
+                    <FormLabel component='legend'>Notificar al cliente por</FormLabel>
+                    <FormGroup>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={NotificationClient.email}
+                            disabled={values.email.length === 0}
+                            onChange={values =>
+                              setNotificationClient({
+                                ...NotificationClient,
+                                email: values.target.checked,
+                              })
+                            }
+                          />
+                        }
+                        label='Correo electronico'
+                      />
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={NotificationClient.sms}
+                            disabled={
+                              values.telefono === 0 || values.telefono.toString().length === 0
+                            }
+                            onChange={values =>
+                              setNotificationClient({
+                                ...NotificationClient,
+                                sms: values.target.checked,
+                              })
+                            }
+                          />
+                        }
+                        label='Mensaje de texto'
+                      />
+                    </FormGroup>
+                  </FormControl>
                 </Grid>
               </Grid>
             </CardContent>

@@ -180,6 +180,31 @@ const ClientOnlyView = () => {
     }
   };
 
+  const RenderEditAndDesctive = () => {
+    return (
+      <>
+        <Grid item>
+          <Button
+            variant='outlined'
+            onClick={() => setVisibleUpdate(true)}
+            className={classes.btnEdit}
+          >
+            Editar
+          </Button>
+        </Grid>
+        <Grid item>
+          <Button
+            variant='outlined'
+            onClick={() => setDialogoDelete(true)}
+            className={classes.btnDelete}
+          >
+            Desactivar
+          </Button>
+        </Grid>
+      </>
+    );
+  };
+
   const RenderDetailsClient = () => {
     return (
       <Grid container spacing={3} justify='space-around'>
@@ -314,6 +339,34 @@ const ClientOnlyView = () => {
             ) : (
               <Typography className={classes.textTop}>
                 {Cliente?.direccion || <Chip label='No especificado' />}
+              </Typography>
+            )}
+          </Box>
+
+          <Box mt={2}>
+            <strong className={classes.subTitle}>Notificar por SMS</strong>
+            {Loading ? (
+              <Skeleton variant='text' width={300} height={20} />
+            ) : (
+              <Typography className={classes.textTop}>
+                <Chip
+                  color={Cliente?.notificarSms ? 'primary' : 'default'}
+                  label={Cliente?.notificarSms ? 'Si' : 'No'}
+                />
+              </Typography>
+            )}
+          </Box>
+
+          <Box mt={2}>
+            <strong className={classes.subTitle}>Notificar por Email</strong>
+            {Loading ? (
+              <Skeleton variant='text' width={300} height={20} />
+            ) : (
+              <Typography className={classes.textTop}>
+                <Chip
+                  color={Cliente?.notificarEmail ? 'primary' : 'default'}
+                  label={Cliente?.notificarEmail ? 'Si' : 'No'}
+                />
               </Typography>
             )}
           </Box>
@@ -524,24 +577,10 @@ const ClientOnlyView = () => {
                 />
               )}
             </Grid>
-            <Grid item>
-              <Button
-                variant='outlined'
-                onClick={() => setVisibleUpdate(true)}
-                className={classes.btnEdit}
-              >
-                Editar
-              </Button>
-            </Grid>
-            <Grid item>
-              <Button
-                variant='outlined'
-                onClick={() => setDialogoDelete(true)}
-                className={classes.btnDelete}
-              >
-                Eliminar
-              </Button>
-            </Grid>
+            {!Cliente?.checkSupervisor && me.idRol == 'Supervisor' && RenderEditAndDesctive()}
+            {!Cliente?.checkGerenteSuc &&
+              me.idRol == 'Gerente de Sucursal' &&
+              RenderEditAndDesctive()}
           </Grid>
         </Grid>
       </Grid>

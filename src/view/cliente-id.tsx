@@ -544,7 +544,7 @@ const ClientOnlyView = () => {
             <Grid item>
               {me.idRol === 'Administrativo' && Cliente?.checkSupervisor && (
                 <Button
-                  disabled={Archivos.length || Cliente?.autorizado ? true : false}
+                  disabled={!Archivos.length || Cliente?.autorizado ? true : false}
                   variant='outlined'
                   title='Marcar como revisado y autorización de comisiones'
                   onClick={handleAutorizar}
@@ -561,7 +561,7 @@ const ClientOnlyView = () => {
                   clientRefNombres={`${Cliente?.nombres} ${Cliente?.apellidos}`}
                   me={me}
                   setReloadCliente={setReloadCliente}
-                  disabled={!!Archivos.length}
+                  disabled={!Archivos.length}
                 />
               )}
 
@@ -569,7 +569,7 @@ const ClientOnlyView = () => {
                 <CheckGerenteSuc
                   token={token}
                   idCliente={params.idCliente}
-                  isCheckGerenteSuc={Cliente?.checkGerenteSuc ? true : false}
+                  isCheckGerenteSuc={!Archivos.length || Cliente?.checkGerenteSuc ? true : false}
                   clientRefNombres={Cliente?.nombres || ''}
                   me={me}
                   clientId={Cliente?.idCliente || ''}
@@ -581,6 +581,7 @@ const ClientOnlyView = () => {
             {!Cliente?.checkGerenteSuc &&
               me.idRol == 'Gerente de Sucursal' &&
               RenderEditAndDesctive()}
+            {me.idRol === 'Administrativo' && RenderEditAndDesctive()}
           </Grid>
         </Grid>
       </Grid>

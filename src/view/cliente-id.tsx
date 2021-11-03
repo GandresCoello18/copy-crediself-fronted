@@ -180,7 +180,7 @@ const ClientOnlyView = () => {
     }
   };
 
-  const RenderEditAndDesctive = () => {
+  const RenderEdit = () => {
     return (
       <>
         <Grid item>
@@ -192,7 +192,7 @@ const ClientOnlyView = () => {
             Editar
           </Button>
         </Grid>
-        <Grid item>
+        {/*<Grid item>
           <Button
             variant='outlined'
             onClick={() => setDialogoDelete(true)}
@@ -200,8 +200,26 @@ const ClientOnlyView = () => {
           >
             Desactivar
           </Button>
-        </Grid>
+        </Grid>*/}
       </>
+    );
+  };
+
+  const RenderActive = () => {
+    return (
+      <Box mt={2}>
+        <strong className={classes.subTitle}>Activo</strong>
+        {Loading ? (
+          <Skeleton variant='text' width={100} height={20} />
+        ) : (
+          <Switch
+            checked={isActive}
+            disabled={me.idRol !== 'Gerente de Sucursal'}
+            onChange={value => handleActive(value.target.checked)}
+            inputProps={{ 'aria-label': 'secondary checkbox' }}
+          />
+        )}
+      </Box>
     );
   };
 
@@ -287,19 +305,9 @@ const ClientOnlyView = () => {
             )}
           </Box>
 
-          <Box mt={2}>
-            <strong className={classes.subTitle}>Activo</strong>
-            {Loading ? (
-              <Skeleton variant='text' width={100} height={20} />
-            ) : (
-              <Switch
-                checked={isActive}
-                disabled={me.idRol !== 'Gerente de Sucursal'}
-                onChange={value => handleActive(value.target.checked)}
-                inputProps={{ 'aria-label': 'secondary checkbox' }}
-              />
-            )}
-          </Box>
+          {!Cliente?.checkSupervisor && me.idRol == 'Supervisor' && RenderActive()}
+          {!Cliente?.checkGerenteSuc && me.idRol == 'Gerente de Sucursal' && RenderActive()}
+          {me.idRol === 'Administrativo' && RenderActive()}
 
           <Box mt={2}>
             <strong className={classes.subTitle}>RFC</strong>
@@ -577,11 +585,9 @@ const ClientOnlyView = () => {
                 />
               )}
             </Grid>
-            {!Cliente?.checkSupervisor && me.idRol == 'Supervisor' && RenderEditAndDesctive()}
-            {!Cliente?.checkGerenteSuc &&
-              me.idRol == 'Gerente de Sucursal' &&
-              RenderEditAndDesctive()}
-            {me.idRol === 'Administrativo' && RenderEditAndDesctive()}
+            {!Cliente?.checkSupervisor && me.idRol == 'Supervisor' && RenderEdit()}
+            {!Cliente?.checkGerenteSuc && me.idRol == 'Gerente de Sucursal' && RenderEdit()}
+            {me.idRol === 'Administrativo' && RenderEdit()}
           </Grid>
         </Grid>
       </Grid>

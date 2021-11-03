@@ -1,11 +1,22 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import { Button, Grid, InputLabel, MenuItem, Select } from '@material-ui/core';
+import {
+  Button,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  makeStyles,
+  createStyles,
+  Select,
+} from '@material-ui/core';
 import { AxiosError } from 'axios';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import { ImageListType } from 'react-images-uploading';
 import { toast } from 'react-toast';
-import { AddFileExpediente } from '../../api/expediente';
+import { AddFileExpediente, AddFileExpedienteDoc } from '../../api/expediente';
 import { HandleError } from '../../helpers/handleError';
+import { DialogoForm } from '../DialogoForm';
 import { UploadImage } from '../UploadImage';
 
 interface Props {
@@ -14,19 +25,40 @@ interface Props {
   setReloadCliente: Dispatch<SetStateAction<boolean>>;
 }
 
+const useStyles = makeStyles(() =>
+  createStyles({
+    input: {
+      display: 'none',
+    },
+    textCard: {
+      fontSize: 18,
+      width: '100%',
+      marginBottom: 10,
+    },
+  }),
+);
+
 export const UploadExpediente = ({ token, idCliente, setReloadCliente }: Props) => {
+  const classes = useStyles();
   const [images, setImages] = useState<ImageListType>([]);
-  const [IsUploadExp, setIsUploadExp] = useState<boolean>(false);
+  const [fileUpload, setFileUpload] = useState<FileList | null>(null);
+  const [IsUploadExp, setIsUploadExp] = useState<'img' | 'doc' | undefined>(undefined);
   const [Loading, setLoading] = useState<boolean>(false);
+  const [Visible, setVisible] = useState<boolean>(false);
   const [ComprobanteExp, setComprobanteExp] = useState<string>('');
 
   const handleUploadExpediente = async () => {
-    if (!IsUploadExp && !images.length) {
-      setIsUploadExp(true);
+    if (!IsUploadExp) {
+      setVisible(true);
       return;
     }
 
-    if (!images.length) {
+    if (!images.length && IsUploadExp === 'img') {
+      toast.warn('Selecciona alguna comprobante de tu biblioteca');
+      return;
+    }
+
+    if (!fileUpload?.length && IsUploadExp === 'doc') {
       toast.warn('Selecciona alguna comprobante de tu biblioteca');
       return;
     }
@@ -42,14 +74,21 @@ export const UploadExpediente = ({ token, idCliente, setReloadCliente }: Props) 
       const data = new FormData();
       data.append('idCliente', idCliente);
       data.append('comprobanteExp', ComprobanteExp);
-      data.append('fileExpediente', images[0].file || '');
 
-      await AddFileExpediente({ token, data });
+      if (images.length) {
+        data.append('fileExpediente', images[0].file || '');
+        await AddFileExpediente({ token, data });
+      }
+
+      if (fileUpload) {
+        data.append('fileExpediente', fileUpload[0] || '');
+        await AddFileExpedienteDoc({ token, data });
+      }
 
       setLoading(false);
       setReloadCliente(true);
       setImages([]);
-      setIsUploadExp(false);
+      setIsUploadExp(undefined);
     } catch (error) {
       toast.error(HandleError(error as AxiosError));
       setLoading(false);
@@ -58,7 +97,7 @@ export const UploadExpediente = ({ token, idCliente, setReloadCliente }: Props) 
 
   const CancelUploadExpediente = () => {
     setImages([]);
-    setIsUploadExp(false);
+    setIsUploadExp(undefined);
   };
 
   const onChange = (imageList: ImageListType) => setImages(imageList as never[]);
@@ -83,9 +122,34 @@ export const UploadExpediente = ({ token, idCliente, setReloadCliente }: Props) 
 
   return (
     <>
-      {IsUploadExp ? (
+      {IsUploadExp === 'img' ? (
         <>
           <UploadImage images={images} maxNumber={1} onChange={onChange} />
+
+          <br />
+
+          {images.length ? renderSeelct() : ''}
+
+          <br />
+        </>
+      ) : (
+        ''
+      )}
+
+      {IsUploadExp === 'doc' ? (
+        <>
+          <input
+            accept='.doc,.docx,.pdf'
+            className={classes.input}
+            id='upload-expediente-doc'
+            onChange={event => setFileUpload(event.target.files)}
+            type='file'
+          />
+          <label htmlFor='upload-expediente-doc'>
+            <Button fullWidth color='primary' component='span'>
+              Seleccionar archivo
+            </Button>
+          </label>
 
           <br />
 
@@ -124,6 +188,26 @@ export const UploadExpediente = ({ token, idCliente, setReloadCliente }: Props) 
           </Grid>
         )}
       </Grid>
+
+      <DialogoForm
+        Open={Visible}
+        setOpen={setVisible}
+        title='Seleccione el typo de archivo ha subir'
+      >
+        <FormControl variant='outlined' style={{ width: '100%' }}>
+          <Select
+            onChange={(event: any) => {
+              setIsUploadExp(event.target.value);
+              setVisible(false);
+            }}
+            style={{ width: '100%' }}
+            label='Age'
+          >
+            <MenuItem value='img'>Imagen</MenuItem>
+            <MenuItem value='doc'>Documento</MenuItem>
+          </Select>
+        </FormControl>
+      </DialogoForm>
     </>
   );
 };

@@ -34,7 +34,7 @@ export const GetPagosCreditos = async (options: {
   return response;
 };
 
-export const GetReciboPagos = async (options: {
+export const GetReciboPagosByCredito = async (options: {
   token: string;
   page?: number;
   idCredito: string;
@@ -43,6 +43,15 @@ export const GetReciboPagos = async (options: {
   const response = await api({
     method: 'GET',
     url: `/pago/recibo/${options.idCredito}?page=${options.page || ''}`,
+  });
+  return response;
+};
+
+export const GetReciboPago = async (options: { token: string; idPago: string }) => {
+  api.defaults.headers['access-token'] = options.token;
+  const response = await api({
+    method: 'GET',
+    url: `/pago/descargar-recibo-pago/${options.idPago}`,
   });
   return response;
 };

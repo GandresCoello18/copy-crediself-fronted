@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import {
@@ -11,12 +12,14 @@ import {
   MenuList,
   MenuItem,
   Chip,
+  CircularProgress,
 } from '@material-ui/core';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { Pago } from '../../../interfaces/Pago';
 import ReceiptIcon from '@material-ui/icons/Receipt';
 import { Cliente } from '../../../interfaces/Cliente';
+import GetAppIcon from '@material-ui/icons/GetApp';
 import DescriptionIcon from '@material-ui/icons/Description';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import { Credito } from '../../../interfaces/Credito';
@@ -50,6 +53,8 @@ interface Props {
   setIdPago: Dispatch<SetStateAction<string>>;
   setPagoAprobar: Dispatch<SetStateAction<AprobarPayment>>;
   setVisibleComprobante: Dispatch<SetStateAction<boolean>>;
+  DownloadReciboPayment: (idPago: string) => void;
+  LoadingDownloadPayment: boolean;
   PagoAprobar: AprobarPayment;
 }
 
@@ -61,6 +66,8 @@ export const RowTablePagosByCredito = ({
   setIdPago,
   setPagoAprobar,
   setVisibleComprobante,
+  DownloadReciboPayment,
+  LoadingDownloadPayment,
   PagoAprobar,
 }: Props) => {
   const clases = useStyles();
@@ -145,6 +152,18 @@ export const RowTablePagosByCredito = ({
                 variant='outlined'
               >
                 <span className={clases.btnIcon}>Comprobante</span> <ReceiptIcon />
+              </Button>
+            </MenuItem>
+            <MenuItem
+              selected={false}
+              onClick={() => {
+                DownloadReciboPayment(pago.idPago);
+                OnClose();
+              }}
+            >
+              <Button size='small' title='Descargar recibo de pago' fullWidth variant='outlined'>
+                <span className={clases.btnIcon}>Bajar Recibo</span>{' '}
+                {LoadingDownloadPayment ? <CircularProgress color='secondary' /> : <GetAppIcon />}
               </Button>
             </MenuItem>
           </MenuList>

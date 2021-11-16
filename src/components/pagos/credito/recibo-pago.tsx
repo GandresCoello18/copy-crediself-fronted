@@ -18,7 +18,7 @@ import { useParams } from 'react-router';
 import React, { useContext, useEffect, useState } from 'react';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toast';
-import { GetPagosByCredito, GetReciboPagos } from '../../../api/pagos';
+import { GetPagosByCredito, GetReciboPagosByCredito } from '../../../api/pagos';
 import { HandleError } from '../../../helpers/handleError';
 import { Pagination } from '@material-ui/lab';
 import { Cliente } from '../../../interfaces/Cliente';
@@ -93,13 +93,13 @@ export const ReciboPagoView = () => {
 
     try {
       const { fileName } = await (
-        await GetReciboPagos({ token, idCredito: params.idCredito, page })
+        await GetReciboPagosByCredito({ token, idCredito: params.idCredito, page })
       ).data;
 
       setTimeout(() => {
         const element = document.createElement('a');
         element.target = '_blank';
-        element.href = `${BASE_API_FILE_DOCUMENT}/doc/${fileName}`;
+        element.href = `${BASE_API_FILE_DOCUMENT}/temp/${fileName}`;
         element.click();
         setLoadingDownload(false);
         setFileName(fileName);

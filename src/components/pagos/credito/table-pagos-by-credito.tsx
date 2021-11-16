@@ -23,12 +23,13 @@ import { Credito } from '../../../interfaces/Credito';
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toast';
-import { UpdateAprobarPayment, UpdateComprobantePayment } from '../../../api/pagos';
+import { GetReciboPago, UpdateAprobarPayment, UpdateComprobantePayment } from '../../../api/pagos';
 import { HandleError } from '../../../helpers/handleError';
 import { MeContext } from '../../../context/contextMe';
 import { ImageListType } from 'react-images-uploading';
 import { DialogoForm } from '../../DialogoForm';
 import { UploadImage } from '../../UploadImage';
+import { BASE_API_FILE_DOCUMENT } from '../../../api';
 
 const useStyles = makeStyles((theme: any) => ({
   headTable: {
@@ -58,6 +59,7 @@ export const TablaPagosByCredito = ({ pagos, cliente, credito, Loading, setReloa
   const [idPago, setIdPago] = useState<string>('');
   const [VisibleComprobante, setVisibleComprobante] = useState<boolean>(false);
   const [LoadingUpload, setLoadingUpload] = useState<boolean>(false);
+  const [LoadingDownloadPayment, setLoadingDownloadPayment] = useState<boolean>(false);
   const [images, setImages] = useState<ImageListType>([]);
   const [PagoAprobar, setPagoAprobar] = useState<AprobarPayment>({
     aprobar: undefined,
@@ -112,6 +114,25 @@ export const TablaPagosByCredito = ({ pagos, cliente, credito, Loading, setReloa
     } catch (error) {
       toast.error(HandleError(error as AxiosError));
       setLoadingUpload(false);
+    }
+  };
+
+  const DownloadReciboPayment = async (idPago: string) => {
+    setLoadingDownloadPayment(true);
+
+    try {
+      const { fileName } = await (await GetReciboPago({ token, idPago })).data;
+
+      setTimeout(() => {
+        const element = document.createElement('a');
+        element.target = '_blank';
+        element.href = `${BASE_API_FILE_DOCUMENT}/temp/${fileName}`;
+        element.click();
+        setLoadingDownloadPayment(false);
+      }, 4000);
+    } catch (error) {
+      toast.error(HandleError(error as AxiosError));
+      setLoadingDownloadPayment(false);
     }
   };
 
@@ -171,6 +192,8 @@ export const TablaPagosByCredito = ({ pagos, cliente, credito, Loading, setReloa
                       PagoAprobar={PagoAprobar}
                       setPagoAprobar={setPagoAprobar}
                       setVisibleComprobante={setVisibleComprobante}
+                      DownloadReciboPayment={DownloadReciboPayment}
+                      LoadingDownloadPayment={LoadingDownloadPayment}
                       pago={pago}
                     />
                   ))}

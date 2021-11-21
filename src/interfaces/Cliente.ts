@@ -25,6 +25,7 @@ export interface Cliente {
   checkGerenteSuc: CheckCliente;
   notificarSms: number;
   notificarEmail: number;
+  checkDataClient: number;
 }
 
 export interface Expediente {

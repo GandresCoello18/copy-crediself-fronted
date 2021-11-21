@@ -8,6 +8,7 @@ import {
   Box,
   Grid,
   Divider,
+  CircularProgress,
   Avatar,
   Typography,
   Switch,
@@ -26,6 +27,7 @@ import { DialogoForm } from '../components/DialogoForm';
 import {
   DeleteCliente,
   GetCliente,
+  NotificarDataClient,
   UpdateActiveCliente,
   UpdateAutorizarCliente,
 } from '../api/clientes';
@@ -102,6 +104,7 @@ const ClientOnlyView = () => {
   });
   const [Cliente, setCliente] = useState<Cliente | undefined>(undefined);
   const [Loading, setLoading] = useState<boolean>(false);
+  const [LoadingNotificar, setLoadingNotificar] = useState<boolean>(false);
   const [VisibleUpdate, setVisibleUpdate] = useState<boolean>(false);
   const [AceptDialog, setAceptDialog] = useState<boolean>(false);
   const [DialogoDelete, setDialogoDelete] = useState<boolean>(false);
@@ -180,12 +183,26 @@ const ClientOnlyView = () => {
     }
   };
 
+  const NotificarClient = async () => {
+    setLoadingNotificar(true);
+
+    try {
+      await NotificarDataClient({ token, idCliente: params.idCliente });
+      setLoadingNotificar(false);
+      toast.success('Se notifico al cliente para confirmar sus datos');
+    } catch (error) {
+      setLoadingNotificar(false);
+      toast.error(HandleError(error as AxiosError));
+    }
+  };
+
   const RenderEdit = () => {
     return (
       <>
         <Grid item>
           <Button
             variant='outlined'
+            disabled={Loading}
             onClick={() => setVisibleUpdate(true)}
             className={classes.btnEdit}
           >
@@ -347,6 +364,20 @@ const ClientOnlyView = () => {
             ) : (
               <Typography className={classes.textTop}>
                 {Cliente?.direccion || <Chip label='No especificado' />}
+              </Typography>
+            )}
+          </Box>
+
+          <Box mt={2}>
+            <strong className={classes.subTitle}>Datos del cliente confirmados</strong>
+            {Loading ? (
+              <Skeleton variant='text' width={300} height={20} />
+            ) : (
+              <Typography className={classes.textTop}>
+                <Chip
+                  color={Cliente?.checkDataClient ? 'primary' : 'default'}
+                  label={Cliente?.checkDataClient ? 'Si' : 'No'}
+                />
               </Typography>
             )}
           </Box>
@@ -583,6 +614,16 @@ const ClientOnlyView = () => {
                   clientId={Cliente?.idCliente || ''}
                   setReloadCliente={setReloadCliente}
                 />
+              )}
+
+              {!Cliente?.checkDataClient && (
+                <Button
+                  variant='outlined'
+                  title='Revision de datos personales por parte del cliente'
+                  onClick={NotificarClient}
+                >
+                  {LoadingNotificar ? <CircularProgress color='primary' /> : 'Notificar cliente'}
+                </Button>
               )}
             </Grid>
             {!Cliente?.checkSupervisor && me.idRol == 'Supervisor' && RenderEdit()}

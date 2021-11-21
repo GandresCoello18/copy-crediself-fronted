@@ -38,6 +38,7 @@ const PagosView = lazy(() => import('../view/pagos'));
 const PagosByCreditoView = lazy(() => import('../view/pagos-credito'));
 const CalendarioView = lazy(() => import('../view/calendar'));
 const ErrorAppView = lazy(() => import('../view/errorApp'));
+const ConfirmDataClient = lazy(() => import('../view/confirm-data-client'));
 
 const token = Cookies.get('access-token-crediself');
 
@@ -80,6 +81,10 @@ const routes = [
     children: [
       { path: '/404', element: <NotFound /> },
       { path: '/login', element: NotPathSesion(Auth) },
+      {
+        path: '/confirmar-datos-cliente/:idTimeMessage/:idCliente',
+        element: NotPathSesion(ConfirmDataClient),
+      },
       { path: '/reset-password', element: NotPathSesion(ResetPassword) },
       { path: '/reset-password/:idTimeMessage', element: NotPathSesion(RestaurarCuenta) },
       { path: '/', element: NotPathSesion(Auth) },

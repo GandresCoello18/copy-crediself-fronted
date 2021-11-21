@@ -52,6 +52,14 @@ export const GetCliente = async (options: { token?: string; IdCliente: string })
   return response;
 };
 
+export const GetConfirmDataCliente = async (options: { IdCliente: string }) => {
+  const response = await api({
+    method: 'GET',
+    url: `/cliente/confirmData/${options.IdCliente}`,
+  });
+  return response;
+};
+
 export const DeleteCliente = async (options: { token?: string; IdCliente: string }) => {
   api.defaults.headers['access-token'] = options.token;
   const response = await api({
@@ -131,6 +139,31 @@ export const UpdatecheckGerenteSucCliente = async (options: {
     data: {
       check: options.check,
     },
+  });
+  return response;
+};
+
+export const UpdatecheckDataClient = async (options: {
+  token: string;
+  idCliente: string;
+  check: boolean;
+}) => {
+  api.defaults.headers['access-token'] = options.token;
+  const response = await api({
+    method: 'PUT',
+    url: `/cliente/checkDataClient/${options.idCliente}`,
+    data: {
+      check: options.check,
+    },
+  });
+  return response;
+};
+
+export const NotificarDataClient = async (options: { token: string; idCliente: string }) => {
+  api.defaults.headers['access-token'] = options.token;
+  const response = await api({
+    method: 'POST',
+    url: `/cliente/notificar/data/${options.idCliente}`,
   });
   return response;
 };

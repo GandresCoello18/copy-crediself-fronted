@@ -303,7 +303,7 @@ export const ReciboPagoView = () => {
               <Button
                 onClick={() => DownloadRecibo(SelectPage)}
                 color='primary'
-                disabled={LoadingDownload}
+                disabled={Loading || LoadingDownload}
                 variant='contained'
               >
                 Generar Recibo por sección
@@ -313,7 +313,7 @@ export const ReciboPagoView = () => {
               <Button
                 onClick={() => DownloadRecibo(0)}
                 color='primary'
-                disabled={LoadingDownload}
+                disabled={Loading || LoadingDownload}
                 variant='contained'
               >
                 Generar Recibo Completo

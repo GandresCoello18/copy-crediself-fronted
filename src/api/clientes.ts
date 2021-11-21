@@ -143,12 +143,7 @@ export const UpdatecheckGerenteSucCliente = async (options: {
   return response;
 };
 
-export const UpdatecheckDataClient = async (options: {
-  token: string;
-  idCliente: string;
-  check: boolean;
-}) => {
-  api.defaults.headers['access-token'] = options.token;
+export const UpdatecheckDataClient = async (options: { idCliente: string; check: boolean }) => {
   const response = await api({
     method: 'PUT',
     url: `/cliente/checkDataClient/${options.idCliente}`,

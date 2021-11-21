@@ -22,7 +22,7 @@ import { TimeMessage } from '../interfaces/Time-Message';
 import { getTimeMessage } from '../api/time-message';
 import { MeContext } from '../context/contextMe';
 import { Cliente } from '../interfaces/Cliente';
-import { GetConfirmDataCliente } from '../api/clientes';
+import { GetConfirmDataCliente, UpdatecheckDataClient } from '../api/clientes';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -57,6 +57,7 @@ const ConfirmDataClient = () => {
   const { token } = useContext(MeContext);
   const params = useParams();
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingConfir, setLoadingConfir] = useState<boolean>(false);
   const [TimeProgres, setTimeProgres] = useState<TimeMessage | undefined>(undefined);
   const [Cliente, setCliente] = useState<Cliente | undefined>(undefined);
 
@@ -85,6 +86,20 @@ const ConfirmDataClient = () => {
     } catch (error) {
       toast.error(HandleError(error as AxiosError));
       setLoading(false);
+    }
+  };
+
+  const HandleConfirData = async () => {
+    setLoadingConfir(true);
+
+    try {
+      await UpdatecheckDataClient({ idCliente: params.idCliente, check: true });
+      setLoadingConfir(false);
+      toast.success('Se registro su confirmación con exito');
+      FetchTimeMessage();
+    } catch (error) {
+      toast.error(HandleError(error as AxiosError));
+      setLoadingConfir(false);
     }
   };
 
@@ -184,7 +199,13 @@ const ConfirmDataClient = () => {
         <br />
         <br />
 
-        <Button color='primary' variant='outlined' fullWidth>
+        <Button
+          color='primary'
+          onClick={HandleConfirData}
+          disabled={loadingConfir}
+          variant='outlined'
+          fullWidth
+        >
           Confirmar mis datos
         </Button>
       </>

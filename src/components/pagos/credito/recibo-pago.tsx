@@ -291,7 +291,7 @@ export const ReciboPagoView = () => {
       <Grid container spacing={3} justify='center'>
         {FileName ? (
           <Grid item>
-            <a target='_blank' rel='noreferrer' href={`${BASE_API_FILE_DOCUMENT}/doc/${FileName}`}>
+            <a target='_blank' rel='noreferrer' href={`${BASE_API_FILE_DOCUMENT}/temp/${FileName}`}>
               <Button color='secondary' variant='contained'>
                 Ver Recibo
               </Button>

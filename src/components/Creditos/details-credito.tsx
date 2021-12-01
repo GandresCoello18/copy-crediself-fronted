@@ -567,7 +567,7 @@ export const DetailsCredito = ({
                   <>
                     <Grid item>
                       <Button
-                        disabled={credito?.autorizado ? true : true}
+                        disabled={credito?.autorizado ? true : false}
                         className={clases.btnAutorizar}
                         onClick={NotificarAutorizacion}
                         fullWidth

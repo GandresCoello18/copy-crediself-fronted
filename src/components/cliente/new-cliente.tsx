@@ -207,7 +207,6 @@ export const FormNewCliente = ({ setReloadCliente, setVisible }: Props) => {
                     helperText={touched.email && errors.email}
                     fullWidth
                     name='email'
-                    required
                     type='email'
                     label='Correo'
                     onBlur={handleBlur}

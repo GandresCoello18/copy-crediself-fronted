@@ -49,9 +49,6 @@ export interface PermisoTableClient {
 export const TablaCliente = ({ clientes, Loading, setReloadCliente }: Props) => {
   const classes = useStyles();
   const { token, me } = useContext(MeContext);
-  const [Permisos, setPermisos] = useState<PermisoTableClient>({
-    newCredito: false,
-  });
   const [IdCliente, setIdCliente] = useState<string>('');
   const [DialogoDelete, setDialogoDelete] = useState<boolean>(false);
   const [DialogoCredit, setDialogoCredit] = useState<boolean>(false);
@@ -79,10 +76,6 @@ export const TablaCliente = ({ clientes, Loading, setReloadCliente }: Props) => 
     };
 
     AceptDialog && IdCliente && FetchDelete();
-
-    setPermisos({
-      newCredito: getPermisoExist({ RolName: me.idRol, permiso: 'NewCredito' }),
-    });
   }, [AceptDialog, token, IdCliente, setReloadCliente]);
 
   useEffect(() => {
@@ -136,7 +129,9 @@ export const TablaCliente = ({ clientes, Loading, setReloadCliente }: Props) => 
                   clientes.map(client => (
                     <RowTableClient
                       cliente={client}
-                      permisos={Permisos}
+                      permisos={{
+                        newCredito: getPermisoExist({ RolName: me.idRol, permiso: 'NewCredito' }),
+                      }}
                       key={client.idCliente}
                       setIdCliente={setIdCliente}
                       setDialogoDelete={setDialogoDelete}

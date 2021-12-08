@@ -41,25 +41,23 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface Props {
-  order: number | undefined;
-  totalOrders: number | undefined;
-  lasTotalOrders: number | undefined;
+  ventasMes: number;
+  totalVentas: number;
+  lasTotalVentas: number;
   Loading: boolean;
 }
 
-const Budget = ({ order, totalOrders, lasTotalOrders, Loading }: Props) => {
+const Budget = ({ ventasMes, lasTotalVentas, Loading }: Props) => {
   const classes = useStyles();
   const [Result, setResult] = useState<number>(0);
   const [Actual, setActual] = useState<number>(0);
   const [Anterior, setAnterior] = useState<number>(0);
 
   useEffect(() => {
-    if (totalOrders && lasTotalOrders) {
-      setActual(totalOrders);
-      setAnterior(lasTotalOrders);
-      setResult((totalOrders * lasTotalOrders) / 100);
-    }
-  }, [totalOrders, lasTotalOrders]);
+    setActual(ventasMes);
+    setAnterior(lasTotalVentas);
+    setResult((ventasMes * lasTotalVentas) / 100);
+  }, [ventasMes, lasTotalVentas]);
 
   return (
     <Card>
@@ -67,10 +65,10 @@ const Budget = ({ order, totalOrders, lasTotalOrders, Loading }: Props) => {
         <Grid container justify='space-between' spacing={3}>
           <Grid item>
             <Typography color='textSecondary' gutterBottom variant='h6'>
-              ORDENES
+              VENTAS
             </Typography>
             <Typography color='textPrimary' variant='h3'>
-              {Loading ? <Skeleton variant='text' width={100} /> : order}
+              {Loading ? <Skeleton variant='text' width={100} /> : ventasMes}
             </Typography>
           </Grid>
           <Grid item>
@@ -93,9 +91,11 @@ const Budget = ({ order, totalOrders, lasTotalOrders, Loading }: Props) => {
           >
             {Loading ? <Skeleton variant='text' width={100} /> : Result}%
           </Typography>
-          <Typography color='textSecondary' variant='caption'>
-            Desde el mes pasado
-          </Typography>
+          {Anterior !== Actual ? (
+            <Typography color='textSecondary' variant='caption'>
+              {Anterior > Actual ? 'Menos que el mes pasado' : 'Más que el mes pasado'}
+            </Typography>
+          ) : null}
         </Box>
       </CardContent>
     </Card>

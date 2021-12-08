@@ -98,7 +98,7 @@ const Sales = ({ fechas, ventas, comision, setDateFetch, Loading }: Props) => {
   return (
     <Card>
       <Box display='flex' justifyContent='space-between'>
-        <CardHeader title='Ventas de este mes' />
+        <CardHeader title='Ventas' />
         <TextField
           id='date'
           label='Ventas'

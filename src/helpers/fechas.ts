@@ -6,7 +6,7 @@ export const monthDiff = (options: { desde: Date; hasta: Date }) => {
   return months <= 0 ? 0 : months;
 };
 
-export const CurrentDate = () => {
+export const CurrentDate = (notDay?: boolean) => {
   const date = new Date();
   let mes: string | number = date.getMonth() + 1;
   let dia: string | number = date.getDate();
@@ -19,5 +19,30 @@ export const CurrentDate = () => {
     dia = '0' + dia;
   }
 
+  if (notDay) {
+    return date.getFullYear() + '-' + mes;
+  }
+
   return date.getFullYear() + '-' + mes + '-' + dia;
+};
+
+export const GetMonth = (date: string | Date) => {
+  const meses = [
+    'Enero',
+    'Febrero',
+    'Marzo',
+    'Abril',
+    'Mayo',
+    'Junio',
+    'Julio',
+    'Agosto',
+    'Septiembre',
+    'Octubre',
+    'Noviembre',
+    'Diciembre',
+  ];
+
+  const indexMonth = new Date(date).getMonth();
+
+  return meses[indexMonth];
 };

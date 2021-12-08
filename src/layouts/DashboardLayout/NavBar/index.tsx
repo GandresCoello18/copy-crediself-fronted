@@ -27,6 +27,7 @@ import PaymentIcon from '@material-ui/icons/Payment';
 import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
 import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import NavItem from './NavItem';
+import TimelineIcon from '@material-ui/icons/Timeline';
 import BugReportIcon from '@material-ui/icons/BugReport';
 import GroupIcon from '@material-ui/icons/Group';
 import MoneyOffIcon from '@material-ui/icons/MoneyOff';
@@ -88,6 +89,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           title: 'Usuarios',
         },
         {
+          href: '/app/comisiones',
+          icon: TimelineIcon,
+          title: 'Comisiones',
+        },
+        {
           href: '/app/account',
           icon: PersonIcon,
           title: 'Mi cuenta',
@@ -129,6 +135,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           href: '/app/creditos',
           icon: CardTravelIcon,
           title: 'Creditos',
+        },
+        {
+          href: '/app/comisiones',
+          icon: TimelineIcon,
+          title: 'Comisiones',
         },
         {
           href: '/app/notificaciones',
@@ -238,6 +249,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           title: 'Asesores',
         },
         {
+          href: '/app/comisiones',
+          icon: TimelineIcon,
+          title: 'Comisiones',
+        },
+        {
           href: '/app/account',
           icon: PersonIcon,
           title: 'Mi cuenta',
@@ -255,6 +271,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           href: '/app/clientes',
           icon: EmojiPeopleIcon,
           title: 'Clientes',
+        },
+        {
+          href: '/app/comisiones',
+          icon: TimelineIcon,
+          title: 'Comisiones',
         },
         {
           href: '/app/account',

@@ -17,10 +17,9 @@ const useStyles = makeStyles(() => ({
 interface Props {
   Loading: boolean;
   Amount: number | undefined;
-  ComisionAmount: number | undefined;
 }
 
-const TotalProfit = ({ Loading, Amount, ComisionAmount }: Props) => {
+const TotalProfit = ({ Loading, Amount }: Props) => {
   const classes = useStyles();
 
   return (
@@ -29,17 +28,10 @@ const TotalProfit = ({ Loading, Amount, ComisionAmount }: Props) => {
         <Grid container justify='space-between' spacing={3}>
           <Grid item>
             <Typography color='textSecondary' gutterBottom variant='h6'>
-              TOTAL DE INGRESOS
+              COMISION
             </Typography>
-            <Typography color='textPrimary' variant='h5'>
+            <Typography color='textPrimary' variant='h3'>
               {Loading ? <Skeleton variant='text' width={100} /> : `$${Amount}`}
-            </Typography>
-
-            <Typography color='textSecondary' gutterBottom variant='h6'>
-              TOTAL DE COMISION
-            </Typography>
-            <Typography color='textPrimary' variant='h5'>
-              {Loading ? <Skeleton variant='text' width={100} /> : `$${ComisionAmount}`}
             </Typography>
           </Grid>
           <Grid item>

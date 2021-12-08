@@ -41,9 +41,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface Props {
-  user: number | undefined;
-  totalUser: number | undefined;
-  lasTotalUser: number | undefined;
+  user: number;
+  totalUser: number;
+  lasTotalUser: number;
   Loading: boolean;
 }
 
@@ -54,11 +54,9 @@ const TotalCustomers = ({ user, totalUser, lasTotalUser, Loading }: Props) => {
   const [Anterior, setAnterior] = useState<number>(0);
 
   useEffect(() => {
-    if (totalUser && lasTotalUser) {
-      setActual(totalUser);
-      setAnterior(lasTotalUser);
-      setResult((totalUser * lasTotalUser) / 100);
-    }
+    setActual(totalUser);
+    setAnterior(lasTotalUser);
+    setResult((totalUser * lasTotalUser) / 100);
   }, [totalUser, lasTotalUser]);
 
   return (
@@ -67,7 +65,7 @@ const TotalCustomers = ({ user, totalUser, lasTotalUser, Loading }: Props) => {
         <Grid container justify='space-between' spacing={3}>
           <Grid item>
             <Typography color='textSecondary' gutterBottom variant='h6'>
-              TOTAL DE CLIENTES
+              CLIENTES
             </Typography>
             <Typography color='textPrimary' variant='h3'>
               {Loading ? <Skeleton variant='text' width={100} /> : user}
@@ -93,9 +91,11 @@ const TotalCustomers = ({ user, totalUser, lasTotalUser, Loading }: Props) => {
           >
             {Loading ? <Skeleton variant='text' width={100} /> : Result}%
           </Typography>
-          <Typography color='textSecondary' variant='caption'>
-            Desde el mes pasado
-          </Typography>
+          {Anterior !== Actual ? (
+            <Typography color='textSecondary' variant='caption'>
+              {Anterior > Actual ? 'Menos que el mes pasado' : 'Más que el mes pasado'}
+            </Typography>
+          ) : null}
         </Box>
       </CardContent>
     </Card>

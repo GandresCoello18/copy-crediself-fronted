@@ -3,7 +3,6 @@
 /* eslint-disable react/react-in-jsx-scope */
 import { Navigate, useRoutes } from 'react-router-dom';
 import { NotFound } from '../view/NotFound';
-import { Panel } from '../view/home';
 import { Suspense, lazy } from 'react';
 import DashboardLayout from '../layouts/DashboardLayout';
 import MainLayout from '../layouts/MainLayout';
@@ -23,6 +22,7 @@ import { HandleError } from '../helpers/handleError';
 
 // import dinamic
 const PermisosView = lazy(() => import('../view/permisos'));
+const ComisionesView = lazy(() => import('../view/comision'));
 const AccountView = lazy(() => import('../view/account'));
 const RolesView = lazy(() => import('../view/roles'));
 const UsuariosView = lazy(() => import('../view/usuarios'));
@@ -55,7 +55,7 @@ const routes = [
     path: 'app',
     element: <DashboardLayout />,
     children: [
-      { path: 'dashboard', element: PathSesion(Panel) },
+      { path: 'comisiones', element: PathSesion(ComisionesView) },
       { path: 'permisos', element: PathSesion(PermisosView) },
       { path: 'roles', element: PathSesion(RolesView) },
       { path: 'account', element: PathSesion(AccountView) },

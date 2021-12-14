@@ -24,6 +24,7 @@ import { MeContext } from '../../context/contextMe';
 import { getPermisoExist, RenderMainViewRol } from '../../helpers/renderViewMainRol';
 import { ItemNotification } from '../../components/Notificaciones/item-notificacion';
 import { AxiosError } from 'axios';
+import CancelIcon from '@material-ui/icons/Cancel';
 import { toast } from 'react-toast';
 import { GetNotificacion } from '../../api/notificacion';
 import { HandleError } from '../../helpers/handleError';
@@ -47,6 +48,11 @@ const useStyles = makeStyles((theme: any) => ({
   iconNav: {
     borderRadius: 5,
     border: '1px solid #fff',
+  },
+  close: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
   },
 }));
 
@@ -132,6 +138,10 @@ const TopBar = ({ onMobileNavOpen, ...rest }: Props) => {
         onClose={() => setOpen(false)}
         onOpen={() => setOpen(true)}
       >
+        <div className={classes.close} onClick={() => setOpen(false)}>
+          <CancelIcon style={{ fontSize: 35 }} />
+        </div>
+
         <List className={classes.root}>
           {!Notificaciones.length && (
             <Alert severity='info'>

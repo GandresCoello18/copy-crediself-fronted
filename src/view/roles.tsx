@@ -48,8 +48,6 @@ const RolesView = () => {
   const [LoadingMulti, setLoadingMulti] = useState<boolean>(false);
   const [ReloadRol, setReloadRol] = useState<boolean>(false);
 
-  console.log(SearchRoles);
-
   const fetchRoles = async () => {
     setLoading(true);
 
@@ -137,6 +135,7 @@ const RolesView = () => {
         </Box>
         <Box mt={3}>
           <TableRol
+            SearchRoles={SearchRoles || ''}
             roles={Roles}
             IdsRole={IdsRole}
             setIdsRole={setIdsRole}

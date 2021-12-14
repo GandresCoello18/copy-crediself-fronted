@@ -79,7 +79,7 @@ export const FormNewCliente = ({ setReloadCliente, setVisible }: Props) => {
         validationSchema={Yup.object().shape({
           nombres: Yup.string().max(100).required('El campo es requerido'),
           apellidos: Yup.string().max(100).required('El campo es requerido'),
-          telefono: Yup.string().max(10).required('EL campo es requerido'),
+          telefono: Yup.string().required('EL campo es requerido'),
           email: Yup.string().email('Email invalido').max(100),
           ciudad: Yup.string().max(50),
           direccion: Yup.string().max(200),

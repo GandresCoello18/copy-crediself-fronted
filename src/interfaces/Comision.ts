@@ -1,3 +1,5 @@
+import { Usuario } from './Usuario';
+
 export interface Comision {
   idComision: string;
   created_at: string | Date;
@@ -11,11 +13,14 @@ export interface ComisionesUsuarios {
   idComisionUser: string;
   idComision: string;
   created_at: string | Date;
+  mesComision?: string | Date;
   idUser: string;
   total: number;
 }
 
-export interface MisComisiones extends Comision, ComisionesUsuarios {}
+export interface MisComisiones extends Comision, ComisionesUsuarios {
+  user: Usuario;
+}
 
 // ESTADISTICAS DE COMISIONES
 

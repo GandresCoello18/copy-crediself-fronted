@@ -18,6 +18,7 @@ import { HandleError } from '../helpers/handleError';
 import { GetComisionesByUser } from '../api/comisiones';
 import { MisComisiones, StaticComision } from '../interfaces/Comision';
 import { CurrentDate, GetMonth } from '../helpers/fechas';
+import { TableCoomision } from '../components/Comisiones/table-comision';
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -74,7 +75,7 @@ const Panel = () => {
   };
 
   return (
-    <Page className={classes.root} title='Comisiones'>
+    <Page className={classes.root} title='Mis Comisiones'>
       <Container maxWidth='lg'>
         <Grid container spacing={3}>
           <Grid item lg={3} sm={6} xl={3} xs={12}>
@@ -108,14 +109,15 @@ const Panel = () => {
               Loading={Loading}
             />
           </Grid>
-          {!Comisiones.length && !Loading ? (
-            <Grid item xs={12}>
-              <Alert severity='info'>
-                No tienes comisiones del mes:{' '}
-                <strong>{dateFetch || GetMonth(CurrentDate())}</strong>
-              </Alert>
-            </Grid>
-          ) : null}
+          <Grid item xs={12}>
+            <Alert severity='info'>
+              No tienes comisiones del periodo:{' '}
+              <strong>{dateFetch || GetMonth(CurrentDate())}</strong>
+            </Alert>
+            <br />
+
+            <TableCoomision comision={Comisiones} Loading={Loading} />
+          </Grid>
         </Grid>
       </Container>
     </Page>

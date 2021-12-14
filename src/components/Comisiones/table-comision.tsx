@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/react-in-jsx-scope */
-import { useState, useContext, useEffect, Dispatch, SetStateAction } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import {
   Box,
   Table,
@@ -17,11 +17,11 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { DialogoMessage } from '../DialogoMessage';
 import { toast } from 'react-toast';
-import { Rol } from '../../interfaces/Rol';
-import { RowTableRol } from './table-row-rol';
 import { DeleteRole } from '../../api/roles';
 import { AxiosError } from 'axios';
 import { HandleError } from '../../helpers/handleError';
+import { MisComisiones } from '../../interfaces/Comision';
+import { RowTableComision } from './table-rol-comision';
 
 const useStyles = makeStyles((theme: any) => ({
   headTable: {
@@ -33,22 +33,11 @@ const useStyles = makeStyles((theme: any) => ({
 }));
 
 interface Props {
-  roles: Rol[];
+  comision: MisComisiones[];
   Loading: boolean;
-  SearchRoles: string;
-  IdsRole: string[];
-  setReloadRol: Dispatch<SetStateAction<boolean>>;
-  setIdsRole: Dispatch<SetStateAction<string[]>>;
 }
 
-export const TableRol = ({
-  roles,
-  Loading,
-  IdsRole,
-  SearchRoles,
-  setReloadRol,
-  setIdsRole,
-}: Props) => {
+export const TableCoomision = ({ comision, Loading }: Props) => {
   const classes = useStyles();
   const { token } = useContext(MeContext);
   const [IdRol, setIdRol] = useState<string>('');
@@ -56,7 +45,7 @@ export const TableRol = ({
   const [AceptDialog, setAceptDialog] = useState<boolean>(false);
 
   const SkeletonRoles = () => {
-    return [0, 1, 2, 3, 4, 5, 6, 7].map(item => (
+    return [0, 1, 2, 3].map(item => (
       <Skeleton key={item} style={{ marginBottom: 10 }} variant='rect' width='100%' height={40} />
     ));
   };
@@ -66,7 +55,7 @@ export const TableRol = ({
       try {
         await DeleteRole({ token, IdRol });
         toast.success('Rol eliminado');
-        setReloadRol(true);
+        // setReloadRol(true);
 
         setAceptDialog(false);
         setDialogoDelete(false);
@@ -77,7 +66,7 @@ export const TableRol = ({
     };
 
     AceptDialog && IdRol && FetchDelete();
-  }, [AceptDialog, token, IdRol, setReloadRol]);
+  }, [AceptDialog, token, IdRol]);
 
   return (
     <>
@@ -88,19 +77,19 @@ export const TableRol = ({
               <TableHead className={classes.headTable}>
                 <TableRow>
                   <TableCell className={classes.textHeadTable}>
-                    <strong>Check</strong>
+                    <strong>Usuario</strong>
                   </TableCell>
                   <TableCell className={classes.textHeadTable}>
-                    <strong>Rol</strong>
+                    <strong>Tipo de comision</strong>
                   </TableCell>
                   <TableCell className={classes.textHeadTable}>
-                    <strong>Descripcion</strong>
+                    <strong>Periodo</strong>
                   </TableCell>
                   <TableCell className={classes.textHeadTable}>
-                    <strong>Creado el</strong>
+                    <strong>Porcentaje</strong>
                   </TableCell>
                   <TableCell className={classes.textHeadTable}>
-                    <strong>Activo</strong>
+                    <strong>Total</strong>
                   </TableCell>
                   <TableCell className={classes.textHeadTable}>
                     <strong>Opciones</strong>
@@ -109,27 +98,15 @@ export const TableRol = ({
               </TableHead>
               <TableBody>
                 {!Loading &&
-                  roles
-                    .filter(rol => rol.rol.toUpperCase().includes(SearchRoles.toUpperCase()))
-                    .map(rol => (
-                      <RowTableRol
-                        rol={rol}
-                        key={rol.idRol}
-                        IdsRole={IdsRole}
-                        setIdRol={setIdRol}
-                        setIdsRole={setIdsRole}
-                        setDialogoDelete={setDialogoDelete}
-                        setReloadRol={setReloadRol}
-                      />
-                    ))}
+                  comision.map(com => <RowTableComision key={com.idComisionUser} comision={com} />)}
               </TableBody>
             </Table>
 
             {Loading && SkeletonRoles()}
 
-            {!Loading && roles.length === 0 && (
+            {!Loading && comision.length === 0 && (
               <Alert severity='info'>
-                Por el momento no hay <strong>Roles</strong> para mostrar.
+                Por el momento no hay <strong>Comisiones</strong> para mostrar.
               </Alert>
             )}
           </Box>

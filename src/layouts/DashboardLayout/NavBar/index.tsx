@@ -89,9 +89,9 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           title: 'Usuarios',
         },
         {
-          href: '/app/comisiones',
+          href: '/app/mis-comisiones',
           icon: TimelineIcon,
-          title: 'Comisiones',
+          title: 'Mis comisiones',
         },
         {
           href: '/app/account',
@@ -137,9 +137,9 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           title: 'Creditos',
         },
         {
-          href: '/app/comisiones',
+          href: '/app/mis-comisiones',
           icon: TimelineIcon,
-          title: 'Comisiones',
+          title: 'Mis comisiones',
         },
         {
           href: '/app/notificaciones',
@@ -179,6 +179,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           href: '/app/usuarios',
           icon: GroupAddIcon,
           title: 'Usuarios',
+        },
+        {
+          href: '/app/comisiones',
+          icon: TimelineIcon,
+          title: 'Comisiones',
         },
         {
           href: '/app/notificaciones',
@@ -249,9 +254,9 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           title: 'Asesores',
         },
         {
-          href: '/app/comisiones',
+          href: '/app/mis-comisiones',
           icon: TimelineIcon,
-          title: 'Comisiones',
+          title: 'Mis comisiones',
         },
         {
           href: '/app/account',
@@ -273,9 +278,9 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           title: 'Clientes',
         },
         {
-          href: '/app/comisiones',
+          href: '/app/mis-comisiones',
           icon: TimelineIcon,
-          title: 'Comisiones',
+          title: 'Mis comisiones',
         },
         {
           href: '/app/account',

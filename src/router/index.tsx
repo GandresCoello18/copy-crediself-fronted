@@ -22,7 +22,8 @@ import { HandleError } from '../helpers/handleError';
 
 // import dinamic
 const PermisosView = lazy(() => import('../view/permisos'));
-const ComisionesView = lazy(() => import('../view/comision'));
+const ComisionesView = lazy(() => import('../view/comisiones'));
+const MisComisionesView = lazy(() => import('../view/mis-comision'));
 const AccountView = lazy(() => import('../view/account'));
 const RolesView = lazy(() => import('../view/roles'));
 const UsuariosView = lazy(() => import('../view/usuarios'));
@@ -55,6 +56,7 @@ const routes = [
     path: 'app',
     element: <DashboardLayout />,
     children: [
+      { path: 'mis-comisiones', element: PathSesion(MisComisionesView) },
       { path: 'comisiones', element: PathSesion(ComisionesView) },
       { path: 'permisos', element: PathSesion(PermisosView) },
       { path: 'roles', element: PathSesion(RolesView) },

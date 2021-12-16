@@ -7,17 +7,21 @@ import {
   InputLabel,
   MenuItem,
   makeStyles,
+  Box,
   createStyles,
   Select,
 } from '@material-ui/core';
 import { AxiosError } from 'axios';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import { ImageListType } from 'react-images-uploading';
+import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 import { toast } from 'react-toast';
 import { AddFileExpediente, AddFileExpedienteDoc } from '../../api/expediente';
 import { HandleError } from '../../helpers/handleError';
 import { DialogoForm } from '../DialogoForm';
 import { UploadImage } from '../UploadImage';
+import { bytesToSize } from '../../helpers/file';
 
 interface Props {
   token: string;
@@ -25,7 +29,7 @@ interface Props {
   setReloadCliente: Dispatch<SetStateAction<boolean>>;
 }
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles(theme =>
   createStyles({
     input: {
       display: 'none',
@@ -34,6 +38,13 @@ const useStyles = makeStyles(() =>
       fontSize: 18,
       width: '100%',
       marginBottom: 10,
+    },
+    fileUpload: {
+      textAlign: 'center',
+      border: '1px solid #cdcdcd',
+      padding: 10,
+      borderRadius: 6,
+      boxShadow: theme.shadows[5],
     },
   }),
 );
@@ -88,6 +99,7 @@ export const UploadExpediente = ({ token, idCliente, setReloadCliente }: Props) 
       setLoading(false);
       setReloadCliente(true);
       setImages([]);
+      setFileUpload(null);
       setIsUploadExp(undefined);
     } catch (error) {
       toast.error(HandleError(error as AxiosError));
@@ -97,6 +109,7 @@ export const UploadExpediente = ({ token, idCliente, setReloadCliente }: Props) 
 
   const CancelUploadExpediente = () => {
     setImages([]);
+    setFileUpload(null);
     setIsUploadExp(undefined);
   };
 
@@ -113,11 +126,21 @@ export const UploadExpediente = ({ token, idCliente, setReloadCliente }: Props) 
           onChange={event => setComprobanteExp(event.target.value as string)}
         >
           <MenuItem value='Factura Telefonica'>Factura Telefonica</MenuItem>
-          <MenuItem value='Factura de gas'>Factura de Internet</MenuItem>
-          <MenuItem value='Factura de energia'>Factura de Energia</MenuItem>
+          <MenuItem value='Factura de Internet'>Factura de Internet</MenuItem>
+          <MenuItem value='Factura de Energia'>Factura de Energia</MenuItem>
         </Select>
+
+        <br />
       </>
     );
+  };
+
+  const renderIconFileUpload = (type: string) => {
+    if (type.includes('pdf')) {
+      return <PictureAsPdfIcon style={{ fontSize: 60 }} />;
+    }
+
+    return <FileCopyIcon style={{ fontSize: 60 }} />;
   };
 
   return (
@@ -125,11 +148,6 @@ export const UploadExpediente = ({ token, idCliente, setReloadCliente }: Props) 
       {IsUploadExp === 'img' ? (
         <>
           <UploadImage images={images} maxNumber={1} onChange={onChange} />
-
-          <br />
-
-          {images.length ? renderSeelct() : ''}
-
           <br />
         </>
       ) : (
@@ -153,13 +171,25 @@ export const UploadExpediente = ({ token, idCliente, setReloadCliente }: Props) 
 
           <br />
 
-          {images.length ? renderSeelct() : ''}
-
-          <br />
+          {fileUpload?.length ? (
+            <Box justifyContent='center' alignItems='center' display='flex' p={3}>
+              <div className={classes.fileUpload}>
+                {renderIconFileUpload(fileUpload[0].type)}
+                <br />
+                <strong>
+                  {fileUpload[0].name}
+                  <br />
+                  {bytesToSize(fileUpload[0].size)}
+                </strong>
+              </div>
+            </Box>
+          ) : null}
         </>
       ) : (
         ''
       )}
+
+      {images.length || fileUpload?.length ? renderSeelct() : ''}
 
       <br />
 

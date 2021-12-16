@@ -24,6 +24,8 @@ interface UpdateClient {
   rfc?: string | null;
   sexo: string;
   ciudad?: string | null;
+  notificarEmail?: number;
+  notificarSms?: number;
 }
 
 export const GetClientes = async (option: {

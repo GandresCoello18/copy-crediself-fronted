@@ -4,7 +4,7 @@ import { Paper } from '@material-ui/core';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import BackspaceIcon from '@material-ui/icons/Backspace';
 import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
-import { BASE_API_IMAGES_CLOUDINNARY, BASE_API_IMAGES_CLOUDINNARY_SCALE } from '../../api';
+import { BASE_API_FILE_DOCUMENT, BASE_API_IMAGES_CLOUDINNARY } from '../../api';
 import { Expediente } from '../../interfaces/Cliente';
 import { DialogoMessage } from '../DialogoMessage';
 import { AxiosError } from 'axios';
@@ -58,7 +58,7 @@ export const CardFile = ({ file, token, setReloadCliente }: Props) => {
           <a
             target='_blank'
             rel='noreferrer'
-            href={`${BASE_API_IMAGES_CLOUDINNARY_SCALE}/${file.sourceExp}`}
+            href={`${BASE_API_FILE_DOCUMENT}/doc/${file.sourceExp}`}
           >
             <PictureAsPdfIcon style={{ fontSize: 100 }} />
           </a>

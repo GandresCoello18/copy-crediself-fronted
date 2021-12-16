@@ -9,7 +9,12 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Checkbox,
   Divider,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  FormLabel,
   Grid,
   InputLabel,
   MenuItem,
@@ -36,6 +41,10 @@ interface Props {
 
 export const FormUpdateCliente = ({ setReloadCliente, setVisible, cliente }: Props) => {
   const { token, me } = useContext(MeContext);
+  const [NotificationClient, setNotificationClient] = useState<{ sms: boolean; email: boolean }>({
+    sms: false,
+    email: false,
+  });
   const [Ciudades, setCiudades] = useState<Ciudad[]>([]);
   const [selectCity, setSelectCity] = useState<string>('');
 
@@ -66,6 +75,8 @@ export const FormUpdateCliente = ({ setReloadCliente, setVisible, cliente }: Pro
           sexo: cliente.sexo,
           fechaNacimiento: cliente.fecha_nacimiento || '',
           rfc: cliente.rfc || '',
+          notificarEmail: cliente.notificarEmail ? 1 : 0,
+          notificarSms: cliente.notificarSms ? 1 : 0,
         }}
         validationSchema={Yup.object().shape({
           nombres: Yup.string().max(100).required('El campo es requerido'),
@@ -77,6 +88,8 @@ export const FormUpdateCliente = ({ setReloadCliente, setVisible, cliente }: Pro
           sexo: Yup.string().max(100),
           fechaNacimiento: Yup.string().max(100),
           rfc: Yup.string().max(25),
+          notificarEmail: Yup.boolean(),
+          notificarSms: Yup.boolean(),
         })}
         onSubmit={async (values, actions) => {
           if (values.fechaNacimiento) {
@@ -107,6 +120,14 @@ export const FormUpdateCliente = ({ setReloadCliente, setVisible, cliente }: Pro
 
           if (!values.sexo) {
             values.sexo = 'No especificado';
+          }
+
+          if (NotificationClient.email) {
+            values.notificarEmail = 1;
+          }
+
+          if (NotificationClient.sms) {
+            values.notificarSms = 1;
           }
 
           try {
@@ -159,12 +180,12 @@ export const FormUpdateCliente = ({ setReloadCliente, setVisible, cliente }: Pro
                   />
                 </Grid>
                 <Grid item md={6} xs={12}>
+                  {console.log(values.telefono + ' cell')}
                   <TextField
                     error={Boolean(touched.telefono && errors.telefono)}
                     helperText={touched.telefono && errors.telefono}
                     fullWidth
                     name='telefono'
-                    type='number'
                     label='Telefono'
                     onBlur={handleBlur}
                     disabled={isSubmitting}
@@ -277,6 +298,47 @@ export const FormUpdateCliente = ({ setReloadCliente, setVisible, cliente }: Pro
                     onChange={handleChange}
                     placeholder={'Especifique la dirección'}
                   />
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl component='fieldset'>
+                    <FormLabel component='legend'>Notificar al cliente por</FormLabel>
+                    <FormGroup>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={values.notificarEmail ? true : false}
+                            disabled={values.email.length === 0}
+                            defaultChecked={values.notificarEmail ? true : false}
+                            onChange={values =>
+                              setNotificationClient({
+                                ...NotificationClient,
+                                email: values.target.checked,
+                              })
+                            }
+                          />
+                        }
+                        label='Correo electronico'
+                      />
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={values.notificarSms ? true : false}
+                            defaultChecked={values.notificarSms ? true : false}
+                            disabled={
+                              values.telefono === 0 || values.telefono.toString().length === 0
+                            }
+                            onChange={values =>
+                              setNotificationClient({
+                                ...NotificationClient,
+                                sms: values.target.checked,
+                              })
+                            }
+                          />
+                        }
+                        label='Mensaje de texto'
+                      />
+                    </FormGroup>
+                  </FormControl>
                 </Grid>
               </Grid>
             </CardContent>

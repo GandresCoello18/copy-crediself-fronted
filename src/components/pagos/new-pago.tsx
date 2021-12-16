@@ -114,7 +114,7 @@ export const FormNewPago = ({ setReloadPago, setVisible, idCredito, cliente, ape
                     name='tipoDePago'
                     label='Tipo de pago'
                   >
-                    {['Tarjeta', 'Terminal Bancario'].map(item => (
+                    {['Tarjeta', 'Terminal Bancario', 'Transferencia', 'Deposito'].map(item => (
                       <MenuItem value={item} key={item}>
                         {item}
                       </MenuItem>

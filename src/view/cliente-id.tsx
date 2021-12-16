@@ -184,6 +184,11 @@ const ClientOnlyView = () => {
   };
 
   const NotificarClient = async () => {
+    if (!Cliente?.notificarEmail && !Cliente?.notificarSms) {
+      toast.warn('El cliente no tiene preferencia en notificaciones');
+      return;
+    }
+
     setLoadingNotificar(true);
 
     try {
@@ -531,7 +536,7 @@ const ClientOnlyView = () => {
           <Divider />
           <br />
 
-          <Grid container justify='space-between'>
+          <Grid container justify='flex-start'>
             {!Loading && !Archivos.length && (
               <Alert color='info'>No hay archivos en el expediente</Alert>
             )}

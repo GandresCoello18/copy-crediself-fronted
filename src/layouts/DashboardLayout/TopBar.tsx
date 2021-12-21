@@ -96,12 +96,35 @@ const TopBar = ({ onMobileNavOpen, ...rest }: Props) => {
       <AppBar elevation={0} {...rest}>
         <Toolbar>
           <RouterLink to={RenderMainViewRol(me.idRol)}>
-            <img
-              src='https://res.cloudinary.com/cici/image/upload/v1627948680/util/logo-crediself_jtbifz.png'
-              alt='logo de cici'
-              width={60}
-              className={classes.iconNav}
-            />
+            {me.empresa === 'CREDISELF' ? (
+              <img
+                src='https://res.cloudinary.com/cici/image/upload/v1627948680/util/logo-crediself_jtbifz.png'
+                alt='logo de crediself'
+                title='logo de crediself'
+                width={60}
+                className={classes.iconNav}
+              />
+            ) : null}
+
+            {me.empresa === 'AUTOIMPULZADORA' ? (
+              <img
+                src='https://res.cloudinary.com/cici/image/upload/v1629240101/util/WhatsApp_Image_2021-03-04_at_2.09.52_PM_2_mvg89p.jpg'
+                alt='logo de auto impulsadora'
+                title='logo de auto impulsadora'
+                width={60}
+                className={classes.iconNav}
+              />
+            ) : null}
+
+            {!me.empresa ? (
+              <img
+                src='../../placeholder-picture.png'
+                alt='sin logo'
+                title='sin logo'
+                width={60}
+                className={classes.iconNav}
+              />
+            ) : null}
           </RouterLink>
           <Box flexGrow={1} />
           {getPermisoExist({ RolName: me.idRol, permiso: 'ViewNotification' }) ? (

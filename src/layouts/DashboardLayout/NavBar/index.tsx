@@ -254,11 +254,6 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           title: 'Asesores',
         },
         {
-          href: '/app/mis-comisiones',
-          icon: TimelineIcon,
-          title: 'Mis comisiones',
-        },
-        {
           href: '/app/account',
           icon: PersonIcon,
           title: 'Mi cuenta',

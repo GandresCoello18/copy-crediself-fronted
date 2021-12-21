@@ -36,7 +36,16 @@ export const Login = () => {
 
   return (
     <Card>
-      <img src='/logo-crediself.png' alt='Logo cici' width={200} />
+      <br />
+      {!localStorage.getItem('empresa-hass-user') && (
+        <img src='./placeholder-picture.png' alt='sin logo' title='sin logo' width={200} />
+      )}
+      {localStorage.getItem('empresa-hass-user')?.includes('CREDISELF') && (
+        <img src='/logo-crediself.png' alt='Logo crediself' width={200} />
+      )}
+      {localStorage.getItem('empresa-hass-user')?.includes('AUTOIMPULZADORA') && (
+        <img src='/auto-impulsadora-logo.jpg' alt='Logo auto impulsadora' width={200} />
+      )}
       <br />
       <Formik
         initialValues={{
@@ -59,6 +68,7 @@ export const Login = () => {
 
             const tresHoras = new Date(new Date().getTime() + 180 * 60 * 1000);
             Cookies.set('access-token-crediself', response.me.token, { expires: tresHoras });
+            localStorage.setItem('empresa-hass-user', response.me.user.empresa);
 
             window.location.href = RenderMainViewRol(response.me.user.idRol);
           } catch (error) {

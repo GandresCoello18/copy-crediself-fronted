@@ -16,6 +16,7 @@ export interface Me {
   idRol: string;
   idSucursal: string;
   supervisor: string;
+  empresa?: 'AUTOIMPULZADORA' | 'CREDISELF';
 }
 
 const templeate: Me = {
@@ -30,6 +31,7 @@ const templeate: Me = {
   idRol: '',
   idSucursal: '',
   supervisor: '',
+  empresa: undefined,
 };
 
 interface Props {

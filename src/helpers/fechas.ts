@@ -6,8 +6,8 @@ export const monthDiff = (options: { desde: Date; hasta: Date }) => {
   return months <= 0 ? 0 : months;
 };
 
-export const CurrentDate = (notDay?: boolean) => {
-  const date = new Date();
+export const CurrentDate = (myDate?: Date) => {
+  const date = myDate || new Date();
   let mes: string | number = date.getMonth() + 1;
   let dia: string | number = date.getDate();
 
@@ -19,11 +19,20 @@ export const CurrentDate = (notDay?: boolean) => {
     dia = '0' + dia;
   }
 
-  if (notDay) {
-    return date.getFullYear() + '-' + mes;
-  }
-
   return date.getFullYear() + '-' + mes + '-' + dia;
+};
+
+export const SubDate = (options: { myDate?: Date; days: number }) => {
+  const { myDate, days } = options;
+  let diasPasados;
+
+  if (myDate) {
+    diasPasados = myDate.getDate() - days;
+  } else {
+    diasPasados = new Date().getDate() - days;
+  }
+  const semanaPasadaSecon = new Date().setDate(diasPasados);
+  return new Date(semanaPasadaSecon);
 };
 
 export const GetMonth = (date: string | Date) => {

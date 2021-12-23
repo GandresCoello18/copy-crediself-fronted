@@ -17,7 +17,7 @@ import { AxiosError } from 'axios';
 import { HandleError } from '../helpers/handleError';
 import { GetComisionesByUser } from '../api/comisiones';
 import { MisComisiones, StaticComision } from '../interfaces/Comision';
-import { CurrentDate, GetMonth } from '../helpers/fechas';
+import { CurrentDate, SubDate } from '../helpers/fechas';
 import { TableCoomision } from '../components/Comisiones/table-comision';
 
 const useStyles = makeStyles((theme: any) => ({
@@ -29,20 +29,33 @@ const useStyles = makeStyles((theme: any) => ({
   },
 }));
 
+export interface FetchByDate {
+  dateDesde: string;
+  dateHasta: string;
+}
+
 const Panel = () => {
   const classes = useStyles();
   const { token, me } = useContext(MeContext);
-  const [dateFetch, setDateFetch] = useState<string>(CurrentDate(true) || '');
+  const [dateFetch, setDateFetch] = useState<FetchByDate>({
+    dateDesde: '',
+    dateHasta: '',
+  });
   const [Loading, setLoading] = useState<boolean>(false);
   const [Statistics, setStatistics] = useState<StaticComision | undefined>(undefined);
   const [Comisiones, setComisiones] = useState<MisComisiones[]>([]);
 
   const Fetch = async () => {
     setLoading(true);
+    const { dateDesde, dateHasta } = dateFetch;
 
     try {
       const { comisiones, statistics } = await (
-        await GetComisionesByUser({ token, mes: dateFetch || CurrentDate(true) })
+        await GetComisionesByUser({
+          token,
+          dateDesde: dateDesde || CurrentDate(SubDate({ days: 7 })),
+          dateHasta: dateHasta || CurrentDate(),
+        })
       ).data;
 
       setComisiones(comisiones);
@@ -59,7 +72,7 @@ const Panel = () => {
   }, [token]);
 
   useEffect(() => {
-    dateFetch && Fetch();
+    dateFetch.dateDesde && dateFetch.dateHasta && Fetch();
   }, [dateFetch]);
 
   const renderTitleProgress = () => {
@@ -98,7 +111,7 @@ const Panel = () => {
             <TasksProgress progress={Statistics?.task.progress || 0} />
           </Grid>
           <Grid item lg={3} sm={6} xl={3} xs={12}>
-            <TotalProfit Loading={Loading} Amount={Statistics?.Amount} />
+            <TotalProfit Loading={Loading} Amount={Statistics?.Amount || 0} />
           </Grid>
           <Grid item xs={12}>
             <Sales
@@ -106,13 +119,15 @@ const Panel = () => {
               ventas={Statistics?.grafico.data}
               comision={Statistics?.grafico.data2}
               setDateFetch={setDateFetch}
+              dateFetch={dateFetch}
               Loading={Loading}
             />
           </Grid>
           <Grid item xs={12}>
             <Alert severity='info'>
-              No tienes comisiones del periodo:{' '}
-              <strong>{dateFetch || GetMonth(CurrentDate())}</strong>
+              No tienes comisiones del periodo desded:{' '}
+              <strong>{dateFetch.dateDesde || CurrentDate(SubDate({ days: 7 }))}</strong> hasta{' '}
+              <strong>{dateFetch.dateHasta || CurrentDate()}</strong>
             </Alert>
             <br />
 

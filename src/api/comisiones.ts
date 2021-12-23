@@ -1,10 +1,14 @@
 import { api } from '.';
 
-export const GetComisionesByUser = async (option: { token: string; mes?: string }) => {
+export const GetComisionesByUser = async (option: {
+  token: string;
+  dateDesde: string;
+  dateHasta: string;
+}) => {
   api.defaults.headers['access-token'] = option.token;
   const response = await api({
     method: 'GET',
-    url: `/comisiones/user?mes=${option.mes || ''}`,
+    url: `/comisiones/user?dateDesde=${option.dateDesde || ''}&dateHasta=${option.dateHasta || ''}`,
   });
   return response;
 };

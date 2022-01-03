@@ -248,7 +248,7 @@ export const RowTableUser = ({
         <TableCell>{user.email}</TableCell>
         <TableCell>{user.sexo}</TableCell>
         <TableCell>{user.created_at}</TableCell>
-        <TableCell>{user.idRol}</TableCell>
+        <TableCell>{user.idRol || <Chip color='primary' label='None' />}</TableCell>
         <TableCell>
           {!isMe ? (
             loading ? (

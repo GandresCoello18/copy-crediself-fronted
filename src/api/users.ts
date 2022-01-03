@@ -78,6 +78,15 @@ export const GetSupervidoresUser = async (options: { token: string }) => {
   return response;
 };
 
+export const GetNotRolUser = async (options: { token: string }) => {
+  api.defaults.headers['access-token'] = options.token;
+  const response = await api({
+    method: 'GET',
+    url: '/users/not-rol',
+  });
+  return response;
+};
+
 export const GetUserByRol = async (options: { token: string; name: string }) => {
   api.defaults.headers['access-token'] = options.token;
   const response = await api({
@@ -105,12 +114,15 @@ export const GetMisAsesoresUser = async (options: { token: string }) => {
   return response;
 };
 
-export const NewUser = async (options: { token: string; data: NewUsers }) => {
+export const NewUser = async (options: { token: string; data: NewUsers; idReferido?: string }) => {
   api.defaults.headers['access-token'] = options.token;
   const response = await api({
     method: 'POST',
     url: '/users',
-    data: options.data,
+    data: {
+      ...options.data,
+      idReferido: options.idReferido,
+    },
   });
   return response;
 };

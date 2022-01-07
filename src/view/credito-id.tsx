@@ -47,6 +47,7 @@ const CreditoOnlyView = () => {
       const { credito } = await (await GetCredito({ token, IdCredito: params.idCredito })).data;
       setCreditos(credito);
       setLoading(false);
+      setSelectCredito(credito);
     } catch (error) {
       toast.error(HandleError(error as AxiosError));
       setLoading(false);
@@ -79,6 +80,7 @@ const CreditoOnlyView = () => {
               <DetailsCredito
                 imgSrc='../../no-data.svg'
                 credito={SelectCredito}
+                setReloadCredito={setReloadCredito}
                 setSelectCredito={setSelectCredito}
                 setVisibleApertura={setVisibleApertura}
               />

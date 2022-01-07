@@ -26,6 +26,7 @@ import { GetClientes } from '../api/clientes';
 import { TablaCliente } from '../components/cliente/table-cliente';
 import { Cliente } from '../interfaces/Cliente';
 import { FormNewCliente } from '../components/cliente/new-cliente';
+import { getPermisoExist } from '../helpers/renderViewMainRol';
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -41,7 +42,7 @@ const useStyles = makeStyles((theme: any) => ({
 
 const ClientesView = () => {
   const classes = useStyles();
-  const { token } = useContext(MeContext);
+  const { token, me } = useContext(MeContext);
   const [SearchCliente, setSearchCliente] = useState<string>('');
   const [Clientes, setClientes] = useState<Cliente[]>([]);
   const [Count, setCount] = useState<number>(0);
@@ -78,11 +79,13 @@ const ClientesView = () => {
   return (
     <Page className={classes.root} title='Clientes'>
       <Container maxWidth='xl'>
-        <Box display='flex' justifyContent='flex-end'>
-          <Button color='secondary' variant='contained' onClick={() => setVisible(true)}>
-            Nuevo cliente
-          </Button>
-        </Box>
+        {getPermisoExist({ RolName: me.idRol, permiso: 'NewCliente' }) ? (
+          <Box display='flex' justifyContent='flex-end'>
+            <Button color='secondary' variant='contained' onClick={() => setVisible(true)}>
+              Nuevo cliente
+            </Button>
+          </Box>
+        ) : null}
         <Box mt={3}>
           <Card>
             <CardContent>

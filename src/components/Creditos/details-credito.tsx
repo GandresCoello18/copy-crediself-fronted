@@ -6,6 +6,7 @@ import {
   makeStyles,
   Box,
   Badge,
+  Popover,
   Avatar,
   Divider,
   Chip,
@@ -100,6 +101,9 @@ const useStyles = makeStyles(theme => ({
     fontSize: theme.typography.pxToRem(15),
     color: theme.palette.text.secondary,
   },
+  textPopover: {
+    padding: theme.spacing(2),
+  },
 }));
 
 interface Props {
@@ -118,6 +122,7 @@ export const DetailsCredito = ({
   setVisibleApertura,
 }: Props) => {
   const clases = useStyles();
+  const [isPopover, setIsPopover] = useState<string | null>(null);
   const { token, me } = useContext(MeContext);
   const [Expanded, setExpanded] = useState<string>('');
   const [statusCredit, setStatusCredit] = useState<{ loading: boolean; modific: string }>({
@@ -218,8 +223,11 @@ export const DetailsCredito = ({
         setTimeout(() => {
           setReloadCredito(true);
           setLoadingPackage(false);
-        }, 2000);
+          setIsPopover(null);
+        }, 10000);
       }
+
+      setIsPopover('btn-generate-paquete');
     } catch (error) {
       toast.error(HandleError(error as AxiosError));
       setLoadingPackage(false);
@@ -631,10 +639,14 @@ export const DetailsCredito = ({
                 {me.idRol === 'Administrativo' ? (
                   <Grid item>
                     <Button
+                      aria-describedby='btn-generate-paquete'
                       className={clases.btnPaquete}
                       disabled={
                         LoadingPackage ||
-                        credito.contratos.some(item => item.isPackageWelcome === 1)
+                        credito.contratos.filter(
+                          item =>
+                            item.isPackageWelcome && item.id_credito_contrato !== 'id_generado_app',
+                        ).length > 0
                       }
                       onClick={HandlePackageWelcome}
                       fullWidth
@@ -642,6 +654,23 @@ export const DetailsCredito = ({
                     >
                       Generar Paquete de bienvenida
                     </Button>
+                    <Popover
+                      id='btn-generate-paquete'
+                      open={isPopover ? true : false}
+                      onClose={() => setIsPopover(null)}
+                      anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                      }}
+                      transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center',
+                      }}
+                    >
+                      <Typography className={clases.textPopover}>
+                        Generando archivos 📁, se actualizara la vista en 10 segundos 🕗.
+                      </Typography>
+                    </Popover>
                   </Grid>
                 ) : (
                   ''

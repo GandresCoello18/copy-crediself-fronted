@@ -19,6 +19,7 @@ const useStyles = makeStyles(() =>
   createStyles({
     input: {
       display: 'none',
+      cursor: 'pointer',
     },
     textCard: {
       fontSize: 18,
@@ -87,29 +88,31 @@ export const ContratoCard = ({ contrato }: Props) => {
         <Button fullWidth variant='contained' color='primary' onClick={handleFile} component='span'>
           {Loading ? <CircularProgress color='secondary' /> : `Subir: ${fileUpload[0].name}`}
         </Button>
-      ) : (
-        ''
-      )}
+      ) : null}
 
       {getPermisoExist({ RolName: me.idRol, permiso: 'UpdateContratoCredito' }) && !fileUpload ? (
         <>
           <input
             accept='.doc,.docx,.pdf'
             className={classes.input}
+            disabled={contrato.isPackageWelcome ? true : false}
             id={`contrato-button-file-${contrato.idContrato}`}
             onChange={event => setFileUpload(event.target.files)}
             multiple
             type='file'
           />
           <label htmlFor={`contrato-button-file-${contrato.idContrato}`}>
-            <Button fullWidth color='primary' component='span'>
+            <Button
+              disabled={contrato.isPackageWelcome ? true : false}
+              fullWidth
+              color='primary'
+              component='span'
+            >
               Actualizar
             </Button>
           </label>
         </>
-      ) : (
-        ''
-      )}
+      ) : null}
     </Box>
   );
 };

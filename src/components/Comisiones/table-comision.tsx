@@ -76,22 +76,28 @@ export const TableCoomision = ({ comision, Loading }: Props) => {
             <Table>
               <TableHead className={classes.headTable}>
                 <TableRow>
-                  <TableCell className={classes.textHeadTable}>
+                  <TableCell title='usuario beneficiario' className={classes.textHeadTable}>
                     <strong>Usuario</strong>
                   </TableCell>
-                  <TableCell className={classes.textHeadTable}>
-                    <strong>Tipo de comision</strong>
+                  <TableCell title='tipo de comision' className={classes.textHeadTable}>
+                    <strong>Tipo Com</strong>
                   </TableCell>
-                  <TableCell className={classes.textHeadTable}>
-                    <strong>Periodo</strong>
+                  <TableCell title='fecha que se registro' className={classes.textHeadTable}>
+                    <strong>Fecha</strong>
                   </TableCell>
-                  <TableCell className={classes.textHeadTable}>
-                    <strong>Porcentaje</strong>
+                  <TableCell title='porcentaje en el calculo' className={classes.textHeadTable}>
+                    <strong>Porcent %</strong>
                   </TableCell>
-                  <TableCell className={classes.textHeadTable}>
+                  <TableCell title='fecha aproximada de paga' className={classes.textHeadTable}>
+                    <strong>Fecha ha pagar</strong>
+                  </TableCell>
+                  <TableCell title='estado de la comision o bono' className={classes.textHeadTable}>
+                    <strong>Estado</strong>
+                  </TableCell>
+                  <TableCell title='total a pagar' className={classes.textHeadTable}>
                     <strong>Total</strong>
                   </TableCell>
-                  <TableCell className={classes.textHeadTable}>
+                  <TableCell title='opciones' className={classes.textHeadTable}>
                     <strong>Opciones</strong>
                   </TableCell>
                 </TableRow>

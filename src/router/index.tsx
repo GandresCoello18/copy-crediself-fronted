@@ -114,7 +114,7 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <ToastContainer delay={3000} position='top-right' />
+      <ToastContainer delay={5000} position='top-right' />
       <GlobalStyles />
       <Suspense fallback={<div />}>{routing}</Suspense>
     </ThemeProvider>

@@ -16,7 +16,6 @@ import {
   Button,
   ListItem,
 } from '@material-ui/core';
-import EqualizerIcon from '@material-ui/icons/Equalizer';
 import PersonIcon from '@material-ui/icons/Person';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import LockIcon from '@material-ui/icons/Lock';
@@ -289,13 +288,27 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
         },
       ];
       break;
-    default:
+    case 'Referencia':
       items = [
         {
-          href: '/app/dashboard',
-          icon: EqualizerIcon,
-          title: 'Panel',
+          href: '/app/mis-comisiones',
+          icon: TimelineIcon,
+          title: 'Mis comisiones',
         },
+        {
+          href: '/app/account',
+          icon: PersonIcon,
+          title: 'Mi cuenta',
+        },
+        {
+          href: '/app/reportes-error',
+          icon: BugReportIcon,
+          title: 'Problemas',
+        },
+      ];
+      break;
+    default:
+      items = [
         {
           href: '/app/reportes-error',
           icon: BugReportIcon,

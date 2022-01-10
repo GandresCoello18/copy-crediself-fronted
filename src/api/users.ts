@@ -82,7 +82,7 @@ export const GetNotRolUser = async (options: { token: string }) => {
   api.defaults.headers['access-token'] = options.token;
   const response = await api({
     method: 'GET',
-    url: '/users/not-rol',
+    url: '/users/referencia-rol',
   });
   return response;
 };

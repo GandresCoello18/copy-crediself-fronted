@@ -13,11 +13,13 @@ import {
   Grid,
   InputLabel,
   MenuItem,
+  Popover,
   Select,
   TextField,
+  Typography,
 } from '@material-ui/core';
 import { toast } from 'react-toast';
-import { Dispatch, SetStateAction, useContext } from 'react';
+import { Dispatch, SetStateAction, useContext, useState } from 'react';
 import { MeContext } from '../../context/contextMe';
 import { AxiosError } from 'axios';
 import { HandleError } from '../../helpers/handleError';
@@ -31,6 +33,12 @@ interface Props {
 
 export const FormNewCredit = ({ setReloadCredito, setVisible, idCliente }: Props) => {
   const { token } = useContext(MeContext);
+  const [isPopover, setIsPopover] = useState<boolean>(false);
+
+  const CreditoByClientSection = () => {
+    setVisible(false);
+    window.location.href = `/app/creditos/cliente/${idCliente}`;
+  };
 
   return (
     <Card>
@@ -46,9 +54,17 @@ export const FormNewCredit = ({ setReloadCredito, setVisible, idCliente }: Props
         })}
         onSubmit={async (values, actions) => {
           try {
-            await NewContrato({ token, data: values });
-            setReloadCredito && setReloadCredito(true);
-            setVisible(false);
+            const { status } = await (await NewContrato({ token, data: values })).data;
+
+            if (setReloadCredito) {
+              setReloadCredito(true);
+              setVisible(false);
+            } else {
+              setIsPopover(true);
+            }
+
+            toast.success('Credito registrado');
+            status && toast.error(status);
           } catch (error) {
             toast.error(HandleError(error as AxiosError));
           }
@@ -114,6 +130,31 @@ export const FormNewCredit = ({ setReloadCredito, setVisible, idCliente }: Props
           </form>
         )}
       </Formik>
+
+      <Popover
+        open={isPopover}
+        onClose={() => setIsPopover(false)}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        <Typography style={{ padding: 10 }}>
+          Se registro el credito, ¿Deseas ver los credito de este cliente?
+        </Typography>
+        <Box display='flex' justifyContent='center'>
+          <Button variant='outlined' onClick={CreditoByClientSection}>
+            Si
+          </Button>
+          <Button variant='outlined' onClick={() => setVisible(false)}>
+            No
+          </Button>
+        </Box>
+      </Popover>
     </Card>
   );
 };

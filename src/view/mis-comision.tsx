@@ -89,7 +89,7 @@ const Panel = () => {
 
   return (
     <Page className={classes.root} title='Mis Comisiones'>
-      <Container maxWidth='lg'>
+      <Container maxWidth='xl'>
         <Grid container spacing={3}>
           <Grid item lg={3} sm={6} xl={3} xs={12}>
             <Budget
@@ -113,22 +113,26 @@ const Panel = () => {
           <Grid item lg={3} sm={6} xl={3} xs={12}>
             <TotalProfit Loading={Loading} Amount={Statistics?.Amount || 0} />
           </Grid>
+          {me.idRol === 'Asesor' || me.idRol === 'Supervisor' ? (
+            <Grid item xs={12}>
+              <Sales
+                fechas={Statistics?.grafico.labels}
+                ventas={Statistics?.grafico.data}
+                comision={Statistics?.grafico.data2}
+                setDateFetch={setDateFetch}
+                dateFetch={dateFetch}
+                Loading={Loading}
+              />
+            </Grid>
+          ) : null}
           <Grid item xs={12}>
-            <Sales
-              fechas={Statistics?.grafico.labels}
-              ventas={Statistics?.grafico.data}
-              comision={Statistics?.grafico.data2}
-              setDateFetch={setDateFetch}
-              dateFetch={dateFetch}
-              Loading={Loading}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Alert severity='info'>
-              No tienes comisiones del periodo desded:{' '}
-              <strong>{dateFetch.dateDesde || CurrentDate(SubDate({ days: 7 }))}</strong> hasta{' '}
-              <strong>{dateFetch.dateHasta || CurrentDate()}</strong>
-            </Alert>
+            {!Comisiones.length && !Loading ? (
+              <Alert severity='info'>
+                No tienes comisiones del periodo desded:{' '}
+                <strong>{dateFetch.dateDesde || CurrentDate(SubDate({ days: 7 }))}</strong> hasta{' '}
+                <strong>{dateFetch.dateHasta || CurrentDate()}</strong>
+              </Alert>
+            ) : null}
             <br />
 
             <TableCoomision comision={Comisiones} Loading={Loading} />

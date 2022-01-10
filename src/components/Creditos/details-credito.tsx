@@ -602,22 +602,7 @@ export const DetailsCredito = ({
                       </Button>
                     </Grid>
                   </>
-                ) : (
-                  ''
-                )}
-
-                <Grid item>
-                  <Link to={`/app/pagos/credito/${credito.idCredito}`}>
-                    <Button
-                      disabled={credito?.apertura === 0}
-                      className={clases.btnAutorizar}
-                      fullWidth
-                      variant='outlined'
-                    >
-                      Ver Pagos
-                    </Button>
-                  </Link>
-                </Grid>
+                ) : null}
 
                 {getPermisoExist({ RolName: me.idRol, permiso: 'AutorizarCredito' }) &&
                 !credito?.autorizado ? (
@@ -632,49 +617,61 @@ export const DetailsCredito = ({
                       Autorizar Credito
                     </Button>
                   </Grid>
-                ) : (
-                  ''
-                )}
+                ) : null}
 
                 {me.idRol === 'Administrativo' ? (
-                  <Grid item>
-                    <Button
-                      aria-describedby='btn-generate-paquete'
-                      className={clases.btnPaquete}
-                      disabled={
-                        LoadingPackage ||
-                        credito.contratos.filter(
-                          item =>
-                            item.isPackageWelcome && item.id_credito_contrato !== 'id_generado_app',
-                        ).length > 0
-                      }
-                      onClick={HandlePackageWelcome}
-                      fullWidth
-                      variant='outlined'
-                    >
-                      Generar Paquete de bienvenida
-                    </Button>
-                    <Popover
-                      id='btn-generate-paquete'
-                      open={isPopover ? true : false}
-                      onClose={() => setIsPopover(null)}
-                      anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'center',
-                      }}
-                      transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'center',
-                      }}
-                    >
-                      <Typography className={clases.textPopover}>
-                        Generando archivos 📁, se actualizara la vista en 10 segundos 🕗.
-                      </Typography>
-                    </Popover>
-                  </Grid>
-                ) : (
-                  ''
-                )}
+                  <>
+                    <Grid item>
+                      <Link to={`/app/pagos/credito/${credito.idCredito}`}>
+                        <Button
+                          disabled={credito?.apertura === 0}
+                          className={clases.btnAutorizar}
+                          fullWidth
+                          variant='outlined'
+                        >
+                          Ver Pagos
+                        </Button>
+                      </Link>
+                    </Grid>
+
+                    <Grid item>
+                      <Button
+                        aria-describedby='btn-generate-paquete'
+                        className={clases.btnPaquete}
+                        disabled={
+                          LoadingPackage ||
+                          credito.contratos.filter(
+                            item =>
+                              item.isPackageWelcome &&
+                              item.id_credito_contrato !== 'id_generado_app',
+                          ).length > 0
+                        }
+                        onClick={HandlePackageWelcome}
+                        fullWidth
+                        variant='outlined'
+                      >
+                        Generar Paquete de bienvenida
+                      </Button>
+                      <Popover
+                        id='btn-generate-paquete'
+                        open={isPopover ? true : false}
+                        onClose={() => setIsPopover(null)}
+                        anchorOrigin={{
+                          vertical: 'bottom',
+                          horizontal: 'center',
+                        }}
+                        transformOrigin={{
+                          vertical: 'top',
+                          horizontal: 'center',
+                        }}
+                      >
+                        <Typography className={clases.textPopover}>
+                          Generando archivos 📁, se actualizara la vista en 10 segundos 🕗.
+                        </Typography>
+                      </Popover>
+                    </Grid>
+                  </>
+                ) : null}
 
                 {getPermisoExist({ RolName: me.idRol, permiso: 'AutorizarCredito' }) &&
                 !credito?.autorizado ? (

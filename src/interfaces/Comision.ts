@@ -1,5 +1,7 @@
 import { Usuario } from './Usuario';
 
+export type StatusComision = 'Pendiente' | 'Pagado' | 'Cancelado';
+
 export interface Comision {
   idComision: string;
   created_at: string | Date;
@@ -16,6 +18,8 @@ export interface ComisionesUsuarios {
   mesComision?: string | Date;
   idUser: string;
   total: number;
+  fechaHaPagar: string | Date;
+  status: StatusComision;
 }
 
 export interface MisComisiones extends Comision, ComisionesUsuarios {

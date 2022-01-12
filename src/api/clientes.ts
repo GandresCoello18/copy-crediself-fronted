@@ -45,6 +45,23 @@ export const GetClientes = async (option: {
   return response;
 };
 
+export const GetAcreditacionClientes = async (option: {
+  token: string;
+  findCliente?: string;
+  page: number;
+}) => {
+  api.defaults.headers['access-token'] = option.token;
+  const response = await api({
+    method: 'GET',
+    url: `${
+      option.findCliente
+        ? `/cliente/acreditacion?findCliente=${option.findCliente}&page=${option.page}`
+        : `/cliente/acreditacion?page=${option.page}`
+    }`,
+  });
+  return response;
+};
+
 export const GetCliente = async (options: { token?: string; IdCliente: string }) => {
   api.defaults.headers['access-token'] = options.token;
   const response = await api({

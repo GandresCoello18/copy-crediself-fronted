@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/react-in-jsx-scope */
@@ -11,7 +12,7 @@ import { ThemeProvider } from '@material-ui/styles';
 import GlobalStyles from '../components/GlobalStyles';
 import theme from '../theme';
 import { Auth } from '../view/auth';
-import { useContext, useEffect } from 'react';
+import { LazyExoticComponent, useContext, useEffect } from 'react';
 import { GetMeUser } from '../api/users';
 import { MeContext } from '../context/contextMe';
 import { toast, ToastContainer } from 'react-toast';
@@ -31,6 +32,7 @@ const AsesoresView = lazy(() => import('../view/asesores'));
 const NotificacionesView = lazy(() => import('../view/notificacion'));
 const ClientesView = lazy(() => import('../view/clientes'));
 const ClienteOnlyView = lazy(() => import('../view/cliente-id'));
+const ClientesAcreditacionView = lazy(() => import('../view/clientes-acreditacion'));
 const CreditosView = lazy(() => import('../view/creditos'));
 const CreditoOnlyView = lazy(() => import('../view/credito-id'));
 const CreditoClienteOnlyView = lazy(() => import('../view/credito-cliente-id'));
@@ -43,7 +45,7 @@ const ConfirmDataClient = lazy(() => import('../view/confirm-data-client'));
 
 const token = Cookies.get('access-token-crediself');
 
-const PathSesion = (Componente: any) => {
+const PathSesion = (Componente: LazyExoticComponent<() => JSX.Element>) => {
   return token ? <Componente /> : <Navigate to='/login' />;
 };
 
@@ -63,6 +65,7 @@ const routes = [
       { path: 'account', element: PathSesion(AccountView) },
       { path: 'clientes', element: PathSesion(ClientesView) },
       { path: 'clientes/:idCliente', element: PathSesion(ClienteOnlyView) },
+      { path: 'clientes-acreditacion', element: PathSesion(ClientesAcreditacionView) },
       { path: 'creditos', element: PathSesion(CreditosView) },
       { path: 'creditos/:idCredito', element: PathSesion(CreditoOnlyView) },
       { path: 'creditos/cliente/:idCliente', element: PathSesion(CreditoClienteOnlyView) },

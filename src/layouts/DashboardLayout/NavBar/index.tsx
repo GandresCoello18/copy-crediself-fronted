@@ -18,6 +18,7 @@ import {
 } from '@material-ui/core';
 import PersonIcon from '@material-ui/icons/Person';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import LockIcon from '@material-ui/icons/Lock';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
@@ -180,6 +181,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           title: 'Usuarios',
         },
         {
+          href: '/app/clientes-acreditacion',
+          icon: MonetizationOnIcon,
+          title: 'Acreditación',
+        },
+        {
           href: '/app/comisiones',
           icon: TimelineIcon,
           title: 'Comisiones',
@@ -212,6 +218,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           href: '/app/pagos',
           icon: PaymentIcon,
           title: 'Pagos',
+        },
+        {
+          href: '/app/clientes-acreditacion',
+          icon: MonetizationOnIcon,
+          title: 'Acreditación',
         },
         {
           href: '/app/notificaciones',

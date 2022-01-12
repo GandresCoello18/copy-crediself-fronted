@@ -1,3 +1,5 @@
+import { Credito } from './Credito';
+
 export interface CheckCliente {
   idUser: string;
   avatar: string | null;
@@ -35,4 +37,11 @@ export interface Expediente {
   created_at: string | Date;
   idCliente: string;
   kind: 'img' | 'pdf';
+}
+
+export interface Acreditacion extends Credito {
+  idCliente: string;
+  nombres: string;
+  apellidos: string;
+  email: string | null;
 }

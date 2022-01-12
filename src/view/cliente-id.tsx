@@ -192,9 +192,11 @@ const ClientOnlyView = () => {
     setLoadingNotificar(true);
 
     try {
-      await NotificarDataClient({ token, idCliente: params.idCliente });
+      const { status } = await (await NotificarDataClient({ token, idCliente: params.idCliente }))
+        .data;
       setLoadingNotificar(false);
       toast.success('Se notifico al cliente para confirmar sus datos');
+      status && toast.error(status);
     } catch (error) {
       setLoadingNotificar(false);
       toast.error(HandleError(error as AxiosError));
@@ -415,77 +417,81 @@ const ClientOnlyView = () => {
             )}
           </Box>
 
-          <Box mt={2}>
-            <strong className={classes.subTitle}>Autorizado Por Administrador</strong>
-            {Loading ? (
-              <Skeleton variant='text' width={300} height={20} />
-            ) : (
-              <Typography className={classes.textTop}>
-                {Cliente?.autorizado ? (
-                  <Chip
-                    avatar={
-                      <Avatar
-                        title={`${Cliente?.autorizado.nombres} ${Cliente?.autorizado.apellidos}`}
-                        src={SourceAvatar(Cliente?.autorizado.avatar || '')}
-                      />
-                    }
-                    label={`${Cliente?.autorizado.nombres} ${Cliente?.autorizado.apellidos}`}
-                    variant='outlined'
-                  />
+          {me.idRol !== 'Asesor' && me.idRol !== 'RRHH' ? (
+            <>
+              <Box mt={2}>
+                <strong className={classes.subTitle}>Autorizado Por Administrador</strong>
+                {Loading ? (
+                  <Skeleton variant='text' width={300} height={20} />
                 ) : (
-                  <Chip label='No' color='default' />
+                  <Typography className={classes.textTop}>
+                    {Cliente?.autorizado ? (
+                      <Chip
+                        avatar={
+                          <Avatar
+                            title={`${Cliente?.autorizado.nombres} ${Cliente?.autorizado.apellidos}`}
+                            src={SourceAvatar(Cliente?.autorizado.avatar || '')}
+                          />
+                        }
+                        label={`${Cliente?.autorizado.nombres} ${Cliente?.autorizado.apellidos}`}
+                        variant='outlined'
+                      />
+                    ) : (
+                      <Chip label='No' color='default' />
+                    )}
+                  </Typography>
                 )}
-              </Typography>
-            )}
-          </Box>
+              </Box>
 
-          <Box mt={2}>
-            <strong className={classes.subTitle}>Revisado Por Supervidor</strong>
-            {Loading ? (
-              <Skeleton variant='text' width={300} height={20} />
-            ) : (
-              <Typography className={classes.textTop}>
-                {Cliente?.checkSupervisor ? (
-                  <Chip
-                    avatar={
-                      <Avatar
-                        title={`${Cliente?.checkSupervisor.nombres} ${Cliente?.checkSupervisor.apellidos}`}
-                        src={SourceAvatar(Cliente?.checkSupervisor.avatar || '')}
-                      />
-                    }
-                    label={`${Cliente?.checkSupervisor.nombres} ${Cliente?.checkSupervisor.apellidos}`}
-                    variant='outlined'
-                  />
+              <Box mt={2}>
+                <strong className={classes.subTitle}>Revisado Por Supervidor</strong>
+                {Loading ? (
+                  <Skeleton variant='text' width={300} height={20} />
                 ) : (
-                  <Chip label='No' color='default' />
+                  <Typography className={classes.textTop}>
+                    {Cliente?.checkSupervisor ? (
+                      <Chip
+                        avatar={
+                          <Avatar
+                            title={`${Cliente?.checkSupervisor.nombres} ${Cliente?.checkSupervisor.apellidos}`}
+                            src={SourceAvatar(Cliente?.checkSupervisor.avatar || '')}
+                          />
+                        }
+                        label={`${Cliente?.checkSupervisor.nombres} ${Cliente?.checkSupervisor.apellidos}`}
+                        variant='outlined'
+                      />
+                    ) : (
+                      <Chip label='No' color='default' />
+                    )}
+                  </Typography>
                 )}
-              </Typography>
-            )}
-          </Box>
+              </Box>
 
-          <Box mt={2}>
-            <strong className={classes.subTitle}>Revisado Por Gerente de Sucursal</strong>
-            {Loading ? (
-              <Skeleton variant='text' width={300} height={20} />
-            ) : (
-              <Typography className={classes.textTop}>
-                {Cliente?.checkGerenteSuc ? (
-                  <Chip
-                    avatar={
-                      <Avatar
-                        title={`${Cliente?.checkGerenteSuc.nombres} ${Cliente?.checkGerenteSuc.apellidos}`}
-                        src={SourceAvatar(Cliente?.checkGerenteSuc.avatar || '')}
-                      />
-                    }
-                    label={`${Cliente?.checkGerenteSuc.nombres} ${Cliente?.checkGerenteSuc.apellidos}`}
-                    variant='outlined'
-                  />
+              <Box mt={2}>
+                <strong className={classes.subTitle}>Revisado Por Gerente de Sucursal</strong>
+                {Loading ? (
+                  <Skeleton variant='text' width={300} height={20} />
                 ) : (
-                  <Chip label='No' color='default' />
+                  <Typography className={classes.textTop}>
+                    {Cliente?.checkGerenteSuc ? (
+                      <Chip
+                        avatar={
+                          <Avatar
+                            title={`${Cliente?.checkGerenteSuc.nombres} ${Cliente?.checkGerenteSuc.apellidos}`}
+                            src={SourceAvatar(Cliente?.checkGerenteSuc.avatar || '')}
+                          />
+                        }
+                        label={`${Cliente?.checkGerenteSuc.nombres} ${Cliente?.checkGerenteSuc.apellidos}`}
+                        variant='outlined'
+                      />
+                    ) : (
+                      <Chip label='No' color='default' />
+                    )}
+                  </Typography>
                 )}
-              </Typography>
-            )}
-          </Box>
+              </Box>
+            </>
+          ) : null}
         </Grid>
         <Grid item xs={12} md={7} className={classes.bgWhite}>
           <h4>Más Datos</h4>

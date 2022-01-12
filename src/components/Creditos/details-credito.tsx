@@ -608,6 +608,7 @@ export const DetailsCredito = ({
                 !credito?.autorizado ? (
                   <Grid item>
                     <Button
+                      title='Se necesita el pago #13 para autorizar el credito'
                       disabled={LoadingSolicitud}
                       className={clases.btnAutorizar}
                       onClick={() => HandleAutorizacion({ autorizado: true })}

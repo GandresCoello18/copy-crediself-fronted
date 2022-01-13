@@ -182,21 +182,23 @@ export const TablaPagosByCredito = ({ pagos, cliente, credito, Loading, setReloa
               </TableHead>
               <TableBody>
                 {!Loading &&
-                  pagos.map(pago => (
-                    <RowTablePagosByCredito
-                      token={token}
-                      cliente={cliente}
-                      credito={credito}
-                      key={pago.idPago}
-                      setIdPago={setIdPago}
-                      PagoAprobar={PagoAprobar}
-                      setPagoAprobar={setPagoAprobar}
-                      setVisibleComprobante={setVisibleComprobante}
-                      DownloadReciboPayment={DownloadReciboPayment}
-                      LoadingDownloadPayment={LoadingDownloadPayment}
-                      pago={pago}
-                    />
-                  ))}
+                  pagos
+                    .sort((a, b) => b.numeroPago - a.numeroPago)
+                    .map(pago => (
+                      <RowTablePagosByCredito
+                        token={token}
+                        cliente={cliente}
+                        credito={credito}
+                        key={pago.idPago}
+                        setIdPago={setIdPago}
+                        PagoAprobar={PagoAprobar}
+                        setPagoAprobar={setPagoAprobar}
+                        setVisibleComprobante={setVisibleComprobante}
+                        DownloadReciboPayment={DownloadReciboPayment}
+                        LoadingDownloadPayment={LoadingDownloadPayment}
+                        pago={pago}
+                      />
+                    ))}
               </TableBody>
             </Table>
 

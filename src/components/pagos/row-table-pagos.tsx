@@ -120,8 +120,11 @@ export const RowTablePagosByCreditos = ({ pagosByCredito, isModal }: Props) => {
           <Typography
             className={`${pagosByCredito.estado === 'Abonado' ? clases.textWarning : ''}`}
           >
-            {pagosByCredito.credito.cuota !== pagosByCredito.valor && '$' + pagosByCredito.valor} (
-            {pagosByCredito.estado})
+            {pagosByCredito.credito.cuota !== pagosByCredito.valor &&
+            pagosByCredito.estado === 'Abonado'
+              ? '$' + pagosByCredito.valor
+              : ''}{' '}
+            ({pagosByCredito.estado})
           </Typography>
         </TableCell>
         <TableCell onClick={VisibleModal}>{pagosByCredito.pagado_el}</TableCell>

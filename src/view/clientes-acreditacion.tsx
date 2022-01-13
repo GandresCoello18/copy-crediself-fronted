@@ -7,10 +7,12 @@ import {
   makeStyles,
   Box,
   Card,
+  Grid,
   CardContent,
   InputAdornment,
   SvgIcon,
   TextField,
+  Button,
 } from '@material-ui/core';
 import Page from '../components/page';
 import { useState, useEffect, useContext } from 'react';
@@ -38,7 +40,8 @@ const useStyles = makeStyles((theme: any) => ({
 
 const ClientesAcreditacionView = () => {
   const classes = useStyles();
-  const { token } = useContext(MeContext);
+  const [Ids, setIds] = useState<string[]>([]);
+  const { token, me } = useContext(MeContext);
   const [SearchCliente, setSearchCliente] = useState<string>('');
   const [Clientes, setClientes] = useState<Acreditacion[]>([]);
   const [Count, setCount] = useState<number>(0);
@@ -77,28 +80,55 @@ const ClientesAcreditacionView = () => {
         <Box mt={3}>
           <Card>
             <CardContent>
-              <Box maxWidth={500}>
-                <TextField
-                  fullWidth
-                  onChange={event => setSearchCliente(event.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
-                        <SvgIcon fontSize='small' color='action'>
-                          <SearchIcon />
-                        </SvgIcon>
-                      </InputAdornment>
-                    ),
-                  }}
-                  placeholder='Buscar Cliente'
-                  variant='outlined'
-                />
-              </Box>
+              <Grid
+                container
+                spacing={3}
+                direction='row'
+                justify='space-between'
+                alignItems='center'
+              >
+                <Grid item xs={12} md={8}>
+                  <Box maxWidth={500}>
+                    <TextField
+                      fullWidth
+                      onChange={event => setSearchCliente(event.target.value)}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position='start'>
+                            <SvgIcon fontSize='small' color='action'>
+                              <SearchIcon />
+                            </SvgIcon>
+                          </InputAdornment>
+                        ),
+                      }}
+                      placeholder='Buscar Cliente'
+                      variant='outlined'
+                    />
+                  </Box>
+                </Grid>
+                <Grid item>
+                  {Ids.length ? (
+                    <Button
+                      size='small'
+                      title='Acreditar los clientes seleccionados'
+                      variant='outlined'
+                    >
+                      Acreditar &nbsp; <strong>{Ids.length}</strong> &nbsp; clientes
+                    </Button>
+                  ) : null}
+                </Grid>
+              </Grid>
             </CardContent>
           </Card>
         </Box>
         <Box mt={3}>
-          <TablaClienteAcreditacion clientes={Clientes} Loading={Loading} />
+          <TablaClienteAcreditacion
+            setIds={setIds}
+            Ids={Ids}
+            me={me}
+            clientes={Clientes}
+            Loading={Loading}
+          />
         </Box>
         <Box mt={3} display='flex' justifyContent='center'>
           <Pagination

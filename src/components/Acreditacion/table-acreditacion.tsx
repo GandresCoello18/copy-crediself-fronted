@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/react-in-jsx-scope */
-import { useContext } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import {
   Box,
   Table,
@@ -12,11 +12,12 @@ import {
   TableHead,
   TableRow,
 } from '@material-ui/core';
-import { MeContext } from '../../context/contextMe';
+import { Me } from '../../context/contextMe';
 import Alert from '@material-ui/lab/Alert';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { Acreditacion } from '../../interfaces/Cliente';
+import { RowTableAcreditacion } from './row-table-acreditacion';
 
 const useStyles = makeStyles((theme: any) => ({
   headTable: {
@@ -30,13 +31,13 @@ const useStyles = makeStyles((theme: any) => ({
 interface Props {
   clientes: Acreditacion[];
   Loading: boolean;
+  setIds: Dispatch<SetStateAction<string[]>>;
+  Ids: string[];
+  me: Me;
 }
 
-export const TablaClienteAcreditacion = ({ clientes, Loading }: Props) => {
+export const TablaClienteAcreditacion = ({ clientes, Loading, setIds, Ids, me }: Props) => {
   const classes = useStyles();
-  const { token } = useContext(MeContext);
-
-  console.log(token);
 
   const SkeletonUser = () => {
     return [0, 1, 2, 3, 4, 5, 6, 7].map(item => (
@@ -52,6 +53,11 @@ export const TablaClienteAcreditacion = ({ clientes, Loading }: Props) => {
             <Table>
               <TableHead className={classes.headTable}>
                 <TableRow>
+                  {me.idRol === 'Director' ? (
+                    <TableCell title='Seleccionar este cliente' className={classes.textHeadTable}>
+                      <strong>Check</strong>
+                    </TableCell>
+                  ) : null}
                   <TableCell title='Datos del cliente' className={classes.textHeadTable}>
                     <strong>Cliente</strong>
                   </TableCell>
@@ -70,7 +76,7 @@ export const TablaClienteAcreditacion = ({ clientes, Loading }: Props) => {
                   <TableCell title='Fecha registrado el credito' className={classes.textHeadTable}>
                     <strong>Creado el</strong>
                   </TableCell>
-                  <TableCell title='Estado de credito' className={classes.textHeadTable}>
+                  <TableCell title='Estado del credito' className={classes.textHeadTable}>
                     <strong>Estado</strong>
                   </TableCell>
                   <TableCell title='Credito autorizado' className={classes.textHeadTable}>
@@ -83,7 +89,15 @@ export const TablaClienteAcreditacion = ({ clientes, Loading }: Props) => {
               </TableHead>
               <TableBody>
                 {!Loading &&
-                  clientes.map(client => <p key={client.idCliente}>{client.apellidos}</p>)}
+                  clientes.map(item => (
+                    <RowTableAcreditacion
+                      Acreditacion={item}
+                      key={item.idCliente}
+                      setIds={setIds}
+                      Ids={Ids}
+                      rol={me.idRol}
+                    />
+                  ))}
               </TableBody>
             </Table>
 

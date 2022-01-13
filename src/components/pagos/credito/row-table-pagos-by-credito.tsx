@@ -199,7 +199,8 @@ export const RowTablePagosByCredito = ({
         </TableCell>
         <TableCell>
           <Typography className={`${pago.estado === 'Abonado' ? clases.textWarning : ''}`}>
-            {credito?.cuota !== pago.valor && '$' + pago.valor} ({pago.estado})
+            {credito?.cuota !== pago.valor && pago.estado === 'Abonado' ? '$' + pago.valor : ''} (
+            {pago.estado})
           </Typography>
         </TableCell>
         <TableCell>{pago.pagado_el}</TableCell>

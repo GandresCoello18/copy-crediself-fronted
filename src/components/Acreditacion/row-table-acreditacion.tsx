@@ -119,6 +119,7 @@ export const RowTableAcreditacion = ({ Acreditacion, Ids, setIds, rol }: Props) 
             <Checkbox
               checked={Ids.find(id => id === Acreditacion.idCredito) ? true : false}
               onChange={check => handleCheck(check.target.checked)}
+              disabled={Acreditacion.acreditado ? true : false}
               inputProps={{ 'aria-label': 'primary checkbox' }}
             />
           </TableCell>
@@ -130,7 +131,12 @@ export const RowTableAcreditacion = ({ Acreditacion, Ids, setIds, rol }: Props) 
         <TableCell>{Acreditacion.tipo}</TableCell>
         <TableCell>{Acreditacion.numeroCredito}</TableCell>
         <TableCell>${Acreditacion.monto}</TableCell>
-        <TableCell>{Acreditacion.created_at}</TableCell>
+        <TableCell>
+          <Chip
+            label={Acreditacion.acreditado ? 'Si' : 'No'}
+            color={Acreditacion.acreditado ? 'primary' : 'default'}
+          />
+        </TableCell>
         <TableCell>
           <Typography style={{ color: Acreditacion.estado === 'Atrasado' ? 'red' : 'green' }}>
             {Acreditacion.estado}

@@ -620,6 +620,21 @@ export const DetailsCredito = ({
                   </Grid>
                 ) : null}
 
+                {me.idRol === 'Administrativo' && credito.acreditado ? (
+                  <Grid item>
+                    <Button
+                      title='Generar contrato de compra y venta'
+                      disabled={LoadingSolicitud}
+                      className={clases.btnPaquete}
+                      onClick={() => HandleAutorizacion({ autorizado: true })}
+                      fullWidth
+                      variant='outlined'
+                    >
+                      Generar compra y venta
+                    </Button>
+                  </Grid>
+                ) : null}
+
                 {me.idRol === 'Administrativo' ? (
                   <>
                     <Grid item>
@@ -635,42 +650,47 @@ export const DetailsCredito = ({
                       </Link>
                     </Grid>
 
-                    <Grid item>
-                      <Button
-                        aria-describedby='btn-generate-paquete'
-                        className={clases.btnPaquete}
-                        disabled={
-                          LoadingPackage ||
-                          credito.contratos.filter(
-                            item =>
-                              item.isPackageWelcome &&
-                              item.id_credito_contrato !== 'id_generado_app',
-                          ).length > 0
-                        }
-                        onClick={HandlePackageWelcome}
-                        fullWidth
-                        variant='outlined'
-                      >
-                        Generar Paquete de bienvenida
-                      </Button>
-                      <Popover
-                        id='btn-generate-paquete'
-                        open={isPopover ? true : false}
-                        onClose={() => setIsPopover(null)}
-                        anchorOrigin={{
-                          vertical: 'bottom',
-                          horizontal: 'center',
-                        }}
-                        transformOrigin={{
-                          vertical: 'top',
-                          horizontal: 'center',
-                        }}
-                      >
-                        <Typography className={clases.textPopover}>
-                          Generando archivos 📁, se actualizara la vista en 10 segundos 🕗.
-                        </Typography>
-                      </Popover>
-                    </Grid>
+                    {credito.contratos.filter(
+                      item =>
+                        item.isPackageWelcome && item.id_credito_contrato === 'id_generado_app',
+                    ).length === 0 ? (
+                      <Grid item>
+                        <Button
+                          aria-describedby='btn-generate-paquete'
+                          className={clases.btnPaquete}
+                          disabled={
+                            LoadingPackage ||
+                            credito.contratos.filter(
+                              item =>
+                                item.isPackageWelcome &&
+                                item.id_credito_contrato !== 'id_generado_app',
+                            ).length > 0
+                          }
+                          onClick={HandlePackageWelcome}
+                          fullWidth
+                          variant='outlined'
+                        >
+                          Generar Paquete de bienvenida
+                        </Button>
+                        <Popover
+                          id='btn-generate-paquete'
+                          open={isPopover ? true : false}
+                          onClose={() => setIsPopover(null)}
+                          anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'center',
+                          }}
+                          transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center',
+                          }}
+                        >
+                          <Typography className={clases.textPopover}>
+                            Generando archivos 📁, se actualizara la vista en 10 segundos 🕗.
+                          </Typography>
+                        </Popover>
+                      </Grid>
+                    ) : null}
                   </>
                 ) : null}
 

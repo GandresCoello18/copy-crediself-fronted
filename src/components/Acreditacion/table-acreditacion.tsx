@@ -74,7 +74,7 @@ export const TablaClienteAcreditacion = ({ clientes, Loading, setIds, Ids, me }:
                     <strong>Monto</strong>
                   </TableCell>
                   <TableCell title='Fecha registrado el credito' className={classes.textHeadTable}>
-                    <strong>Creado el</strong>
+                    <strong>Acreditado</strong>
                   </TableCell>
                   <TableCell title='Estado del credito' className={classes.textHeadTable}>
                     <strong>Estado</strong>

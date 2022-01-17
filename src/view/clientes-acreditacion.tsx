@@ -25,6 +25,7 @@ import { HandleError } from '../helpers/handleError';
 import { GetAcreditacionClientes } from '../api/clientes';
 import { Acreditacion } from '../interfaces/Cliente';
 import { TablaClienteAcreditacion } from '../components/Acreditacion/table-acreditacion';
+import { AcreditarCredito } from '../api/credito';
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -46,6 +47,7 @@ const ClientesAcreditacionView = () => {
   const [Clientes, setClientes] = useState<Acreditacion[]>([]);
   const [Count, setCount] = useState<number>(0);
   const [Loading, setLoading] = useState<boolean>(false);
+  const [LoadingIds, setLoadingIds] = useState<boolean>(false);
   const [ReloadCliente, setReloadCliente] = useState<boolean>(false);
 
   const fetchClientes = async (page: number) => {
@@ -73,6 +75,19 @@ const ClientesAcreditacionView = () => {
   }, [ReloadCliente, SearchCliente]);
 
   const SelectItemPagination = (page: number) => fetchClientes(page);
+
+  const handleAcreditar = async () => {
+    setLoadingIds(true);
+
+    try {
+      await AcreditarCredito({ token, idsCreditos: Ids });
+      setLoadingIds(false);
+      setReloadCliente(true);
+    } catch (error) {
+      toast.error(HandleError(error as AxiosError));
+      setLoadingIds(false);
+    }
+  };
 
   return (
     <Page className={classes.root} title='Acreditacion de clientes'>
@@ -109,11 +124,19 @@ const ClientesAcreditacionView = () => {
                 <Grid item>
                   {Ids.length ? (
                     <Button
+                      onClick={handleAcreditar}
                       size='small'
+                      disabled={LoadingIds}
                       title='Acreditar los clientes seleccionados'
                       variant='outlined'
                     >
-                      Acreditar &nbsp; <strong>{Ids.length}</strong> &nbsp; clientes
+                      {!LoadingIds ? (
+                        <span>
+                          Acreditar &nbsp; <strong>{Ids.length}</strong> &nbsp; creditos
+                        </span>
+                      ) : (
+                        'Acreditando...'
+                      )}
                     </Button>
                   ) : null}
                 </Grid>

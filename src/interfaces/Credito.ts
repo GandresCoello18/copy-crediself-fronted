@@ -18,6 +18,7 @@ export interface Credito {
   total: number;
   idSucursal: string;
   progress?: number;
+  acreditado: number;
 }
 
 export interface CreditoByContrato {

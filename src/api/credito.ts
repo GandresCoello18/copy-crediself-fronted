@@ -25,6 +25,18 @@ export const GenerarPaqueteBienvenida = async (options: { token: string; idCredi
   return response;
 };
 
+export const AcreditarCredito = async (options: { token: string; idsCreditos: string[] }) => {
+  api.defaults.headers['access-token'] = options.token;
+  const response = await api({
+    method: 'POST',
+    url: '/credito/acreditar',
+    data: {
+      idsCreditos: options.idsCreditos,
+    },
+  });
+  return response;
+};
+
 export const NotificarAutorizarCredito = async (options: { token: string; IdCredito: string }) => {
   api.defaults.headers['access-token'] = options.token;
   const response = await api({

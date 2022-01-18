@@ -30,6 +30,7 @@ import { toast } from 'react-toast';
 import { HandleError } from '../../helpers/handleError';
 import { MeContext } from '../../context/contextMe';
 import {
+  GenerarCompraVentaCredito,
   GenerarPaqueteBienvenida,
   NotificarAutorizarCredito,
   UpdateActiveCredito,
@@ -228,6 +229,19 @@ export const DetailsCredito = ({
       }
 
       setIsPopover('btn-generate-paquete');
+    } catch (error) {
+      toast.error(HandleError(error as AxiosError));
+      setLoadingPackage(false);
+    }
+  };
+
+  const HandleCompraVentaCredito = async () => {
+    setLoadingPackage(true);
+
+    try {
+      await GenerarCompraVentaCredito({ token, idCredito: credito?.idCredito || '' });
+      setLoadingPackage(false);
+      setReloadCredito && setReloadCredito(true);
     } catch (error) {
       toast.error(HandleError(error as AxiosError));
       setLoadingPackage(false);
@@ -620,13 +634,15 @@ export const DetailsCredito = ({
                   </Grid>
                 ) : null}
 
-                {me.idRol === 'Administrativo' && credito.acreditado ? (
+                {me.idRol === 'Administrativo' &&
+                credito.acreditado &&
+                !credito.contratos.find(cre => cre.contrato === 'Compra-venta-vehiculo') ? (
                   <Grid item>
                     <Button
                       title='Generar contrato de compra y venta'
-                      disabled={LoadingSolicitud}
+                      disabled={LoadingPackage}
                       className={clases.btnPaquete}
-                      onClick={() => HandleAutorizacion({ autorizado: true })}
+                      onClick={HandleCompraVentaCredito}
                       fullWidth
                       variant='outlined'
                     >

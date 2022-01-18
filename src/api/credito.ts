@@ -37,6 +37,15 @@ export const AcreditarCredito = async (options: { token: string; idsCreditos: st
   return response;
 };
 
+export const GenerarCompraVentaCredito = async (options: { token: string; idCredito: string }) => {
+  api.defaults.headers['access-token'] = options.token;
+  const response = await api({
+    method: 'POST',
+    url: `/credito/compra-venta/${options.idCredito}`,
+  });
+  return response;
+};
+
 export const NotificarAutorizarCredito = async (options: { token: string; IdCredito: string }) => {
   api.defaults.headers['access-token'] = options.token;
   const response = await api({

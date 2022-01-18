@@ -589,9 +589,6 @@ const ClientOnlyView = () => {
               </Link>
             </Grid>
             <Grid item>
-              <Button variant='outlined'>Estado de cuenta</Button>
-            </Grid>
-            <Grid item>
               {me.idRol === 'Administrativo' && Cliente?.checkSupervisor && (
                 <Button
                   disabled={!Archivos.length || Cliente?.autorizado ? true : false}

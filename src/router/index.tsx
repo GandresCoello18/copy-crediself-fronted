@@ -26,6 +26,7 @@ const PermisosView = lazy(() => import('../view/permisos'));
 const ComisionesView = lazy(() => import('../view/comisiones'));
 const MisComisionesView = lazy(() => import('../view/mis-comision'));
 const AccountView = lazy(() => import('../view/account'));
+const CancelacionesView = lazy(() => import('../view/cancelaciones'));
 const RolesView = lazy(() => import('../view/roles'));
 const UsuariosView = lazy(() => import('../view/usuarios'));
 const AsesoresView = lazy(() => import('../view/asesores'));
@@ -59,6 +60,7 @@ const routes = [
     element: <DashboardLayout />,
     children: [
       { path: 'mis-comisiones', element: PathSesion(MisComisionesView) },
+      { path: 'detalle-comision/:idComisionUser', element: PathSesion(MisComisionesView) },
       { path: 'comisiones', element: PathSesion(ComisionesView) },
       { path: 'permisos', element: PathSesion(PermisosView) },
       { path: 'roles', element: PathSesion(RolesView) },
@@ -67,6 +69,7 @@ const routes = [
       { path: 'clientes/:idCliente', element: PathSesion(ClienteOnlyView) },
       { path: 'clientes-acreditacion', element: PathSesion(ClientesAcreditacionView) },
       { path: 'creditos', element: PathSesion(CreditosView) },
+      { path: 'cancelaciones', element: PathSesion(CancelacionesView) },
       { path: 'creditos/:idCredito', element: PathSesion(CreditoOnlyView) },
       { path: 'creditos/cliente/:idCliente', element: PathSesion(CreditoClienteOnlyView) },
       { path: 'gastos', element: PathSesion(GastosView) },

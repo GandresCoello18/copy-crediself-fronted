@@ -5,7 +5,7 @@ export interface NewNoti {
   receiptUser: string;
   title: string;
   body: string;
-  link: string;
+  link: string | null;
 }
 
 export const GetNotificacion = async (option: { token?: string; page: number }) => {

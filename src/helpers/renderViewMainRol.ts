@@ -18,6 +18,8 @@ export const RenderMainViewRol = (Rol: string) => {
       return '/app/clientes';
     case 'Referencia':
       return '/app/mis-comisiones';
+    case 'Cobranza':
+      return '/app/cancelaciones';
     default:
       return '/app/dashboard';
   }

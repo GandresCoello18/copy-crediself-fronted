@@ -46,9 +46,7 @@ export const ActionNotification = ({
         <Link to='/app/notificaciones' onClick={() => setOpen && setOpen(false)}>
           <Button style={{ fontSize: 12 }}>Ver todas</Button>
         </Link>
-      ) : (
-        ''
-      )}
+      ) : null}
     </Box>
   );
 };

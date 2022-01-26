@@ -77,6 +77,13 @@ const TopBar = ({ onMobileNavOpen, ...rest }: Props) => {
       try {
         const { notifications } = await (await GetNotificacion({ token, page })).data;
         setNotificaciones(notifications);
+
+        if (
+          notifications.length &&
+          notifications.some((noti: NotificacionByMe) => noti.isRead === 0)
+        ) {
+          toast.info('Tienes mensajes pendientes');
+        }
       } catch (error) {
         toast.error(HandleError(error as AxiosError));
       }
@@ -139,9 +146,7 @@ const TopBar = ({ onMobileNavOpen, ...rest }: Props) => {
                 </Badge>
               </IconButton>
             </Hidden>
-          ) : (
-            ''
-          )}
+          ) : null}
           <Hidden mdDown>
             <IconButton color='inherit' onClick={closeSesion}>
               <InputIcon />

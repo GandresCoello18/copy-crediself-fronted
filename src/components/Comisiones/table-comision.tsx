@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/react-in-jsx-scope */
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext } from 'react';
 import {
   Box,
   Table,
@@ -10,18 +10,28 @@ import {
   TableHead,
   makeStyles,
   TableRow,
+  Avatar,
+  Button,
+  Chip,
+  CircularProgress,
+  TextField,
+  Typography,
 } from '@material-ui/core';
 import { MeContext } from '../../context/contextMe';
 import Alert from '@material-ui/lab/Alert';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import Skeleton from '@material-ui/lab/Skeleton';
-import { DialogoMessage } from '../DialogoMessage';
 import { toast } from 'react-toast';
-import { DeleteRole } from '../../api/roles';
 import { AxiosError } from 'axios';
 import { HandleError } from '../../helpers/handleError';
 import { MisComisiones } from '../../interfaces/Comision';
 import { RowTableComision } from './table-rol-comision';
+import { Autocomplete } from '@material-ui/lab';
+import { SourceAvatar } from '../../helpers/sourceAvatar';
+import { DialogoForm } from '../DialogoForm';
+import { Usuario } from '../../interfaces/Usuario';
+import { GetUserByRol } from '../../api/users';
+import { NewNoti, NewNotificacion } from '../../api/notificacion';
 
 const useStyles = makeStyles((theme: any) => ({
   headTable: {
@@ -39,10 +49,13 @@ interface Props {
 
 export const TableCoomision = ({ comision, Loading }: Props) => {
   const classes = useStyles();
-  const { token } = useContext(MeContext);
-  const [IdRol, setIdRol] = useState<string>('');
-  const [DialogoDelete, setDialogoDelete] = useState<boolean>(false);
-  const [AceptDialog, setAceptDialog] = useState<boolean>(false);
+  const { token, me } = useContext(MeContext);
+  const [LoadignUser, setLoadingUser] = useState<boolean>(false);
+  const [Dialogo, setDialogo] = useState<boolean>(false);
+  const [LoadingNoti, setLoadingNoti] = useState<boolean>(false);
+  const [SelectUser, setSelectUser] = useState<Usuario | undefined>(undefined);
+  const [MiComision, setMiComision] = useState<MisComisiones | undefined>(undefined);
+  const [Users, setUsers] = useState<Usuario[]>([]);
 
   const SkeletonRoles = () => {
     return [0, 1, 2, 3].map(item => (
@@ -50,23 +63,50 @@ export const TableCoomision = ({ comision, Loading }: Props) => {
     ));
   };
 
-  useEffect(() => {
-    const FetchDelete = async () => {
-      try {
-        await DeleteRole({ token, IdRol });
-        toast.success('Rol eliminado');
-        // setReloadRol(true);
+  const FetchAdministrativo = async (comision: MisComisiones) => {
+    setLoadingUser(true);
+    try {
+      const { usuarios } = await (await GetUserByRol({ token, name: 'Administrativo' })).data;
+      setUsers(usuarios);
+      setLoadingUser(false);
 
-        setAceptDialog(false);
-        setDialogoDelete(false);
-        setIdRol('');
-      } catch (error) {
-        toast.error(HandleError(error as AxiosError));
+      if (usuarios.length) {
+        setDialogo(true);
+        setMiComision(comision);
+      } else {
+        toast.warn('No se encontraron usuarios');
       }
-    };
+    } catch (error) {
+      toast.error(HandleError(error as AxiosError));
+      setLoadingUser(false);
+    }
+  };
 
-    AceptDialog && IdRol && FetchDelete();
-  }, [AceptDialog, token, IdRol]);
+  const sendNotification = async () => {
+    setLoadingNoti(true);
+
+    try {
+      const notificacion: NewNoti = {
+        sendingUser: me.idUser,
+        receiptUser: SelectUser?.idUser || '',
+        title: `${me.nombres.toUpperCase()} ${me.apellidos.toUpperCase()} presenta reclamo en pago de comisiones.`,
+        body: `Hola ${SelectUser?.nombres}, soy ${
+          me?.nombres
+        } y requiero que sea revisado el pago de comision en estado: ${MiComision?.status.toUpperCase()} con fecha limite de: ${
+          MiComision?.fechaHaPagar
+        } con un total de $${MiComision?.total} .`,
+        link: null,
+      };
+
+      await NewNotificacion({ token, data: notificacion });
+      setLoadingNoti(false);
+      setDialogo(false);
+      toast.success(`Se envio una notificacion ha: ${SelectUser?.nombres}`);
+    } catch (error) {
+      toast.error(HandleError(error as AxiosError));
+      setLoadingNoti(false);
+    }
+  };
 
   return (
     <>
@@ -104,7 +144,13 @@ export const TableCoomision = ({ comision, Loading }: Props) => {
               </TableHead>
               <TableBody>
                 {!Loading &&
-                  comision.map(com => <RowTableComision key={com.idComisionUser} comision={com} />)}
+                  comision.map(com => (
+                    <RowTableComision
+                      handleReclamar={FetchAdministrativo}
+                      key={com.idComisionUser}
+                      comision={com}
+                    />
+                  ))}
               </TableBody>
             </Table>
 
@@ -119,13 +165,67 @@ export const TableCoomision = ({ comision, Loading }: Props) => {
         </PerfectScrollbar>
       </Card>
 
-      <DialogoMessage
-        title='Aviso importante'
-        Open={DialogoDelete}
-        setOpen={setDialogoDelete}
-        setAceptDialog={setAceptDialog}
-        content='¿Esta seguro que deseas eliminar este registro?, una vez hecho sera irrecuperable.'
-      />
+      <DialogoForm Open={Dialogo} setOpen={setDialogo} title='Selecciona el admin a notificar'>
+        {LoadignUser ? (
+          <CircularProgress color='secondary' />
+        ) : (
+          <>
+            <Autocomplete
+              id='combo-box-demo'
+              options={Users}
+              getOptionLabel={option => option.nombres + ' ' + option.apellidos}
+              getOptionSelected={(option, value) => {
+                if (SelectUser === undefined) {
+                  setSelectUser(value);
+                }
+                return true;
+              }}
+              style={{ width: '100%' }}
+              renderInput={params => (
+                <TextField
+                  {...params}
+                  fullWidth
+                  label='Administradores'
+                  disabled={Loading}
+                  variant='outlined'
+                  placeholder={'Seleccione el administrador'}
+                />
+              )}
+            />
+
+            <br />
+
+            {SelectUser && (
+              <>
+                <Typography>
+                  Notificar ha:{' '}
+                  <Chip
+                    avatar={
+                      <Avatar
+                        alt={SelectUser.nombres}
+                        src={SourceAvatar(SelectUser?.avatar || '')}
+                      />
+                    }
+                    label={SelectUser?.nombres}
+                    onDelete={() => setSelectUser(undefined)}
+                  />
+                </Typography>
+
+                <br />
+
+                <Button
+                  onClick={sendNotification}
+                  disabled={LoadingNoti}
+                  variant='outlined'
+                  fullWidth
+                >
+                  Enviar
+                </Button>
+              </>
+            )}
+          </>
+        )}
+      </DialogoForm>
     </>
   );
 };

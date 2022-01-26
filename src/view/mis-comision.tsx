@@ -113,7 +113,7 @@ const Panel = () => {
           <Grid item lg={3} sm={6} xl={3} xs={12}>
             <TotalProfit Loading={Loading} Amount={Statistics?.Amount || 0} />
           </Grid>
-          {me.idRol === 'Asesor' || me.idRol === 'Supervisor' ? (
+          {me.idRol === 'Asesor' || me.idRol === 'Supervisor' || me.idRol === 'Referencia' ? (
             <Grid item xs={12}>
               <Sales
                 fechas={Statistics?.grafico.labels}

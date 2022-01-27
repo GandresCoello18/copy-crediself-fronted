@@ -10,6 +10,7 @@ import {
   AccordionDetails,
   Accordion,
   Avatar,
+  Button,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { CancelacionByDetails } from '../../interfaces/Cancelacion';
@@ -37,6 +38,12 @@ const useStyles = makeStyles((theme: Theme) =>
     avatar: {
       height: 40,
       width: 40,
+    },
+    btnRemove: {
+      color: 'red',
+      border: 1,
+      borderStyle: 'solid',
+      borderColor: 'red',
     },
   }),
 );
@@ -129,6 +136,11 @@ export const ItemCreditoCancelado = ({ cancelacion }: Props) => {
             {cancelacion.contratos.map(contrato => (
               <ContratoCard key={contrato.id_credito_contrato} contrato={contrato} />
             ))}
+          </Grid>
+          <Grid item xs={12}>
+            <Button className={classes.btnRemove}>Remover de cancelación</Button>
+            &nbsp; &nbsp;
+            <Button variant='outlined'>Redactar acuerdo</Button>
           </Grid>
         </Grid>
       </AccordionDetails>

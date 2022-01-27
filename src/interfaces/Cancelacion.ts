@@ -1,5 +1,5 @@
 import { Cliente } from './Cliente';
-import { Credito } from './Credito';
+import { Credito, CreditoByContrato } from './Credito';
 import { Usuario } from './Usuario';
 
 export interface Cancelacion {
@@ -13,4 +13,5 @@ export interface CancelacionByDetails extends Cancelacion {
   credito: Credito;
   user: Usuario;
   cliente: Cliente;
+  contratos: CreditoByContrato[];
 }

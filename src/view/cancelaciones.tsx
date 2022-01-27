@@ -102,7 +102,10 @@ const CancelacionesView = () => {
         </Box>
         <Box mt={3}>
           {Loading && SkeletonPlaceHolder()}
-          {!Loading && Cancelaciones.map(can => <ItemCreditoCancelado key={can.idCancelacion} />)}
+          {!Loading &&
+            Cancelaciones.map(can => (
+              <ItemCreditoCancelado cancelacion={can} key={can.idCancelacion} />
+            ))}
         </Box>
         <Box mt={3} display='flex' justifyContent='center'>
           <Pagination

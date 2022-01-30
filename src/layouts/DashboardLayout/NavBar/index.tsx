@@ -226,6 +226,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           title: 'Acreditación',
         },
         {
+          href: '/app/mis-comisiones',
+          icon: TimelineIcon,
+          title: 'Comisiones usuario',
+        },
+        {
           href: '/app/notificaciones',
           icon: NotificationsActiveIcon,
           title: 'Notificaciones',

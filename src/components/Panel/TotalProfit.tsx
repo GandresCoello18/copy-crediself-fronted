@@ -23,7 +23,7 @@ const TotalProfit = ({ Loading, Amount }: Props) => {
   const classes = useStyles();
 
   return (
-    <Card className={classes.root}>
+    <Card className={classes.root} title='Total de ganancias por periodo'>
       <CardContent>
         <Grid container justify='space-between' spacing={3}>
           <Grid item>

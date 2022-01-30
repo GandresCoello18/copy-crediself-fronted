@@ -108,6 +108,27 @@ export const TableCoomision = ({ comision, Loading }: Props) => {
     }
   };
 
+  const RenderOptions = (comision: MisComisiones) => {
+    if (me.idRol === 'Administrativo') {
+      return (
+        <Button variant='outlined' color='secondary' onClick={() => true}>
+          Pagado
+        </Button>
+      );
+    }
+
+    const isTime = new Date().getTime() > new Date(comision.fechaHaPagar).getTime();
+    if (isTime && comision.status === 'Pendiente') {
+      return (
+        <Button variant='outlined' color='secondary' onClick={() => FetchAdministrativo(comision)}>
+          Reclamar
+        </Button>
+      );
+    } else {
+      return <Box></Box>;
+    }
+  };
+
   return (
     <>
       <Card>
@@ -145,11 +166,9 @@ export const TableCoomision = ({ comision, Loading }: Props) => {
               <TableBody>
                 {!Loading &&
                   comision.map(com => (
-                    <RowTableComision
-                      handleReclamar={FetchAdministrativo}
-                      key={com.idComisionUser}
-                      comision={com}
-                    />
+                    <RowTableComision key={com.idComisionUser} comision={com}>
+                      {RenderOptions(com)}
+                    </RowTableComision>
                   ))}
               </TableBody>
             </Table>

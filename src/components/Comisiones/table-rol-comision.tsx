@@ -1,21 +1,48 @@
+/* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import { TableRow, TableCell, Chip, Button } from '@material-ui/core';
+import {
+  TableRow,
+  TableCell,
+  Chip,
+  Button,
+  Avatar,
+  makeStyles,
+  Box,
+  Typography,
+} from '@material-ui/core';
 import React from 'react';
+import { SourceAvatar } from '../../helpers/sourceAvatar';
 import { MisComisiones } from '../../interfaces/Comision';
+import getInitials from '../../util/getInitials';
 
 interface Props {
-  handleReclamar: (comision: MisComisiones) => void;
   comision: MisComisiones;
+  children: JSX.Element;
 }
 
-export const RowTableComision = ({ handleReclamar, comision }: Props) => {
+const useStyles = makeStyles(theme => ({
+  avatar: {
+    marginRight: theme.spacing(2),
+  },
+}));
+
+export const RowTableComision = ({ comision, children }: Props) => {
+  const clases = useStyles();
+
   return (
     <>
       <TableRow hover>
         <TableCell>
-          {comision.user.nombres} {comision.user.apellidos}
+          <Box alignItems='center' display='flex'>
+            <Avatar className={clases.avatar} src={SourceAvatar(comision.user.avatar)}>
+              {getInitials(comision.user.nombres)}
+            </Avatar>
+            <Typography color='textPrimary' variant='body1'>
+              {comision.user.nombres} {comision.user.apellidos}
+            </Typography>
+          </Box>
         </TableCell>
         <TableCell>{comision.comisionType || <Chip color='primary' label='None' />}</TableCell>
         <TableCell>{comision.mesComision}</TableCell>
@@ -23,14 +50,7 @@ export const RowTableComision = ({ handleReclamar, comision }: Props) => {
         <TableCell>{comision.fechaHaPagar}</TableCell>
         <TableCell>{comision.status}</TableCell>
         <TableCell>${comision.total}</TableCell>
-        <TableCell>
-          {new Date().getTime() > new Date(comision.fechaHaPagar).getTime() &&
-          comision.status === 'Pendiente' ? (
-            <Button variant='outlined' color='secondary' onClick={() => handleReclamar(comision)}>
-              Reclamar
-            </Button>
-          ) : null}
-        </TableCell>
+        <TableCell>{children}</TableCell>
       </TableRow>
     </>
   );

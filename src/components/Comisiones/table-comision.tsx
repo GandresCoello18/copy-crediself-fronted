@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/react-in-jsx-scope */
-import { useState, useContext } from 'react';
+import { useState, useContext, Dispatch, SetStateAction } from 'react';
 import {
   Box,
   Table,
@@ -16,6 +15,11 @@ import {
   CircularProgress,
   TextField,
   Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from '@material-ui/core';
 import { MeContext } from '../../context/contextMe';
 import Alert from '@material-ui/lab/Alert';
@@ -32,26 +36,35 @@ import { DialogoForm } from '../DialogoForm';
 import { Usuario } from '../../interfaces/Usuario';
 import { GetUserByRol } from '../../api/users';
 import { NewNoti, NewNotificacion } from '../../api/notificacion';
+import { UpdateComisionUserStatus } from '../../api/comisiones';
+import { CurrentDate } from '../../helpers/fechas';
 
-const useStyles = makeStyles((theme: any) => ({
+const useStyles = makeStyles(theme => ({
   headTable: {
     backgroundColor: theme.palette.primary.main,
   },
   textHeadTable: {
     color: '#fff',
   },
+  btnMarcar: {
+    color: theme.palette.warning.main,
+  },
 }));
 
 interface Props {
   comision: MisComisiones[];
+  setReload: Dispatch<SetStateAction<boolean>>;
   Loading: boolean;
 }
 
-export const TableCoomision = ({ comision, Loading }: Props) => {
+export const TableCoomision = ({ comision, setReload, Loading }: Props) => {
   const classes = useStyles();
   const { token, me } = useContext(MeContext);
   const [LoadignUser, setLoadingUser] = useState<boolean>(false);
+  const [LoadignStatus, setLoadingStatus] = useState<boolean>(false);
+  const [IdsComision, setIdsComision] = useState<string[]>([]);
   const [Dialogo, setDialogo] = useState<boolean>(false);
+  const [DialogoAlert, setDialogoAlert] = useState<boolean>(false);
   const [LoadingNoti, setLoadingNoti] = useState<boolean>(false);
   const [SelectUser, setSelectUser] = useState<Usuario | undefined>(undefined);
   const [MiComision, setMiComision] = useState<MisComisiones | undefined>(undefined);
@@ -108,11 +121,84 @@ export const TableCoomision = ({ comision, Loading }: Props) => {
     }
   };
 
+  const handleCheck = (idComisionUser: string) => {
+    const check = IdsComision.some(id => id === idComisionUser);
+
+    if (!check) {
+      setIdsComision([...IdsComision, idComisionUser]);
+    } else {
+      const newIds = IdsComision.filter(id => id !== idComisionUser);
+      setIdsComision([...newIds]);
+    }
+  };
+
+  const HandleStatus = async () => {
+    setLoadingStatus(true);
+
+    try {
+      const { ComisCountEmpty, ComisCountRepeat, ComisCountDate } = await (
+        await UpdateComisionUserStatus({ token, idsComisionUser: IdsComision, status: 'Pagado' })
+      ).data;
+
+      setLoadingStatus(false);
+      setIdsComision([]);
+      setMiComision(undefined);
+      setReload(true);
+      setDialogoAlert(false);
+
+      if (ComisCountEmpty) {
+        toast.warn(`${ComisCountEmpty} comisiones no fueron encontradas`);
+      }
+
+      if (ComisCountRepeat) {
+        toast.warn(`${ComisCountRepeat} comisiones con el mismo estado`);
+      }
+
+      if (ComisCountDate) {
+        toast.warn(`${ComisCountDate} comisiones con fecha de pago superior`);
+      }
+    } catch (error) {
+      toast.error(HandleError(error as AxiosError));
+      setLoadingStatus(false);
+    }
+  };
+
+  const handleValidDate = () => {
+    const validDate = IdsComision.map(id => {
+      const findComision = comision.find(com => com.idComisionUser === id);
+
+      if (
+        findComision &&
+        new Date(findComision.fechaHaPagar).getTime() > new Date(CurrentDate()).getTime()
+      ) {
+        setMiComision(findComision);
+        return true;
+      }
+
+      return null;
+    });
+
+    if (validDate.some(item => item === true)) {
+      setDialogoAlert(true);
+    } else {
+      HandleStatus();
+    }
+  };
+
   const RenderOptions = (comision: MisComisiones) => {
     if (me.idRol === 'Administrativo') {
+      const isCheck = IdsComision.some(id => id === comision.idComisionUser);
+      const isProcess = isCheck && LoadignStatus;
+
       return (
-        <Button variant='outlined' color='secondary' onClick={() => true}>
-          Pagado
+        <Button
+          title='Marcar esta comisión como pagado'
+          variant={isCheck ? 'contained' : 'outlined'}
+          disabled={isProcess || comision.status !== 'Pendiente'}
+          color='secondary'
+          onClick={() => handleCheck(comision.idComisionUser)}
+        >
+          {isProcess ? 'Marcando como pagado...' : 'Pagar'}
         </Button>
       );
     }
@@ -132,6 +218,16 @@ export const TableCoomision = ({ comision, Loading }: Props) => {
   return (
     <>
       <Card>
+        {IdsComision.length ? (
+          <>
+            <Button className={classes.btnMarcar} variant='outlined' onClick={handleValidDate}>
+              Marcar como pagados las &nbsp; <strong>{IdsComision.length}</strong> &nbsp; comisiones
+              seleccionadas
+            </Button>
+            <br />
+            <br />
+          </>
+        ) : null}
         <PerfectScrollbar>
           <Box minWidth={1050}>
             <Table>
@@ -245,6 +341,38 @@ export const TableCoomision = ({ comision, Loading }: Props) => {
           </>
         )}
       </DialogoForm>
+
+      <Dialog
+        open={DialogoAlert}
+        onClose={() => setDialogoAlert(false)}
+        keepMounted
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle id='alert-dialog-title'>!Aviso importante¡</DialogTitle>
+        <DialogContent>
+          <DialogContentText id='alert-dialog-description'>
+            Se encontro comisiones con fecha de pago <strong>{MiComision?.fechaHaPagar}</strong> que
+            es mayor a la fecha actual. ¿Esta seguro en continuar con esta acción?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={HandleStatus} color='secondary' variant='contained'>
+            Continuar de todas formas
+          </Button>
+          <Button
+            onClick={() => {
+              setDialogoAlert(false);
+              setMiComision(undefined);
+            }}
+            color='primary'
+            variant='contained'
+            autoFocus
+          >
+            Cancelar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

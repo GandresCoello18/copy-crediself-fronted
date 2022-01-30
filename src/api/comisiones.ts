@@ -53,3 +53,20 @@ export const UpdateComision = async (option: {
   });
   return response;
 };
+
+export const UpdateComisionUserStatus = async (option: {
+  token: string;
+  status: string;
+  idsComisionUser: string[];
+}) => {
+  api.defaults.headers['access-token'] = option.token;
+  const response = await api({
+    method: 'PUT',
+    url: '/comisiones/user/status',
+    data: {
+      idsComisionUser: option.idsComisionUser,
+      status: option.status,
+    },
+  });
+  return response;
+};

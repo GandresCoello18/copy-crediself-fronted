@@ -22,6 +22,7 @@ export const DialogoMessage = ({ Open, setOpen, setAceptDialog, title, content }
   return (
     <Dialog
       open={Open}
+      keepMounted
       onClose={() => setOpen(false)}
       aria-labelledby='alert-dialog-title'
       aria-describedby='alert-dialog-description'

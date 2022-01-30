@@ -26,7 +26,7 @@ export const DialogoScreenFull = ({ Open, setOpen, children }: Props) => {
   const classes = useStyles();
 
   return (
-    <Dialog fullScreen open={Open} onClose={() => setOpen(false)}>
+    <Dialog fullScreen keepMounted open={Open} onClose={() => setOpen(false)}>
       <AppBar className={classes.appBar}>
         <Toolbar>
           <IconButton

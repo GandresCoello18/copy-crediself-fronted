@@ -15,6 +15,7 @@ export const DialogoForm = ({ Open, setOpen, title, children }: Props) => {
     <Dialog
       open={Open}
       fullWidth
+      keepMounted
       onClose={() => setOpen(false)}
       aria-labelledby='alert-dialog-title'
       aria-describedby='alert-dialog-description'

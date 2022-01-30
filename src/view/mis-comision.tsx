@@ -44,6 +44,7 @@ const Panel = () => {
     dateHasta: '',
   });
   const [Loading, setLoading] = useState<boolean>(false);
+  const [Reload, setReload] = useState<boolean>(false);
   const [Statistics, setStatistics] = useState<StaticComision | undefined>(undefined);
   const [Comisiones, setComisiones] = useState<MisComisiones[]>([]);
 
@@ -86,7 +87,11 @@ const Panel = () => {
 
   useEffect(() => {
     token && Fetch();
-  }, [token]);
+
+    if (Reload) {
+      setReload(false);
+    }
+  }, [token, Reload]);
 
   useEffect(() => {
     dateFetch.dateDesde && dateFetch.dateHasta && Fetch();
@@ -194,7 +199,7 @@ const Panel = () => {
           <Grid item xs={12}>
             {!Comisiones.length && !Loading ? (
               <Alert severity='info'>
-                No tienes comisiones del periodo desded:{' '}
+                No tienes comisiones del periodo desde:{' '}
                 <strong>{dateFetch.dateDesde || CurrentDate(SubDate({ days: 7 }))}</strong> hasta{' '}
                 <strong>{dateFetch.dateHasta || CurrentDate()}</strong>
               </Alert>
@@ -202,7 +207,7 @@ const Panel = () => {
             <br />
 
             <Box mt={3}>
-              <TableCoomision comision={Comisiones} Loading={Loading} />
+              <TableCoomision comision={Comisiones} setReload={setReload} Loading={Loading} />
             </Box>
 
             {Count ? (

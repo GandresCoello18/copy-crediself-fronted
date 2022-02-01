@@ -11,7 +11,7 @@ export interface Credito {
   autorizado: number;
   active: number;
   numeroCredito: number;
-  estado: 'Pendiente' | 'Al dia' | 'Completado' | 'Atrasado';
+  estado: 'Pendiente' | 'Al dia' | 'Completado' | 'Atrasado' | 'Cancelado';
   inscripcion: number;
   iva: number;
   cuota: number;

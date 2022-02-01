@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import {
   Typography,
@@ -16,6 +16,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { CancelacionByDetails } from '../../interfaces/Cancelacion';
 import { SourceAvatar } from '../../helpers/sourceAvatar';
 import { ContratoCard } from '../Creditos/conntrato-card';
+import { AcuerdoEdit } from '../../view/cancelaciones';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -50,25 +51,46 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {
   cancelacion: CancelacionByDetails;
+  setVisibleFull: Dispatch<SetStateAction<boolean>>;
+  setDialogoNotifi: Dispatch<SetStateAction<boolean>>;
+  setIdCancelacion: Dispatch<SetStateAction<string>>;
+  deleteCancelacion: () => void;
+  AcuerdoEditado: AcuerdoEdit[];
 }
 
-export const ItemCreditoCancelado = ({ cancelacion }: Props) => {
+export const ItemCreditoCancelado = ({
+  cancelacion,
+  setVisibleFull,
+  setDialogoNotifi,
+  setIdCancelacion,
+  deleteCancelacion,
+  AcuerdoEditado,
+}: Props) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState<string>('');
+  const [NewAcuerdo, setNewAcuerdo] = useState<string>('');
+
+  // Es SOLO para "Re renderizar" este componente <ItemCreditoCancelado />
+  console.log(NewAcuerdo.length + ' <ItemCreditoCancelado />');
+
+  useEffect(() => {
+    if (cancelacion.acuerdo) {
+      setNewAcuerdo(cancelacion.acuerdo);
+    }
+
+    const findCancelacion = AcuerdoEditado.find(
+      edit => edit.idCancelacion === cancelacion.idCancelacion,
+    );
+
+    if (findCancelacion) {
+      cancelacion.acuerdo = findCancelacion.acuerdoEdit;
+      setNewAcuerdo(findCancelacion.acuerdoEdit);
+    }
+  }, [AcuerdoEditado, cancelacion]);
 
   const handleChange = (panel: string) => (_: any, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : '');
-  };
-
-  const RenderContent = (options: { field: string; value: string | number }) => {
-    return (
-      <Box borderTop={1} borderColor='success.main' p={2}>
-        <Grid spacing={3} container justify='space-between'>
-          <Grid item>{options.field}:</Grid>
-          <Grid item>{options.value}</Grid>
-        </Grid>
-      </Box>
-    );
+    setIdCancelacion(isExpanded ? panel : '');
   };
 
   return (
@@ -85,7 +107,10 @@ export const ItemCreditoCancelado = ({ cancelacion }: Props) => {
           {cancelacion.cliente.nombres} {cancelacion.cliente.apellidos}
         </Typography>
         <Typography className={classes.secondaryHeading}>
-          {cancelacion.credito.tipo} ( {cancelacion.created_at} )
+          {cancelacion.credito.tipo} ( {cancelacion.created_at} ) &nbsp; &nbsp;{' '}
+          <strong style={{ color: cancelacion.autorizado ? 'green' : 'red' }}>
+            {cancelacion.autorizado ? 'Autorizado' : 'No autorizado'}
+          </strong>
         </Typography>
       </AccordionSummary>
       <AccordionDetails>
@@ -94,21 +119,39 @@ export const ItemCreditoCancelado = ({ cancelacion }: Props) => {
             <Box p={2} className={classes.headContante}>
               <h4>Información del cliente</h4>
             </Box>
-            {RenderContent({ field: 'Nombres', value: cancelacion.cliente.nombres })}
-            {RenderContent({ field: 'Apellidos', value: cancelacion.cliente.apellidos })}
-            {RenderContent({ field: 'Email', value: cancelacion.cliente.email || '(NONE)' })}
-            {RenderContent({ field: 'Telefono', value: cancelacion.cliente.telefono || '(NONE)' })}
-            {RenderContent({ field: 'Ciudad', value: cancelacion.cliente.ciudad || '(NONE)' })}
-            {RenderContent({ field: 'Sexo', value: cancelacion.cliente.sexo })}
+            {RenderContentItemCancelacion({ field: 'Nombres', value: cancelacion.cliente.nombres })}
+            {RenderContentItemCancelacion({
+              field: 'Apellidos',
+              value: cancelacion.cliente.apellidos,
+            })}
+            {RenderContentItemCancelacion({
+              field: 'Email',
+              value: cancelacion.cliente.email || '(NONE)',
+            })}
+            {RenderContentItemCancelacion({
+              field: 'Telefono',
+              value: cancelacion.cliente.telefono || '(NONE)',
+            })}
+            {RenderContentItemCancelacion({
+              field: 'Ciudad',
+              value: cancelacion.cliente.ciudad || '(NONE)',
+            })}
+            {RenderContentItemCancelacion({ field: 'Sexo', value: cancelacion.cliente.sexo })}
           </Grid>
           <Grid item xs={12} md={4}>
             <Box p={2} className={classes.headContante}>
               <h4>Información del credito</h4>
             </Box>
-            {RenderContent({ field: 'Tipo', value: cancelacion.credito.tipo })}
-            {RenderContent({ field: 'Monto', value: `$${cancelacion.credito.monto}` })}
-            {RenderContent({ field: 'Estado', value: cancelacion.credito.estado })}
-            {RenderContent({ field: 'Numero', value: `#${cancelacion.credito.numeroCredito}` })}
+            {RenderContentItemCancelacion({ field: 'Tipo', value: cancelacion.credito.tipo })}
+            {RenderContentItemCancelacion({
+              field: 'Monto',
+              value: `$${cancelacion.credito.monto}`,
+            })}
+            {RenderContentItemCancelacion({ field: 'Estado', value: cancelacion.credito.estado })}
+            {RenderContentItemCancelacion({
+              field: 'Numero',
+              value: `#${cancelacion.credito.numeroCredito}`,
+            })}
             <Box borderTop={1} borderColor='success.main' p={2}>
               <Grid spacing={3} container justify='space-between'>
                 <Grid item>Cancelación solicitada por:</Grid>
@@ -126,7 +169,7 @@ export const ItemCreditoCancelado = ({ cancelacion }: Props) => {
                 </Grid>
               </Grid>
             </Box>
-            {RenderContent({ field: 'Rol', value: cancelacion.user.idRol })}
+            {RenderContentItemCancelacion({ field: 'Rol', value: cancelacion.user.idRol })}
           </Grid>
           <Grid item xs={12} md={4}>
             <Box p={2} className={classes.headContante}>
@@ -138,12 +181,52 @@ export const ItemCreditoCancelado = ({ cancelacion }: Props) => {
             ))}
           </Grid>
           <Grid item xs={12}>
-            <Button className={classes.btnRemove}>Remover de cancelación</Button>
-            &nbsp; &nbsp;
-            <Button variant='outlined'>Redactar acuerdo</Button>
+            <Button
+              className={classes.btnRemove}
+              onClick={deleteCancelacion}
+              disabled={cancelacion.autorizado ? true : false}
+            >
+              Remover de cancelación
+            </Button>
+            {!cancelacion.acuerdo ? (
+              <>
+                &nbsp; &nbsp;
+                <Button variant='outlined' onClick={() => setVisibleFull(true)}>
+                  Redactar acuerdo
+                </Button>
+              </>
+            ) : (
+              <>
+                &nbsp; &nbsp;
+                <Button variant='outlined'>Ver acuerdo</Button>
+              </>
+            )}
+
+            {cancelacion.acuerdo && !cancelacion.autorizado ? (
+              <>
+                &nbsp; &nbsp;
+                <Button variant='outlined' onClick={() => setDialogoNotifi(true)}>
+                  Solicitar autorizacón
+                </Button>
+              </>
+            ) : null}
           </Grid>
         </Grid>
       </AccordionDetails>
     </Accordion>
+  );
+};
+
+export const RenderContentItemCancelacion = (options: {
+  field: string;
+  value: string | number;
+}) => {
+  return (
+    <Box borderTop={1} borderColor='success.main' p={2}>
+      <Grid spacing={3} container justify='space-between'>
+        <Grid item>{options.field}:</Grid>
+        <Grid item>{options.value}</Grid>
+      </Grid>
+    </Box>
   );
 };

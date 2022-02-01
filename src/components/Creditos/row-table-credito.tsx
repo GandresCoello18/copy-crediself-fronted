@@ -27,8 +27,8 @@ export const RowTableCredito = ({ credito, setSelectCredito }: Props) => {
       setLoading(false);
       setIsActive(check);
     } catch (error) {
-      setLoading(false);
       toast.error(HandleError(error as AxiosError));
+      setLoading(false);
     }
   };
 
@@ -40,7 +40,7 @@ export const RowTableCredito = ({ credito, setSelectCredito }: Props) => {
         </TableCell>
         <TableCell>{credito.tipo}</TableCell>
         <TableCell>${credito.monto}</TableCell>
-        <TableCell>{credito.created_at}</TableCell>
+        <TableCell>{`${credito.created_at}`.substr(0, 10)}</TableCell>
         <TableCell>
           <Chip color='secondary' label={credito.autorizado ? 'Si' : 'No'} />
         </TableCell>

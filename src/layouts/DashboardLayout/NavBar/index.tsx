@@ -332,6 +332,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           title: 'Cancelaciones',
         },
         {
+          href: '/app/notificaciones',
+          icon: NotificationsActiveIcon,
+          title: 'Notificaciones',
+        },
+        {
           href: '/app/account',
           icon: PersonIcon,
           title: 'Mi cuenta',

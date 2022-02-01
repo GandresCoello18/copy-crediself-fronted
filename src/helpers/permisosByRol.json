@@ -1,11 +1,11 @@
 [
     {
         "rol": "Director",
-        "permisos": ["reportError", "NewRoles", "viewComisiones", "updateComisiones", "NewUsers", "DelRoles", "ModRoles", "ViewRoles", "DelUsers", "ViewUsers", "UpdateMeUser", "ViewPermisos", "UpdatePermisos", "ModUsers", "ViewNotification", "AutorizarCredito", "ViewCredito"]
+        "permisos": ["reportError", "NewRoles", "viewComisiones", "updateComisiones", "NewUsers", "DelRoles", "ModRoles", "ViewRoles", "DelUsers", "ViewUsers", "ViewClientes", "UpdateMeUser", "ViewPermisos", "UpdatePermisos", "ModUsers", "ViewNotification", "AutorizarCredito", "ViewCredito", "NewNotification"]
     },
     {
         "rol": "Administrativo",
-        "permisos": ["reportError", "UpdateMeUser", "NewPayment", "ViewPayment", "AprobarPayment", "UpdateComprobantePayment", "DeleteComprobantePayment", "ViewClientes", "ViewCredito", "ViewNotification", "UpdateCliente"]
+        "permisos": ["reportError", "UpdateMeUser", "viewComisiones", "NewPayment", "ViewPayment", "AprobarPayment", "UpdateComprobantePayment", "DeleteComprobantePayment", "ViewClientes", "ViewCredito", "ViewNotification", "UpdateCliente"]
     },
     {
         "rol": "Gerente Regional",
@@ -13,7 +13,7 @@
     },
     {
         "rol": "Gerente de Sucursal",
-        "permisos": ["reportError", "UpdateMeUser", "viewComisiones", "ViewClientes", "ViewNotification", "UpdateCliente", "DelCliente", "NewCredito", "ViewCredito", "DelCredito", "UpdateCredito", "UpdateContratoCredito", "AperturaPayment", "AddFileExpediente", "ViewPayment", "RemoveFileExpediente", "NewNotification"]
+        "permisos": ["reportError", "UpdateMeUser", "NewCancelacion", "viewComisiones", "ViewClientes", "ViewNotification", "UpdateCliente", "DelCliente", "NewCredito", "ViewCredito", "DelCredito", "UpdateCredito", "UpdateContratoCredito", "AperturaPayment", "AddFileExpediente", "ViewPayment", "RemoveFileExpediente", "NewNotification"]
     },
     {
         "rol": "Supervisor",
@@ -25,10 +25,14 @@
     },
     {
         "rol": "Cobranza",
-        "permisos": ["reportError"]
+        "permisos": ["reportError", "UpdateMeUser", "ViewNotification", "updateCancelacion", "NewCancelacion", "GetCancelacion", "NewNotification", "DeleteCancelacion"]
     },
     {
         "rol": "RRHH",
         "permisos": ["reportError", "UpdateMeUser", "ViewUsers", "NewUsers", "ViewRoles"]
+    },
+    {
+        "rol": "Referencia",
+        "permisos": ["reportError", "UpdateMeUser", "viewComisiones", "NewNotification"]
     }
 ]

@@ -40,6 +40,7 @@ import {
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { ContratoCard } from './conntrato-card';
 import { getPermisoExist } from '../../helpers/renderViewMainRol';
+import { NewCancelacion } from '../../api/cancelacion';
 
 const useStyles = makeStyles(theme => ({
   headDetails: {
@@ -52,10 +53,12 @@ const useStyles = makeStyles(theme => ({
   backGroundHeadTrue: {
     backgroundColor: theme.palette.success.main,
     color: '#000',
+    marginBottom: 5,
   },
   backGroundHeadFalse: {
     backgroundColor: theme.palette.primary.main,
     color: '#fff',
+    marginBottom: 5,
   },
   avatar: {
     cursor: 'pointer',
@@ -68,7 +71,7 @@ const useStyles = makeStyles(theme => ({
   },
   rowSecondary: {
     backgroundColor: '#ebebeb',
-    marginBottom: 10,
+    marginBottom: 5,
   },
   marginB: {
     marginBottom: 10,
@@ -92,6 +95,10 @@ const useStyles = makeStyles(theme => ({
   btnApertura: {
     color: 'royalblue',
     borderColor: 'royalblue',
+  },
+  btnCancelar: {
+    color: 'red',
+    borderColor: 'red',
   },
   heading: {
     fontSize: theme.typography.pxToRem(15),
@@ -248,6 +255,50 @@ export const DetailsCredito = ({
     }
   };
 
+  const HandleCancelacion = async () => {
+    try {
+      await NewCancelacion({ token, idCredito: credito?.idCredito || '' });
+      toast.info('Se envio la solicitud de cancelación');
+    } catch (error) {
+      toast.error(HandleError(error as AxiosError));
+    }
+  };
+
+  const RenderRowDetails = (
+    field: string,
+    value: string,
+    active: number,
+    autorizado: number,
+    isSecondary?: boolean,
+  ) => {
+    let classNameJsx = '';
+
+    if (autorizado && active) {
+      classNameJsx = clases.backGroundHeadTrue;
+    } else {
+      classNameJsx = clases.backGroundHeadFalse;
+    }
+
+    if (isSecondary) {
+      classNameJsx = clases.rowSecondary;
+    }
+
+    return (
+      <Grid
+        className={classNameJsx}
+        container
+        spacing={3}
+        alignItems='center'
+        justify='space-between'
+      >
+        <Grid item>
+          <strong>{field}:</strong>
+        </Grid>
+        <Grid item>{value}</Grid>
+      </Grid>
+    );
+  };
+
   return (
     <Box mb={5}>
       {credito ? (
@@ -286,112 +337,23 @@ export const DetailsCredito = ({
             <Divider />
 
             <Box p={2}>
-              <Grid
-                className={`${clases.marginB} ${
-                  credito.autorizado && credito.active
-                    ? clases.backGroundHeadTrue
-                    : clases.backGroundHeadFalse
-                }`}
-                alignItems='center'
-                container
-                spacing={3}
-                justify='space-between'
-              >
-                <Grid item>
-                  <strong>Tipo de credito:</strong>
-                </Grid>
-                <Grid item>{credito.tipo}</Grid>
-              </Grid>
-
-              <Grid
-                className={clases.rowSecondary}
-                container
-                spacing={3}
-                alignItems='center'
-                justify='space-between'
-              >
-                <Grid item>
-                  <strong>Monto:</strong>
-                </Grid>
-                <Grid item>${credito.monto}</Grid>
-              </Grid>
-
-              <Grid
-                className={`${clases.marginB} ${
-                  credito.autorizado && credito.active
-                    ? clases.backGroundHeadTrue
-                    : clases.backGroundHeadFalse
-                }`}
-                container
-                spacing={3}
-                alignItems='center'
-                justify='space-between'
-              >
-                <Grid item>
-                  <strong>Inscripción:</strong>
-                </Grid>
-                <Grid item>${credito.inscripcion}</Grid>
-              </Grid>
-
-              <Grid
-                className={clases.rowSecondary}
-                container
-                spacing={3}
-                alignItems='center'
-                justify='space-between'
-              >
-                <Grid item>
-                  <strong>Iva:</strong>
-                </Grid>
-                <Grid item>${credito.iva}</Grid>
-              </Grid>
-
-              <Grid
-                className={`${clases.marginB} ${
-                  credito.autorizado && credito.active
-                    ? clases.backGroundHeadTrue
-                    : clases.backGroundHeadFalse
-                }`}
-                container
-                spacing={3}
-                alignItems='center'
-                justify='space-between'
-              >
-                <Grid item>
-                  <strong>Cuota:</strong>
-                </Grid>
-                <Grid item>${credito.cuota}</Grid>
-              </Grid>
-
-              <Grid
-                className={clases.rowSecondary}
-                container
-                spacing={3}
-                alignItems='center'
-                justify='space-between'
-              >
-                <Grid item>
-                  <strong>Total:</strong>
-                </Grid>
-                <Grid item>${credito.total}</Grid>
-              </Grid>
-
-              <Grid
-                className={`${clases.marginB} ${
-                  credito.autorizado && credito.active
-                    ? clases.backGroundHeadTrue
-                    : clases.backGroundHeadFalse
-                }`}
-                container
-                spacing={3}
-                alignItems='center'
-                justify='space-between'
-              >
-                <Grid item>
-                  <strong>Sucursal:</strong>
-                </Grid>
-                <Grid item>{credito.idSucursal}</Grid>
-              </Grid>
+              {RenderRowDetails(
+                'Tipo de credito',
+                credito.tipo,
+                credito.active,
+                credito.autorizado,
+              )}
+              {RenderRowDetails('Monto', `$${credito.monto}`, 0, 0, true)}
+              {RenderRowDetails(
+                'Inscripción',
+                `$${credito.inscripcion}`,
+                credito.active,
+                credito.autorizado,
+              )}
+              {RenderRowDetails('Iva', `$${credito.iva}`, 0, 0, true)}
+              {RenderRowDetails('Cuota', `$${credito.cuota}`, credito.active, credito.autorizado)}
+              {RenderRowDetails('Total', `$${credito.total}`, 0, 0, true)}
+              {RenderRowDetails('Sucursal', credito.idSucursal, credito.active, credito.autorizado)}
 
               <Grid className={clases.rowSecondary} container spacing={3} justify='space-between'>
                 <Grid item>
@@ -402,22 +364,12 @@ export const DetailsCredito = ({
                 </Grid>
               </Grid>
 
-              <Grid
-                className={`${clases.marginB} ${
-                  credito.autorizado && credito.active
-                    ? clases.backGroundHeadTrue
-                    : clases.backGroundHeadFalse
-                }`}
-                container
-                alignItems='center'
-                spacing={3}
-                justify='space-between'
-              >
-                <Grid item>
-                  <strong>Referencia:</strong>
-                </Grid>
-                <Grid item>{credito.referencia}</Grid>
-              </Grid>
+              {RenderRowDetails(
+                'Referencia',
+                credito.referencia,
+                credito.active,
+                credito.autorizado,
+              )}
 
               <Grid
                 className={clases.rowSecondary}
@@ -434,22 +386,12 @@ export const DetailsCredito = ({
                 </Grid>
               </Grid>
 
-              <Grid
-                className={`${clases.marginB} ${
-                  credito.autorizado && credito.active
-                    ? clases.backGroundHeadTrue
-                    : clases.backGroundHeadFalse
-                }`}
-                container
-                spacing={3}
-                alignItems='center'
-                justify='space-between'
-              >
-                <Grid item>
-                  <strong>Credito numero:</strong>
-                </Grid>
-                <Grid item>#{credito.numeroCredito}</Grid>
-              </Grid>
+              {RenderRowDetails(
+                'Credito numero',
+                `#${credito.numeroCredito}`,
+                credito.active,
+                credito.autorizado,
+              )}
 
               <Grid
                 className={clases.rowSecondary}
@@ -507,18 +449,7 @@ export const DetailsCredito = ({
                 </Grid>
               </Grid>
 
-              <Grid
-                className={clases.rowSecondary}
-                alignItems='center'
-                container
-                spacing={3}
-                justify='space-between'
-              >
-                <Grid item>
-                  <strong>Creado el:</strong>
-                </Grid>
-                <Grid item>{credito.created_at}</Grid>
-              </Grid>
+              {RenderRowDetails('Creado el', `${credito.created_at}`, 0, 0, true)}
 
               <Grid alignItems='center' container spacing={3} justify='space-between'>
                 <Grid item xs={12} className={clases.titleContrato}>
@@ -615,6 +546,18 @@ export const DetailsCredito = ({
                         Pago de apertura
                       </Button>
                     </Grid>
+                    {credito?.estado === 'Al dia' || credito?.estado === 'Atrasado' ? (
+                      <Grid item>
+                        <Button
+                          className={clases.btnCancelar}
+                          onClick={HandleCancelacion}
+                          fullWidth
+                          variant='outlined'
+                        >
+                          Cancelar
+                        </Button>
+                      </Grid>
+                    ) : null}
                   </>
                 ) : null}
 
@@ -725,18 +668,14 @@ export const DetailsCredito = ({
                       </Button>
                     </Link>
                   </Grid>
-                ) : (
-                  ''
-                )}
+                ) : null}
 
                 {getPermisoExist({ RolName: me.idRol, permiso: 'AutorizarCredito' }) &&
                 credito?.autorizado ? (
                   <Grid item xs={12}>
                     <Alert color='info'>Credito Autorizado</Alert>
                   </Grid>
-                ) : (
-                  ''
-                )}
+                ) : null}
               </Grid>
             </Box>
           </Grid>

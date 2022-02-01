@@ -7,6 +7,9 @@ export interface Cancelacion {
   idCredito: string;
   created_at: string | Date;
   idUser: string;
+  autorizado: number;
+  acuerdo: string | null;
+  retornoPago: number;
 }
 
 export interface CancelacionByDetails extends Cancelacion {

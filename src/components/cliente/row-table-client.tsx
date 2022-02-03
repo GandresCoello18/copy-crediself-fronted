@@ -130,8 +130,8 @@ export const RowTableClient = ({
                     variant='outlined'
                     fullWidth
                     onClick={() => {
-                      setDialogoCredit(true);
                       setIdCliente(cliente.idCliente);
+                      setDialogoCredit(true);
                     }}
                   >
                     <span className={clases.btnIcon}>Solicitar</span> <PostAddIcon />
@@ -152,9 +152,7 @@ export const RowTableClient = ({
                   </Button>
                 </MenuItem>
               </>
-            ) : (
-              ''
-            )}
+            ) : null}
           </MenuList>
         </Menu>
       </>

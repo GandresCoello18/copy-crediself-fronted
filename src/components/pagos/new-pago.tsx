@@ -84,11 +84,13 @@ export const FormNewPago = ({ setReloadPago, setVisible, idCredito, cliente, ape
             if (apertura) {
               await AperturaPagoCredito({ token, data });
             } else {
-              await AddPagoCredito({ token, data });
+              const { status } = await (await AddPagoCredito({ token, data })).data;
+              status && toast.info(status);
             }
 
             setReloadPago(true);
             setVisible(false);
+            toast.success('Se registro el pago con exito');
           } catch (error) {
             toast.error(HandleError(error as AxiosError));
           }

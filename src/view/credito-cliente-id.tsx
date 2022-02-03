@@ -12,6 +12,7 @@ import {
   InputAdornment,
   SvgIcon,
   TextField,
+  Button,
 } from '@material-ui/core';
 import Page from '../components/page';
 import { useState, useEffect, useContext } from 'react';
@@ -28,6 +29,9 @@ import { GetCreditosCliente } from '../api/credito';
 import { DetailsCredito } from '../components/Creditos/details-credito';
 import { DialogoForm } from '../components/DialogoForm';
 import { FormNewPago } from '../components/pagos/new-pago';
+import { Link } from 'react-router-dom';
+import { getPermisoExist } from '../helpers/renderViewMainRol';
+import { FormNewCredit } from '../components/cliente/new-credit';
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -46,12 +50,13 @@ const CreditoClienteOnlyView = () => {
   const params = useParams();
   const classes = useStyles();
   const navigate = useNavigate();
-  const { token } = useContext(MeContext);
+  const { token, me } = useContext(MeContext);
   const [SearchCredito, setSearchCliente] = useState<string>('');
   const [Creditos, setCreditos] = useState<CreditoByCliente[]>([]);
   const [SelectCredito, setSelectCredito] = useState<CreditoByCliente | undefined>(undefined);
   const [Loading, setLoading] = useState<boolean>(false);
   const [VisibleApertura, setVisibleApertura] = useState<boolean>(false);
+  const [VisibleNewCredito, setVisibleNewCredito] = useState<boolean>(false);
   const [Count, setCount] = useState<number>(0);
   const [ReloadCredito, setReloadCredito] = useState<boolean>(false);
 
@@ -94,6 +99,19 @@ const CreditoClienteOnlyView = () => {
 
   return (
     <Page className={classes.root} title='Detalles de Credito'>
+      {getPermisoExist({ RolName: me.idRol, permiso: 'NewCliente' }) ? (
+        <Box mr={3} display='flex' justifyContent='flex-end'>
+          <Button color='secondary' variant='contained' onClick={() => setVisibleNewCredito(true)}>
+            Nuevo credito {Creditos.length ? `para ${Creditos[0].cliente.nombres}` : ''}
+          </Button>
+          &nbsp; &nbsp;
+          <Link target='_blank' to={`/app/clientes/${params.idCliente}`}>
+            <Button color='primary' variant='outlined'>
+              Detalles de {Creditos.length ? `${Creditos[0].cliente.nombres}` : 'este cliente'}
+            </Button>
+          </Link>
+        </Box>
+      ) : null}
       <Container maxWidth='xl'>
         <Box mt={3}>
           <Card>
@@ -156,6 +174,10 @@ const CreditoClienteOnlyView = () => {
           cliente={`${SelectCredito?.cliente.nombres} ${SelectCredito?.cliente.apellidos}`}
           apertura
         />
+      </DialogoForm>
+
+      <DialogoForm Open={VisibleNewCredito} setOpen={setVisibleNewCredito} title=''>
+        <FormNewCredit setVisible={setVisibleNewCredito} idCliente={params.idCliente} />
       </DialogoForm>
     </Page>
   );

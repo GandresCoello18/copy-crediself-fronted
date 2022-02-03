@@ -31,6 +31,16 @@ export const GetCancelaciones = async (option: {
   return response;
 };
 
+export const GetCancelacion = async (option: { token: string; idCancelacion: string }) => {
+  const { token, idCancelacion } = option;
+  api.defaults.headers['access-token'] = token;
+  const response = await api({
+    method: 'GET',
+    url: `/cancelacion/${idCancelacion}`,
+  });
+  return response;
+};
+
 export const UpdateAcuerdoCancelacion = async (option: {
   token: string;
   idCancelacion: string;
@@ -43,6 +53,23 @@ export const UpdateAcuerdoCancelacion = async (option: {
     url: `/cancelacion/acuerdo/${idCancelacion}`,
     data: {
       acuerdo,
+    },
+  });
+  return response;
+};
+
+export const UpdateAutorizacionCancelacion = async (option: {
+  token: string;
+  idCancelacion: string;
+  autorizacion: boolean;
+}) => {
+  const { token, idCancelacion, autorizacion } = option;
+  api.defaults.headers['access-token'] = token;
+  const response = await api({
+    method: 'PUT',
+    url: `/cancelacion/autorizado/${idCancelacion}`,
+    data: {
+      autorizacion,
     },
   });
   return response;

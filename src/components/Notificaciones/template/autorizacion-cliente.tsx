@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import { Grid, Typography, Box, Avatar, Button, makeStyles } from '@material-ui/core';
-import React from 'react';
+import { Grid, Typography, Box, Avatar, makeStyles } from '@material-ui/core';
+import React, { ReactNode } from 'react';
 import { SourceAvatar } from '../../../helpers/sourceAvatar';
 import { NotificacionByMe } from '../../../interfaces/Notificacion';
 
 interface Props {
   notificacion: NotificacionByMe;
+  children: ReactNode;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -31,7 +32,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const TemplateAutorizacionCliente = ({ notificacion }: Props) => {
+export const TemplateDefault = ({ notificacion, children }: Props) => {
   const classes = useStyles();
 
   return (
@@ -51,22 +52,16 @@ export const TemplateAutorizacionCliente = ({ notificacion }: Props) => {
             {notificacion.sendDataUser.idRol}
           </Typography>
         </Box>
-        <Typography>{notificacion.body}</Typography>
+        <Typography style={{ lineHeight: 2 }}>{notificacion.body}</Typography>
         <br />
         <Typography>
-          Enviado el:{' '}
+          <strong>Enviado el:</strong>{' '}
           <Typography color='textSecondary' component='span'>
             {notificacion.created_at}
           </Typography>
         </Typography>
       </Grid>
-      <Grid item xs={7}>
-        <a href={`${notificacion.link}`} target='_blank' rel='noreferrer'>
-          <Button variant='contained' color='primary'>
-            Ver Cliente
-          </Button>
-        </a>
-      </Grid>
+      <Grid item>{children}</Grid>
     </Grid>
   );
 };

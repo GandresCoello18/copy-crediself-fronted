@@ -84,6 +84,8 @@ export const TablaCliente = ({ clientes, Loading, setReloadCliente }: Props) => 
     }
   }, [DialogoDelete]);
 
+  console.log(IdCliente + ' IdCliente');
+
   return (
     <>
       <Card>
@@ -161,7 +163,7 @@ export const TablaCliente = ({ clientes, Loading, setReloadCliente }: Props) => 
       />
 
       <DialogoForm Open={DialogoCredit} setOpen={setDialogoCredit} title=''>
-        <FormNewCredit setVisible={setDialogoCredit} idCliente={IdCliente} />
+        {IdCliente && <FormNewCredit setVisible={setDialogoCredit} idCliente={IdCliente} />}
       </DialogoForm>
     </>
   );

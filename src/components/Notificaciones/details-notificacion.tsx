@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import { Card } from '@material-ui/core';
+import { Button, Card } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { AxiosError } from 'axios';
 import React, { useContext, useEffect } from 'react';
@@ -9,7 +9,7 @@ import { HandleError } from '../../helpers/handleError';
 import { UpdateReadNotificacion } from '../../api/notificacion';
 import { NotificacionByMe } from '../../interfaces/Notificacion';
 import { SolicitudCredito } from './template/solicitud-de-credito';
-import { TemplateAutorizacionCliente } from './template/autorizacion-cliente';
+import { TemplateDefault } from './template/autorizacion-cliente';
 
 interface Props {
   notifiacion: NotificacionByMe | undefined;
@@ -22,6 +22,10 @@ export const DetailsNotificacion = ({ notifiacion }: Props) => {
     const fetchIsRead = async () => {
       try {
         await UpdateReadNotificacion({ token, idNotification: notifiacion?.idNotification || '' });
+
+        if (notifiacion) {
+          notifiacion.isRead = 1;
+        }
       } catch (error) {
         toast.error(HandleError(error as AxiosError));
       }
@@ -36,11 +40,39 @@ export const DetailsNotificacion = ({ notifiacion }: Props) => {
     }
 
     if (notifiacion.title === 'Solicitud para la autorización de cliente') {
-      return <TemplateAutorizacionCliente notificacion={notifiacion} />;
+      return (
+        <TemplateDefault notificacion={notifiacion}>
+          <a href={`${notifiacion.link}`} target='_blank' rel='noreferrer'>
+            <Button variant='contained' color='primary'>
+              Ver Cliente
+            </Button>
+          </a>
+        </TemplateDefault>
+      );
     }
 
     if (notifiacion.title.includes('te invita ha revisar la documentación de un cliente')) {
-      return <TemplateAutorizacionCliente notificacion={notifiacion} />;
+      return (
+        <TemplateDefault notificacion={notifiacion}>
+          <a href={`${notifiacion.link}`} target='_blank' rel='noreferrer'>
+            <Button variant='contained' color='primary'>
+              Ver Cliente
+            </Button>
+          </a>
+        </TemplateDefault>
+      );
+    }
+
+    if (notifiacion.title === 'Respuesta de solicitud de cancelación') {
+      return (
+        <TemplateDefault notificacion={notifiacion}>
+          <a href={`${notifiacion.link}`} target='_blank' rel='noreferrer'>
+            <Button variant='contained' color='primary'>
+              Ver Cancelación
+            </Button>
+          </a>
+        </TemplateDefault>
+      );
     }
 
     return <p>No hay plantilla programada</p>;

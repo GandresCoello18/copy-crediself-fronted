@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import {
@@ -47,9 +48,15 @@ interface Props {
   setOpen?: Dispatch<SetStateAction<boolean>>;
   setNotification?: Dispatch<SetStateAction<NotificacionByMe | undefined>>;
   notificacion: NotificacionByMe;
+  handleItemRead?: (idNotification: string) => void;
 }
 
-export const ItemNotification = ({ setOpen, setNotification, notificacion }: Props) => {
+export const ItemNotification = ({
+  setOpen,
+  setNotification,
+  notificacion,
+  handleItemRead,
+}: Props) => {
   const classes = useStyles();
 
   return (
@@ -58,6 +65,7 @@ export const ItemNotification = ({ setOpen, setNotification, notificacion }: Pro
       onClick={() => {
         setOpen && setOpen(false);
         setNotification && setNotification(notificacion);
+        handleItemRead && handleItemRead(notificacion.idNotification);
       }}
     >
       <ListItem

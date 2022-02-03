@@ -8,7 +8,8 @@ export interface Notificacion {
   title:
     | 'Solicitud para la autorización de credito'
     | 'Solicitud para la autorización de cliente'
-    | 'te invita ha revisar la documentación de un cliente';
+    | 'te invita ha revisar la documentación de un cliente'
+    | 'Respuesta de solicitud de cancelación';
   body: string;
   link: string;
   isRead: number;

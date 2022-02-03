@@ -95,6 +95,22 @@ const NotificacionView = () => {
     }
   }, [ReloadNotificacion]);
 
+  const handleItemRead = async (idNotification: string) => {
+    const validReadNotification = await Promise.all(
+      Notificaciones.map(noti => {
+        if (noti.idNotification === idNotification) {
+          noti.isRead = 1;
+        }
+
+        return {
+          ...noti,
+        };
+      }),
+    );
+
+    setNotificaciones([...validReadNotification]);
+  };
+
   const SelectItemPagination = (page: number) => fetchNotificacion(page);
 
   return (
@@ -129,6 +145,7 @@ const NotificacionView = () => {
                       <ItemNotification
                         notificacion={notificacion}
                         setNotification={setNotification}
+                        handleItemRead={handleItemRead}
                       />
                       <Divider variant='inset' component='li' />
                     </Box>

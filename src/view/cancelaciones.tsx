@@ -70,7 +70,7 @@ export interface AcuerdoEdit {
 const CancelacionesView = () => {
   const classes = useStyles();
   const { token, me } = useContext(MeContext);
-  const [Directores, setDirectores] = useState<Usuario[]>([]);
+  const [Admis, setAdmins] = useState<Usuario[]>([]);
   const [SelectUser, setSelectUser] = useState<Usuario | undefined>(undefined);
   const [Loading, setLoading] = useState<boolean>(false);
   const [DialogoDelete, setDialogoDelete] = useState<boolean>(false);
@@ -126,8 +126,8 @@ const CancelacionesView = () => {
 
   const FetchDirecctores = async () => {
     try {
-      const { usuarios } = await (await GetUserByRol({ token, name: 'Director' })).data;
-      setDirectores(usuarios);
+      const { usuarios } = await (await GetUserByRol({ token, name: 'Administrativo' })).data;
+      setAdmins(usuarios);
     } catch (error) {
       toast.error(HandleError(error as AxiosError));
     }
@@ -343,7 +343,7 @@ const CancelacionesView = () => {
         <>
           <Autocomplete
             id='combo-box-demo'
-            options={Directores}
+            options={Admis}
             getOptionLabel={option => option.nombres + ' ' + option.apellidos}
             getOptionSelected={(option, value) => {
               if (SelectUser === undefined) {

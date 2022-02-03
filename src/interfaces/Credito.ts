@@ -19,6 +19,7 @@ export interface Credito {
   idSucursal: string;
   progress?: number;
   acreditado: number;
+  isProcessCancelacion?: boolean;
 }
 
 export interface CreditoByContrato {

@@ -34,7 +34,7 @@ export const RowTableCredito = ({ credito, setSelectCredito }: Props) => {
 
   return (
     <>
-      <TableRow hover onClick={() => setSelectCredito(credito)}>
+      <TableRow hover onClick={() => setSelectCredito(credito)} style={{ cursor: 'pointer' }}>
         <TableCell>
           {credito.cliente.nombres} {credito.cliente.apellidos}
         </TableCell>

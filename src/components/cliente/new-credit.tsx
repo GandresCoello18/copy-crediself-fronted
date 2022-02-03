@@ -58,12 +58,12 @@ export const FormNewCredit = ({ setReloadCredito, setVisible, idCliente }: Props
 
             if (setReloadCredito) {
               setReloadCredito(true);
-              setVisible(false);
             } else {
               setIsPopover(true);
             }
 
             toast.success('Credito registrado');
+            setVisible(false);
             status && toast.error(status);
           } catch (error) {
             toast.error(HandleError(error as AxiosError));

@@ -360,7 +360,10 @@ export const DetailsCredito = ({
                   <strong>Bono de apertura:</strong>
                 </Grid>
                 <Grid item>
-                  <Chip color='secondary' label={credito.apertura ? 'Si' : 'No'} />
+                  <Chip
+                    color={credito.apertura ? 'secondary' : 'default'}
+                    label={credito.apertura ? 'Si' : 'No'}
+                  />
                 </Grid>
               </Grid>
 
@@ -382,7 +385,10 @@ export const DetailsCredito = ({
                   <strong>Autorizado:</strong>
                 </Grid>
                 <Grid item>
-                  <Chip color='secondary' label={credito.autorizado ? 'Si' : 'No'} />
+                  <Chip
+                    color={credito.autorizado ? 'secondary' : 'default'}
+                    label={credito.autorizado ? 'Si' : 'No'}
+                  />
                 </Grid>
               </Grid>
 
@@ -450,6 +456,28 @@ export const DetailsCredito = ({
               </Grid>
 
               {RenderRowDetails('Creado el', `${credito.created_at}`, 0, 0, true)}
+
+              <Grid
+                className={`${clases.marginB} ${
+                  credito.autorizado && credito.active
+                    ? clases.backGroundHeadTrue
+                    : clases.backGroundHeadFalse
+                }`}
+                alignItems='center'
+                container
+                spacing={3}
+                justify='space-between'
+              >
+                <Grid item>
+                  <strong>En proceso de cancelacion:</strong>
+                </Grid>
+                <Grid item>
+                  <Chip
+                    color={credito.isProcessCancelacion ? 'secondary' : 'default'}
+                    label={credito.isProcessCancelacion ? 'Si' : 'No'}
+                  />
+                </Grid>
+              </Grid>
 
               <Grid alignItems='center' container spacing={3} justify='space-between'>
                 <Grid item xs={12} className={clases.titleContrato}>
@@ -683,6 +711,7 @@ export const DetailsCredito = ({
       ) : (
         <>
           <img src={imgSrc} alt='no data' width='100%' />
+          <br />
           <Alert severity='info'>Seleccione un credito!</Alert>
         </>
       )}

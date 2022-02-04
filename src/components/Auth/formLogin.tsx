@@ -67,7 +67,7 @@ export const Login = () => {
             setMe(response.me.user);
 
             const tresHoras = new Date(new Date().getTime() + 180 * 60 * 1000);
-            Cookies.set('access-token-crediself', response.me.token, { expires: tresHoras });
+            Cookies.set('access-token-crediself', response.me.token, { expires: tresHoras, secure: true });
             response.me.user.empresa &&
               localStorage.setItem('empresa-hass-user', response.me.user.empresa);
 

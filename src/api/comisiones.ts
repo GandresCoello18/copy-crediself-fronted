@@ -38,6 +38,15 @@ export const GetComisiones = async (option: { token: string }) => {
   return response;
 };
 
+export const GetComisionByUser = async (option: { token: string; idComisionUser: string }) => {
+  api.defaults.headers['access-token'] = option.token;
+  const response = await api({
+    method: 'GET',
+    url: `/comisiones/user/${option.idComisionUser}`,
+  });
+  return response;
+};
+
 export const UpdateComision = async (option: {
   token: string;
   idComision: string;

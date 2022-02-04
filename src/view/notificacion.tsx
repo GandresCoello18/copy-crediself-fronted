@@ -114,7 +114,14 @@ const NotificacionView = () => {
   const SelectItemPagination = (page: number) => fetchNotificacion(page);
 
   return (
-    <Page className={classes.root} title='Usuarios'>
+    <Page
+      className={classes.root}
+      title={
+        Notificaciones.filter(i => i.isRead === 0).length
+          ? `(${Notificaciones.filter(i => i.isRead === 0).length}) Notificaciones`
+          : 'Notificaciones'
+      }
+    >
       <Container maxWidth='lg'>
         {Loading && SkeletonNotificacion()}
         <Grid container spacing={3}>

@@ -38,6 +38,7 @@ import { GetUserByRol } from '../../api/users';
 import { NewNoti, NewNotificacion } from '../../api/notificacion';
 import { UpdateComisionUserStatus } from '../../api/comisiones';
 import { CurrentDate } from '../../helpers/fechas';
+import { BASE_FRONTEND } from '../../api';
 
 const useStyles = makeStyles(theme => ({
   headTable: {
@@ -53,7 +54,7 @@ const useStyles = makeStyles(theme => ({
 
 interface Props {
   comision: MisComisiones[];
-  setReload: Dispatch<SetStateAction<boolean>>;
+  setReload?: Dispatch<SetStateAction<boolean>>;
   Loading: boolean;
 }
 
@@ -108,7 +109,7 @@ export const TableCoomision = ({ comision, setReload, Loading }: Props) => {
         } y requiero que sea revisado el pago de comision en estado: ${MiComision?.status.toUpperCase()} con fecha limite de: ${
           MiComision?.fechaHaPagar
         } con un total de $${MiComision?.total} .`,
-        link: null,
+        link: `${BASE_FRONTEND}/app/comision-user/${MiComision?.idComisionUser}`,
       };
 
       await NewNotificacion({ token, data: notificacion });
@@ -143,7 +144,7 @@ export const TableCoomision = ({ comision, setReload, Loading }: Props) => {
       setLoadingStatus(false);
       setIdsComision([]);
       setMiComision(undefined);
-      setReload(true);
+      setReload && setReload(true);
       setDialogoAlert(false);
 
       if (ComisCountEmpty) {

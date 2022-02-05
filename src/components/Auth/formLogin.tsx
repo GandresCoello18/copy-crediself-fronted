@@ -21,7 +21,7 @@ import {
 } from '@material-ui/core';
 import { LoginAccess } from '../../api/users';
 import { toast } from 'react-toast';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { useContext, useState } from 'react';
 import { MeContext } from '../../context/contextMe';
@@ -30,7 +30,8 @@ import { AxiosError } from 'axios';
 import { HandleError } from '../../helpers/handleError';
 
 export const Login = () => {
-  const { setMe } = useContext(MeContext);
+  const navigate = useNavigate();
+  const { setMe, setToken } = useContext(MeContext);
   const [visibleKey, setVisibleKey] = useState<boolean>(false);
   const [Loading, setLoading] = useState<boolean>(false);
 
@@ -65,13 +66,14 @@ export const Login = () => {
           try {
             const response = await (await LoginAccess({ token: undefined, data: values })).data;
             setMe(response.me.user);
+            setToken(response.me.token);
 
             const tresHoras = new Date(new Date().getTime() + 180 * 60 * 1000);
-            Cookies.set('access-token-crediself', response.me.token, { expires: tresHoras, secure: true });
+            Cookies.set('access-token-crediself', response.me.token, { expires: tresHoras });
             response.me.user.empresa &&
               localStorage.setItem('empresa-hass-user', response.me.user.empresa);
 
-            window.location.href = RenderMainViewRol(response.me.user.idRol);
+              setTimeout(() => navigate(RenderMainViewRol(response.me.user.idRol)), 1000);
           } catch (error) {
             toast.error(HandleError(error as AxiosError));
             setLoading(false);

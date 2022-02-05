@@ -1,10 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/react-in-jsx-scope */
 import { Navigate, useRoutes } from 'react-router-dom';
 import { NotFound } from '../view/NotFound';
-import { Suspense, lazy, useState } from 'react';
+import { Suspense, lazy } from 'react';
 import DashboardLayout from '../layouts/DashboardLayout';
 import MainLayout from '../layouts/MainLayout';
 import Cookies from 'js-cookie';
@@ -12,7 +14,7 @@ import { ThemeProvider } from '@material-ui/styles';
 import GlobalStyles from '../components/GlobalStyles';
 import theme from '../theme';
 import { Auth } from '../view/auth';
-import { LazyExoticComponent, useContext, useLayoutEffect } from 'react';
+import { LazyExoticComponent, useContext, useEffect } from 'react';
 import { GetMeUser } from '../api/users';
 import ConfirmDataClient from '../view/confirm-data-client';
 import { MeContext } from '../context/contextMe';
@@ -61,19 +63,11 @@ const AllRols = [
   'Gerente de Sucursal',
 ];
 
-const RenderRouter = (rol: string | undefined) => {
-  if (!rol) {
-    return [];
-  }
-
+const RenderRouter = (rol: string) => {
   const PathSesion = (
     Componente: LazyExoticComponent<() => JSX.Element>,
     rolesAllowed: string[],
   ) => {
-    if (!token) {
-      return <Navigate to='/login' />;
-    }
-
     const findRol = rolesAllowed.some(rolAw => rolAw === rol);
 
     if (findRol) {
@@ -84,8 +78,10 @@ const RenderRouter = (rol: string | undefined) => {
   };
 
   const NotPathSesion = (Componente: () => JSX.Element) => {
-    return token ? <Navigate to={`${RenderMainViewRol(rol)}`} /> : <Componente />;
+    return token ? <Navigate to='/app/account' /> : <Componente />;
   };
+
+  console.log(rol);
 
   return [
     {
@@ -177,28 +173,26 @@ const RenderRouter = (rol: string | undefined) => {
 };
 
 const App = () => {
-  const { token, setMe } = useContext(MeContext);
-  const [InitRol, setInitRol] = useState<string | undefined>(undefined);
+  const { token, me, setMe } = useContext(MeContext);
 
-  useLayoutEffect(() => {
+  const FetchMe = async () => {
     try {
-      const FetchMe = async () => {
-        const { me } = await (await GetMeUser({ token })).data;
-        setMe(me);
-        setInitRol(me.idRol);
-      };
-
-      token && FetchMe();
+      const meResponse = await (await GetMeUser({ token })).data.me;
+      setMe(meResponse);
     } catch (error) {
       toast.error(HandleError(error as AxiosError));
     }
-  }, [token, setMe, setInitRol]);
+  };
+
+  useEffect(() => {
+    token && FetchMe();
+  }, [token]);
 
   return (
     <ThemeProvider theme={theme}>
       <ToastContainer delay={5000} position='top-right' />
       <GlobalStyles />
-      <Suspense fallback={<div />}>{useRoutes(RenderRouter(InitRol))}</Suspense>
+      <Suspense fallback={<div />}>{useRoutes(RenderRouter(me.idRol))}</Suspense>
     </ThemeProvider>
   );
 };

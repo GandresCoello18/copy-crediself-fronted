@@ -42,22 +42,25 @@ interface Values {
   token: string;
   me: Me;
   setMe: Dispatch<SetStateAction<Me>>;
+  setToken: Dispatch<SetStateAction<string>>;
 }
 
 export const MeContext = createContext<Values>({
   token: '',
   me: templeate,
   setMe: () => false,
+  setToken: () => false,
 });
 
 export const MeContextProvider = ({ children }: Props) => {
-  const [token] = useState<string>(Cookies.get('access-token-crediself') || '');
+  const [token, setToken] = useState<string>(Cookies.get('access-token-crediself') || '');
   const [me, setMe] = useState<Me>(templeate);
 
   const Values: Values = {
     token,
     me,
     setMe,
+    setToken,
   };
 
   return <MeContext.Provider value={Values}>{children}</MeContext.Provider>;

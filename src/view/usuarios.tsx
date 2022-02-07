@@ -101,9 +101,7 @@ const UsuariosView = () => {
               Nuevo usuario {me.idRol === 'Director' ? 'RRHH' : ''}
             </Button>
           </Box>
-        ) : (
-          ''
-        )}
+        ) : null}
         <Box mt={3}>
           <Card>
             <CardContent>

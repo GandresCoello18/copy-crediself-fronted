@@ -4,6 +4,7 @@
 import Cookies from 'js-cookie';
 import { createContext, Dispatch, ReactNode, SetStateAction, useState } from 'react';
 
+export type EmpresaUser = 'AUTOIMPULZADORA' | 'CREDISELF';
 export interface Me {
   idUser: string;
   nombres: string;
@@ -16,7 +17,7 @@ export interface Me {
   idRol: string;
   idSucursal: string;
   supervisor: string;
-  empresa?: 'AUTOIMPULZADORA' | 'CREDISELF';
+  empresa?: EmpresaUser;
 }
 
 const templeate: Me = {

@@ -73,7 +73,7 @@ export const Login = () => {
             response.me.user.empresa &&
               localStorage.setItem('empresa-hass-user', response.me.user.empresa);
 
-              setTimeout(() => navigate(RenderMainViewRol(response.me.user.idRol)), 1000);
+            setTimeout(() => navigate(RenderMainViewRol(response.me.user.idRol)), 1000);
           } catch (error) {
             toast.error(HandleError(error as AxiosError));
             setLoading(false);

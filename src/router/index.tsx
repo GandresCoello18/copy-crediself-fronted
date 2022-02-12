@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-undef */
@@ -6,7 +7,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 import { Navigate, useRoutes } from 'react-router-dom';
 import { NotFound } from '../view/NotFound';
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useState } from 'react';
 import DashboardLayout from '../layouts/DashboardLayout';
 import MainLayout from '../layouts/MainLayout';
 import Cookies from 'js-cookie';
@@ -24,6 +25,7 @@ import { RestaurarCuenta } from '../view/reset-password-idTime';
 import { AxiosError } from 'axios';
 import { HandleError } from '../helpers/handleError';
 import { RenderMainViewRol } from '../helpers/renderViewMainRol';
+import { Box, CircularProgress } from '@material-ui/core';
 
 // import dinamic
 const PermisosView = lazy(() => import('../view/permisos'));
@@ -63,6 +65,35 @@ const AllRols = [
   'Gerente de Sucursal',
 ];
 
+// En el transcurso de tiempo que se consulta que rol soy, aparece una pantalla preload.
+
+const RenderPathLoanding = () => {
+  return [
+    {
+      path: 'app',
+      element: <MainLayout />,
+      children: [
+        {
+          path: '*',
+          element: (
+            <Box
+              display='flex'
+              style={{ height: '100%' }}
+              alignItems='center'
+              justifyContent='center'
+              p={2}
+            >
+              <CircularProgress color='secondary' /> &nbsp; Cargando ...
+            </Box>
+          ),
+        },
+      ],
+    },
+  ];
+};
+
+// Rutas protegidas dependiendo del rol que lo use.
+
 const RenderRouter = (rol: string) => {
   const PathSesion = (
     Componente: LazyExoticComponent<() => JSX.Element>,
@@ -81,8 +112,6 @@ const RenderRouter = (rol: string) => {
     return token ? <Navigate to='/app/account' /> : <Componente />;
   };
 
-  console.log(rol);
-
   return [
     {
       path: 'app',
@@ -90,7 +119,12 @@ const RenderRouter = (rol: string) => {
       children: [
         {
           path: 'mis-comisiones',
-          element: PathSesion(MisComisionesView, ['Supervisor', 'Referencia', 'Asesor']),
+          element: PathSesion(MisComisionesView, [
+            'Supervisor',
+            'Referencia',
+            'Asesor',
+            'Administrativo',
+          ]),
         },
         {
           path: 'comision-user/:idComisionUser',
@@ -174,13 +208,18 @@ const RenderRouter = (rol: string) => {
 
 const App = () => {
   const { token, me, setMe } = useContext(MeContext);
+  const [LoandingSesion, setLoandingSesion] = useState<boolean>(false);
 
   const FetchMe = async () => {
+    setLoandingSesion(true);
+
     try {
       const meResponse = await (await GetMeUser({ token })).data.me;
       setMe(meResponse);
+      setLoandingSesion(false);
     } catch (error) {
       toast.error(HandleError(error as AxiosError));
+      setLoandingSesion(false);
     }
   };
 
@@ -192,7 +231,9 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <ToastContainer delay={5000} position='top-right' />
       <GlobalStyles />
-      <Suspense fallback={<div />}>{useRoutes(RenderRouter(me.idRol))}</Suspense>
+      <Suspense fallback={<div />}>
+        {useRoutes(LoandingSesion ? RenderPathLoanding() : RenderRouter(me.idRol))}
+      </Suspense>
     </ThemeProvider>
   );
 };

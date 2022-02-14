@@ -62,14 +62,16 @@ export const UpdateAutorizacionCancelacion = async (option: {
   token: string;
   idCancelacion: string;
   autorizacion: boolean;
+  fechaHaPagar?: string;
 }) => {
-  const { token, idCancelacion, autorizacion } = option;
+  const { token, idCancelacion, autorizacion, fechaHaPagar } = option;
   api.defaults.headers['access-token'] = token;
   const response = await api({
     method: 'PUT',
     url: `/cancelacion/autorizado/${idCancelacion}`,
     data: {
       autorizacion,
+      fechaHaPagar,
     },
   });
   return response;

@@ -17,6 +17,7 @@ import { CancelacionByDetails } from '../../interfaces/Cancelacion';
 import { SourceAvatar } from '../../helpers/sourceAvatar';
 import { ContratoCard } from '../Creditos/conntrato-card';
 import { AcuerdoEdit } from '../../view/cancelaciones';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -201,7 +202,6 @@ export const ItemCreditoCancelado = ({
                 <Button variant='outlined'>Ver acuerdo</Button>
               </>
             )}
-
             {cancelacion.acuerdo && !cancelacion.autorizado ? (
               <>
                 &nbsp; &nbsp;
@@ -210,6 +210,10 @@ export const ItemCreditoCancelado = ({
                 </Button>
               </>
             ) : null}
+            &nbsp; &nbsp;
+            <Link to={`/app/cancelaciones/${cancelacion.idCancelacion}`} target='_blank'>
+              <Button variant='outlined'>Ver Detalles</Button>
+            </Link>
           </Grid>
         </Grid>
       </AccordionDetails>

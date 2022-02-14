@@ -75,6 +75,30 @@ export const DetailsNotificacion = ({ notifiacion }: Props) => {
       );
     }
 
+    if (notifiacion.title.includes('presenta reclamo en pago de comisiones')) {
+      return (
+        <TemplateDefault notificacion={notifiacion}>
+          <a href={`${notifiacion.link}`} target='_blank' rel='noreferrer'>
+            <Button variant='contained' color='primary'>
+              Ver comision
+            </Button>
+          </a>
+        </TemplateDefault>
+      );
+    }
+
+    if (notifiacion.title.includes('revisar una solicitud de cancelación')) {
+      return (
+        <TemplateDefault notificacion={notifiacion}>
+          <a href={`${notifiacion.link}`} target='_blank' rel='noreferrer'>
+            <Button variant='contained' color='primary'>
+              Ver Cancelación
+            </Button>
+          </a>
+        </TemplateDefault>
+      );
+    }
+
     return <p>No hay plantilla programada</p>;
   };
 

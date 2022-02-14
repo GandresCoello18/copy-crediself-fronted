@@ -574,19 +574,21 @@ export const DetailsCredito = ({
                         Pago de apertura
                       </Button>
                     </Grid>
-                    {credito?.estado === 'Al dia' || credito?.estado === 'Atrasado' ? (
-                      <Grid item>
-                        <Button
-                          className={clases.btnCancelar}
-                          onClick={HandleCancelacion}
-                          fullWidth
-                          variant='outlined'
-                        >
-                          Cancelar
-                        </Button>
-                      </Grid>
-                    ) : null}
                   </>
+                ) : null}
+
+                {(credito?.estado === 'Al dia' || credito?.estado === 'Atrasado') &&
+                (me.idRol === 'Gerente de Sucursal' || me.idRol === 'Administrativo') ? (
+                  <Grid item>
+                    <Button
+                      className={clases.btnCancelar}
+                      onClick={HandleCancelacion}
+                      fullWidth
+                      variant='outlined'
+                    >
+                      Cancelar
+                    </Button>
+                  </Grid>
                 ) : null}
 
                 {getPermisoExist({ RolName: me.idRol, permiso: 'AutorizarCredito' }) &&

@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 export const monthDiff = (options: { desde: Date; hasta: Date }) => {
   let months;
   months = (options.hasta.getFullYear() - options.desde.getFullYear()) * 12;
@@ -33,6 +34,24 @@ export const SubDate = (options: { myDate?: Date; days: number }) => {
   }
   const semanaPasadaSecon = new Date().setDate(diasPasados);
   return new Date(semanaPasadaSecon);
+};
+
+export const AddDate = (options: { myDate?: Date; days: number }) => {
+  let { myDate, days } = options;
+
+  if (days < 0) {
+    days = 0;
+  }
+
+  let diasProximos;
+
+  if (myDate) {
+    diasProximos = myDate.getDate() + days;
+  } else {
+    diasProximos = new Date().getDate() + days;
+  }
+  const newSecon = new Date().setDate(diasProximos);
+  return new Date(newSecon);
 };
 
 export const GetMonth = (date: string | Date) => {

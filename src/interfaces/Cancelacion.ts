@@ -10,6 +10,7 @@ export interface Cancelacion {
   autorizado: number;
   acuerdo: string | null;
   retornoPago: number;
+  fechaHaPagar: string | Date | null;
 }
 
 export interface CancelacionByDetails extends Cancelacion {

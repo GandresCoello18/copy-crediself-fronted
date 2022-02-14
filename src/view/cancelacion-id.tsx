@@ -2,7 +2,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/react-in-jsx-scope */
-import { Avatar, Box, Button, Container, Grid, makeStyles } from '@material-ui/core';
+import { Avatar, Box, Button, Container, Grid, makeStyles, TextField } from '@material-ui/core';
 import Page from '../components/page';
 import { useState, useEffect, useContext } from 'react';
 import { toast } from 'react-toast';
@@ -17,6 +17,7 @@ import { ContratoCard } from '../components/Creditos/conntrato-card';
 import { SourceAvatar } from '../helpers/sourceAvatar';
 import { RenderContentItemCancelacion } from '../components/Cancelacionn/item-credito-cancelado';
 import { RenderMainViewRol } from '../helpers/renderViewMainRol';
+import { CurrentDate, AddDate } from '../helpers/fechas';
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -46,6 +47,7 @@ const CancelacionView = () => {
   const navigate = useNavigate();
   const classes = useStyles();
   const { token, me } = useContext(MeContext);
+  const [fechaHaPagar, setFechaHaPagar] = useState<string>('');
   const [Loading, setLoading] = useState<boolean>(false);
   const [LoadingAuht, setLoadingAuht] = useState<boolean>(false);
   const [Cancelacion, setCancelacion] = useState<CancelacionByDetails | undefined>(undefined);
@@ -63,6 +65,7 @@ const CancelacionView = () => {
       }
 
       setCancelacion(cancelacion);
+      setFechaHaPagar(cancelacion?.fechaHaPagar || CurrentDate(AddDate({ days: 20 })));
       setLoading(false);
     } catch (error) {
       toast.error(HandleError(error as AxiosError));
@@ -73,11 +76,22 @@ const CancelacionView = () => {
   const HandleAutorizacion = async () => {
     setLoadingAuht(true);
 
+    if (!fechaHaPagar) {
+      toast.warn('Seleccione la fecha ha pagar las devoluciones');
+      return;
+    }
+
+    if (new Date().getTime() >= new Date(fechaHaPagar).getTime()) {
+      toast.warn('La fecha ha pagar tiene que ser mayor a la actual');
+      return;
+    }
+
     try {
       await UpdateAutorizacionCancelacion({
         token,
         idCancelacion: params.idCancelacion,
         autorizacion: Cancelacion?.autorizado ? false : true,
+        fechaHaPagar,
       });
       setLoadingAuht(false);
       toast.success('Se envio una notificación ha cobranza');
@@ -109,15 +123,70 @@ const CancelacionView = () => {
   return (
     <Page className={classes.root} title='Detalle de cancelación'>
       <Container maxWidth='xl'>
+        {Cancelacion && me.idRol === 'Administrativo' ? (
+          <Box display='flex' justifyContent='flex-end'>
+            <Button
+              className={classes.btnAutorization}
+              disabled={Cancelacion.credito.estado === 'Cancelado' || LoadingAuht}
+              onClick={HandleAutorizacion}
+            >
+              {Cancelacion.autorizado ? 'Quitar autorización' : 'Autorizar'}
+            </Button>
+
+            <TextField
+              id='date1'
+              label='Fecha ha pagar las devoluciones'
+              type='date'
+              style={{ marginLeft: 20, minWidth: 240, maxWidth: 280 }}
+              disabled={
+                Cancelacion.credito.estado === 'Cancelado' ||
+                Cancelacion.autorizado === 1 ||
+                LoadingAuht
+              }
+              defaultValue={fechaHaPagar || CurrentDate(AddDate({ days: 20 }))}
+              onChange={event => setFechaHaPagar(event.target.value)}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </Box>
+        ) : null}
         <Box mt={3}>
           {Loading && SkeletonPlaceHolder()}
+
           {!Loading && !Cancelacion && (
             <Alert severity='info'>
               Por el momento no hay <strong>Cancelaciones</strong> para mostrar.
             </Alert>
           )}
+
           {!Loading && Cancelacion ? (
             <Grid spacing={3} container justify='center'>
+              <Grid item xs={12} md={4}>
+                <Box p={2} className={classes.headContante}>
+                  <h4>Información de cancelación</h4>
+                </Box>
+                {RenderContentItemCancelacion({
+                  field: 'Creado el',
+                  value: Cancelacion.created_at as string,
+                })}
+                {RenderContentItemCancelacion({
+                  field: 'Autorizado',
+                  value: Cancelacion.acuerdo ? 'SI' : 'NO',
+                })}
+                {RenderContentItemCancelacion({
+                  field: 'Acuerdo',
+                  value: Cancelacion.acuerdo || '(NONE)',
+                })}
+                {RenderContentItemCancelacion({
+                  field: 'Total a pagar',
+                  value: `$${Cancelacion.retornoPago}` || '(NONE)',
+                })}
+                {RenderContentItemCancelacion({
+                  field: 'Fecha Pago',
+                  value: (Cancelacion.fechaHaPagar as string) || '(NONE)',
+                })}
+              </Grid>
               <Grid item xs={12} md={4}>
                 <Box p={2} className={classes.headContante}>
                   <h4>Información del cliente</h4>
@@ -188,15 +257,6 @@ const CancelacionView = () => {
                 {Cancelacion.contratos.map(contrato => (
                   <ContratoCard key={contrato.id_credito_contrato} contrato={contrato} />
                 ))}
-              </Grid>
-              <Grid item xs={12}>
-                <Button
-                  className={classes.btnAutorization}
-                  disabled={Cancelacion.credito.estado === 'Cancelado' || LoadingAuht}
-                  onClick={HandleAutorizacion}
-                >
-                  {Cancelacion.autorizado ? 'Quitar autorización' : 'Autorizar'}
-                </Button>
               </Grid>
             </Grid>
           ) : null}

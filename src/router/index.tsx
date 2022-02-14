@@ -160,7 +160,12 @@ const RenderRouter = (rol: string) => {
         },
         {
           path: 'creditos/:idCredito',
-          element: PathSesion(CreditoOnlyView, ['Supervisor', 'Asesor', 'Gerente de Sucursal']),
+          element: PathSesion(CreditoOnlyView, [
+            'Supervisor',
+            'Asesor',
+            'Gerente de Sucursal',
+            'Administrativo',
+          ]),
         },
         {
           path: 'creditos/cliente/:idCliente',
@@ -227,12 +232,28 @@ const App = () => {
     token && FetchMe();
   }, [token]);
 
+  const validSesion = () => {
+    if (LoandingSesion) {
+      return LoandingSesion;
+    }
+
+    if (token && me.idRol) {
+      return false;
+    }
+
+    if (!token && !me.idRol) {
+      return false;
+    }
+
+    return true;
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <ToastContainer delay={5000} position='top-right' />
       <GlobalStyles />
       <Suspense fallback={<div />}>
-        {useRoutes(LoandingSesion ? RenderPathLoanding() : RenderRouter(me.idRol))}
+        {useRoutes(validSesion() ? RenderPathLoanding() : RenderRouter(me.idRol))}
       </Suspense>
     </ThemeProvider>
   );

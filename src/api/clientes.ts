@@ -29,17 +29,18 @@ interface UpdateClient {
 }
 
 export const GetClientes = async (option: {
-  token?: string;
+  token: string;
+  idSucursal?: string;
   findCliente?: string;
   page: number;
 }) => {
-  api.defaults.headers['access-token'] = option.token;
+  const { token, idSucursal, findCliente, page } = option;
+
+  api.defaults.headers['access-token'] = token;
   const response = await api({
     method: 'GET',
-    url: `${
-      option.findCliente
-        ? `/cliente?findCliente=${option.findCliente}&page=${option.page}`
-        : `/cliente?page=${option.page}`
+    url: `/cliente?findCliente=${findCliente || ''}&page=${page || ''}&idSucursal=${
+      idSucursal || ''
     }`,
   });
   return response;

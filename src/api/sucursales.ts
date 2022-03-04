@@ -1,10 +1,11 @@
 import { api } from '.';
+import { EmpresaUser } from '../context/contextMe';
 
-export const GetSucursales = async (option: { token?: string }) => {
+export const GetSucursales = async (option: { token: string; empresa?: EmpresaUser }) => {
   api.defaults.headers['access-token'] = option.token;
   const response = await api({
     method: 'GET',
-    url: '/sucursal',
+    url: `/sucursal?empresa=${option.empresa || ''}`,
   });
   return response;
 };

@@ -1,6 +1,9 @@
 .toastContainer {
     z-index: 9999 !important;
 }
+.eventTitle {
+    text-align: center !important;
+}
 
 /* 
 Colores generados por logo crediself

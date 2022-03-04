@@ -37,7 +37,7 @@ import Cookies from 'js-cookie';
 import { SourceAvatar } from '../../../helpers/sourceAvatar';
 
 interface Props {
-  onMobileClose: () => any;
+  onMobileClose: () => void;
   openMobile: boolean;
 }
 
@@ -216,6 +216,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           title: 'Clientes',
         },
         {
+          href: '/app/creditos',
+          icon: CardTravelIcon,
+          title: 'Creditos',
+        },
+        {
           href: '/app/pagos',
           icon: PaymentIcon,
           title: 'Pagos',
@@ -365,7 +370,7 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
   };
 
   useEffect(() => {
-    if (openMobile && onMobileClose) {
+    if (openMobile) {
       onMobileClose();
     }
   }, []);

@@ -47,12 +47,13 @@ const CalendarView = () => {
 
     try {
       const { calendarPL } = await (await GetCalendarPaymentAndLotery({ token })).data;
-      setEvents(calendarPL);
       setLoading(false);
 
       if (!calendarPL || !calendarPL.length) {
         toast.error('No se encontro registros en calendario');
         toast.error('Le aconsejamos que vuelva ha generar el calendario');
+      } else {
+        setEvents(calendarPL);
       }
     } catch (error) {
       toast.error(HandleError(error as AxiosError));

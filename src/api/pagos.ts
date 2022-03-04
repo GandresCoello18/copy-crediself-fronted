@@ -24,12 +24,14 @@ export const AperturaPagoCredito = async (options: { token: string; data: FormDa
 export const GetPagosCreditos = async (options: {
   token: string;
   findPago?: string;
+  idSucursal?: string;
   page: number;
 }) => {
-  api.defaults.headers['access-token'] = options.token;
+  const { idSucursal, token, findPago, page } = options;
+  api.defaults.headers['access-token'] = token;
   const response = await api({
     method: 'GET',
-    url: `/pago?findPago=${options.findPago || ''}&page=${options.page}`,
+    url: `/pago?findPago=${findPago || ''}&page=${page}&idSucursal=${idSucursal || ''}`,
   });
   return response;
 };

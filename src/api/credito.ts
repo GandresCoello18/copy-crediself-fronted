@@ -59,18 +59,16 @@ export const NotificarAutorizarCredito = async (options: { token: string; IdCred
 };
 
 export const GetCreditos = async (option: {
-  token?: string;
+  token: string;
   findCredito?: string;
   page: number;
+  idSucursal?: string;
 }) => {
-  api.defaults.headers['access-token'] = option.token;
+  const { token, findCredito, page, idSucursal } = option;
+  api.defaults.headers['access-token'] = token;
   const response = await api({
     method: 'GET',
-    url: `${
-      option.findCredito
-        ? `/credito?findCredito=${option.findCredito}&page=${option.page}`
-        : `/credito?page=${option.page}`
-    }`,
+    url: `/credito?findCredito=${findCredito || ''}&page=${page}&idSucursal=${idSucursal || ''}`,
   });
   return response;
 };

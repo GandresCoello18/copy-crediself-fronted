@@ -136,7 +136,12 @@ const RenderRouter = (rol: string) => {
         { path: 'account', element: PathSesion(AccountView, AllRols) },
         {
           path: 'clientes',
-          element: PathSesion(ClientesView, ['Supervisor', 'Asesor', 'Gerente de Sucursal']),
+          element: PathSesion(ClientesView, [
+            'Supervisor',
+            'Asesor',
+            'Gerente de Sucursal',
+            'Administrativo',
+          ]),
         },
         {
           path: 'clientes/:idCliente',
@@ -152,7 +157,10 @@ const RenderRouter = (rol: string) => {
           path: 'clientes-acreditacion',
           element: PathSesion(ClientesAcreditacionView, ['Director', 'Administrativo']),
         },
-        { path: 'creditos', element: PathSesion(CreditosView, []) },
+        {
+          path: 'creditos',
+          element: PathSesion(CreditosView, ['Administrativo', 'Gerente de Sucursal']),
+        },
         { path: 'cancelaciones', element: PathSesion(CancelacionesView, ['Cobranza']) },
         {
           path: 'cancelaciones/:idCancelacion',

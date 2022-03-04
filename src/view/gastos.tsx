@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme: any) => ({
 
 const GastosView = () => {
   const classes = useStyles();
-  const { token } = useContext(MeContext);
+  const { token, me } = useContext(MeContext);
   const [SearchGasto, setSearchGasto] = useState<string>('');
   const [idSucursal, setIdSucursal] = useState<string>('');
   const [Gastos, setGastos] = useState<Gastos[]>([]);
@@ -100,7 +100,7 @@ const GastosView = () => {
 
   const fetchSucursales = async () => {
     try {
-      const { sucursales } = await (await GetSucursales({ token })).data;
+      const { sucursales } = await (await GetSucursales({ token, empresa: me.empresa })).data;
       setDataSucursales(sucursales);
     } catch (error) {
       toast.error(HandleError(error as AxiosError));

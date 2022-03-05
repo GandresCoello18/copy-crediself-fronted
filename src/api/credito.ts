@@ -62,31 +62,47 @@ export const GetCreditos = async (option: {
   token: string;
   findCredito?: string;
   page: number;
+  dateDesde?: string;
+  dateHasta?: string;
   idSucursal?: string;
 }) => {
-  const { token, findCredito, page, idSucursal } = option;
+  const { token, findCredito, page, dateDesde, dateHasta, idSucursal } = option;
   api.defaults.headers['access-token'] = token;
   const response = await api({
     method: 'GET',
-    url: `/credito?findCredito=${findCredito || ''}&page=${page}&idSucursal=${idSucursal || ''}`,
+    url: `/credito?findCredito=${findCredito || ''}&page=${page}&idSucursal=${
+      idSucursal || ''
+    }&dateDesde=${dateDesde || ''}&dateHasta=${dateHasta || ''}`,
   });
   return response;
 };
 
 export const GetCreditosCliente = async (option: {
-  token?: string;
+  token: string;
   findCredito?: string;
   idCliente: string;
   page: number;
 }) => {
-  api.defaults.headers['access-token'] = option.token;
+  const { token, findCredito, idCliente, page } = option;
+  api.defaults.headers['access-token'] = token;
   const response = await api({
     method: 'GET',
-    url: `${
-      option.findCredito
-        ? `/credito/cliente/${option.idCliente}?findCredito=${option.findCredito}&page=${option.page}`
-        : `/credito/cliente/${option.idCliente}?page=${option.page}`
-    }`,
+    url: `/credito/cliente/${idCliente}?findCredito=${findCredito || ''}&page=${page}`,
+  });
+  return response;
+};
+
+export const GetCreditosUser = async (option: {
+  token: string;
+  findCredito?: string;
+  idUser: string;
+  page: number;
+}) => {
+  const { token, findCredito, idUser, page } = option;
+  api.defaults.headers['access-token'] = token;
+  const response = await api({
+    method: 'GET',
+    url: `/credito/user/${idUser}?findCredito=${findCredito || ''}&page=${page}`,
   });
   return response;
 };

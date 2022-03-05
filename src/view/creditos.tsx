@@ -33,6 +33,8 @@ import { DialogoForm } from '../components/DialogoForm';
 import { FormNewPago } from '../components/pagos/new-pago';
 import { Sucursal } from '../interfaces/Sucursales';
 import { GetSucursales } from '../api/sucursales';
+import { FetchByDate } from './mis-comision';
+import { CurrentDate } from '../helpers/fechas';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -63,23 +65,46 @@ const CreditosView = () => {
   const [Creditos, setCreditos] = useState<CreditoByCliente[]>([]);
   const [SelectCredito, setSelectCredito] = useState<CreditoByCliente | undefined>(undefined);
   const [Count, setCount] = useState<number>(0);
+  const [dateFetch, setDateFetch] = useState<FetchByDate>({
+    dateDesde: '',
+    dateHasta: '',
+  });
   const [DataSucursales, setDataSucursales] = useState<Sucursal[]>([]);
   const [SelectSucursal, setSelectSucursal] = useState<Sucursal | undefined>(undefined);
   const [Loading, setLoading] = useState<boolean>(false);
   const [VisibleApertura, setVisibleApertura] = useState<boolean>(false);
   const [ReloadCredito, setReloadCredito] = useState<boolean>(false);
 
-  const fetchCreditos = async (options: { page: number; idSucursal?: string }) => {
-    const { page, idSucursal } = options;
+  const fetchCreditos = async (options: {
+    page: number;
+    idSucursal?: string;
+    ClearDate?: boolean;
+  }) => {
+    const { page, idSucursal, ClearDate } = options;
     setLoading(true);
 
     try {
       const { creditos, pages } = await (
-        await GetCreditos({ token, page, findCredito: SearchCredito, idSucursal })
+        await GetCreditos({
+          token,
+          page,
+          findCredito: SearchCredito,
+          idSucursal,
+          dateDesde: ClearDate ? '' : dateFetch.dateDesde,
+          dateHasta: dateFetch.dateHasta || CurrentDate(),
+        })
       ).data;
       setCreditos(creditos);
       setLoading(false);
       setCount(pages || 1);
+
+      if (creditos && creditos.length === 1) {
+        setSelectCredito(creditos[0]);
+
+        if (creditos[0]?.isProcessCancelacion) {
+          toast.warn('Este credito esta en proceso de cancelación');
+        }
+      }
     } catch (error) {
       toast.error(HandleError(error as AxiosError));
       setLoading(false);
@@ -114,7 +139,7 @@ const CreditosView = () => {
   const HandleResetFilterClient = () => {
     setSelectSucursal(undefined);
     setSearchCliente('');
-    fetchCreditos({ page: 1 });
+    fetchCreditos({ page: 1, ClearDate: true });
   };
 
   return (
@@ -137,10 +162,10 @@ const CreditosView = () => {
                             variant='outlined'
                             disabled={Loading && !Creditos.length}
                             onClick={() => {
-                              if (SearchCredito) {
-                                fetchCreditos({ page: 1, idSucursal: SelectSucursal?.idSucursal });
+                              if (!SearchCredito && !dateFetch.dateDesde) {
+                                toast.info('Escribe algo o selecciona fecha para buscar');
                               } else {
-                                toast.info('Escribe algo para buscar');
+                                fetchCreditos({ page: 1, idSucursal: SelectSucursal?.idSucursal });
                               }
                             }}
                             className={classes.iconButton}
@@ -155,9 +180,53 @@ const CreditosView = () => {
                   />
                 </Grid>
 
+                <Grid item xs={12} md={4} lg={3}>
+                  <Box display='flex' justifyContent='space-between'>
+                    <TextField
+                      id='date1'
+                      label='Desde'
+                      type='date'
+                      // defaultValue={CurrentDate(SubDate({ days: 7 }))}
+                      onChange={event =>
+                        setDateFetch({ ...dateFetch, dateDesde: event.target.value })
+                      }
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+
+                    <TextField
+                      id='date2'
+                      label='Hasta'
+                      style={{ marginLeft: 20 }}
+                      type='date'
+                      // defaultValue={CurrentDate()}
+                      onChange={event => {
+                        if (!dateFetch.dateDesde) {
+                          toast.error('Selecciona primero la fecha de DESDE');
+                          return;
+                        }
+
+                        if (
+                          new Date(dateFetch.dateDesde).getTime() >
+                          new Date(event.target.value).getTime()
+                        ) {
+                          toast.error('La fecha DESDE tiene que ser menor que la fecha HASTA');
+                          return;
+                        }
+
+                        setDateFetch({ ...dateFetch, dateHasta: event.target.value });
+                      }}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                  </Box>
+                </Grid>
+
                 {me.idRol === 'Administrativo' ? (
                   <>
-                    <Grid item xs={12} md={3} lg={2}>
+                    <Grid item xs={12} md={2}>
                       <FormControl className={classes.formControl}>
                         <InputLabel id='demo-simple-select-label'>Sucursales</InputLabel>
                         <Select
@@ -185,7 +254,7 @@ const CreditosView = () => {
                       </FormControl>
                     </Grid>
 
-                    <Grid item xs={12} md={1}>
+                    <Grid item xs={12} md={2} lg={1}>
                       <Button
                         color='secondary'
                         variant='outlined'

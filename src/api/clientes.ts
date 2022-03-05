@@ -30,18 +30,20 @@ interface UpdateClient {
 
 export const GetClientes = async (option: {
   token: string;
+  dateDesde?: string;
+  dateHasta?: string;
   idSucursal?: string;
   findCliente?: string;
   page: number;
 }) => {
-  const { token, idSucursal, findCliente, page } = option;
+  const { token, idSucursal, findCliente, page, dateDesde, dateHasta } = option;
 
   api.defaults.headers['access-token'] = token;
   const response = await api({
     method: 'GET',
     url: `/cliente?findCliente=${findCliente || ''}&page=${page || ''}&idSucursal=${
       idSucursal || ''
-    }`,
+    }&dateDesde=${dateDesde || ''}&dateHasta=${dateHasta || ''}`,
   });
   return response;
 };
@@ -49,16 +51,17 @@ export const GetClientes = async (option: {
 export const GetAcreditacionClientes = async (option: {
   token: string;
   findCliente?: string;
+  dateDesde?: string;
+  dateHasta?: string;
   page: number;
 }) => {
-  api.defaults.headers['access-token'] = option.token;
+  const { token, findCliente, dateDesde, dateHasta, page } = option;
+  api.defaults.headers['access-token'] = token;
   const response = await api({
     method: 'GET',
-    url: `${
-      option.findCliente
-        ? `/cliente/acreditacion?findCliente=${option.findCliente}&page=${option.page}`
-        : `/cliente/acreditacion?page=${option.page}`
-    }`,
+    url: `/cliente/acreditacion?findCliente=${findCliente || ''}&page=${page}&dateDesde=${
+      dateDesde || ''
+    }&dateHasta=${dateHasta || ''}`,
   });
   return response;
 };

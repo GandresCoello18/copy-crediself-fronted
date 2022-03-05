@@ -114,7 +114,10 @@ export const RowTablePagosByCreditos = ({ pagosByCredito, isModal }: Props) => {
         <TableCell onClick={VisibleModal}>{pagosByCredito.numeroPago}</TableCell>
         <TableCell onClick={VisibleModal}>{pagosByCredito.tipo_de_pago}</TableCell>
         <TableCell onClick={VisibleModal}>
-          <Chip color='secondary' label={pagosByCredito.atrasado ? 'SI' : 'NO'} />
+          <Chip
+            color={pagosByCredito.atrasado ? 'secondary' : 'default'}
+            label={pagosByCredito.atrasado ? 'SI' : 'NO'}
+          />
         </TableCell>
         <TableCell onClick={VisibleModal}>
           <Typography

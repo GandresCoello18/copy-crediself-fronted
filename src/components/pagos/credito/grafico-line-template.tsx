@@ -6,9 +6,10 @@ import { Line } from 'react-chartjs-2';
 interface Props {
   data: number[];
   labels: string[];
+  label: string;
 }
 
-export const GraficoPaymentCredito = ({ data, labels }: Props) => {
+export const GraficoLineTemplate = ({ data, labels, label }: Props) => {
   const theme = useTheme();
 
   const options = {
@@ -72,7 +73,7 @@ export const GraficoPaymentCredito = ({ data, labels }: Props) => {
           {
             backgroundColor: 'rgba(9,116,142,0.6)',
             data,
-            label: 'Pagos del credito',
+            label,
           },
         ],
         labels,

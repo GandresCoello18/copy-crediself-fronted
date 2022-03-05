@@ -30,6 +30,8 @@ import { PagoByCredito } from '../interfaces/Pago';
 import { TablaPagosByCreditos } from '../components/pagos/table-pagos';
 import { Sucursal } from '../interfaces/Sucursales';
 import { GetSucursales } from '../api/sucursales';
+import { FetchByDate } from './mis-comision';
+import { CurrentDate } from '../helpers/fechas';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -57,19 +59,34 @@ const PagosView = () => {
   const { token, me } = useContext(MeContext);
   const [SearchPago, setSearchPago] = useState<string>('');
   const [PagosByCreditos, setPagosByCreditos] = useState<PagoByCredito[]>([]);
+  const [dateFetch, setDateFetch] = useState<FetchByDate>({
+    dateDesde: '',
+    dateHasta: '',
+  });
   const [DataSucursales, setDataSucursales] = useState<Sucursal[]>([]);
   const [SelectSucursal, setSelectSucursal] = useState<Sucursal | undefined>(undefined);
   const [Count, setCount] = useState<number>(0);
   const [Loading, setLoading] = useState<boolean>(false);
   const [ReloadPago, setReloadPago] = useState<boolean>(false);
 
-  const fetchPagos = async (options: { page: number; idSucursal?: string }) => {
-    const { page, idSucursal } = options;
+  const fetchPagos = async (options: {
+    page: number;
+    idSucursal?: string;
+    clearDate?: boolean;
+  }) => {
+    const { page, idSucursal, clearDate } = options;
     setLoading(true);
 
     try {
       const { pagosByCreditos, pages } = await (
-        await GetPagosCreditos({ token, page, findPago: SearchPago, idSucursal })
+        await GetPagosCreditos({
+          token,
+          page,
+          findPago: SearchPago,
+          idSucursal,
+          dateDesde: clearDate ? '' : dateFetch.dateDesde,
+          dateHasta: dateFetch.dateHasta || CurrentDate(),
+        })
       ).data;
       setPagosByCreditos(pagosByCreditos);
       setLoading(false);
@@ -104,10 +121,11 @@ const PagosView = () => {
   const SelectItemPagination = (page: number) =>
     fetchPagos({ page, idSucursal: SelectSucursal?.idSucursal });
 
-  const HandleResetFilterClient = () => {
+  const HandleResetFilterPago = () => {
     setSelectSucursal(undefined);
     setSearchPago('');
-    fetchPagos({ page: 1 });
+    setDateFetch({ dateDesde: '', dateHasta: '' });
+    fetchPagos({ page: 1, clearDate: true });
   };
 
   return (
@@ -131,10 +149,10 @@ const PagosView = () => {
                               variant='outlined'
                               disabled={Loading && !PagosByCreditos.length}
                               onClick={() => {
-                                if (SearchPago) {
-                                  fetchPagos({ page: 1, idSucursal: SelectSucursal?.idSucursal });
+                                if (!SearchPago && !dateFetch.dateDesde) {
+                                  toast.info('Escribe algo o selecciona fecha para buscar');
                                 } else {
-                                  toast.info('Escribe algo para buscar');
+                                  fetchPagos({ page: 1, idSucursal: SelectSucursal?.idSucursal });
                                 }
                               }}
                               className={classes.iconButton}
@@ -150,9 +168,51 @@ const PagosView = () => {
                   </Box>
                 </Grid>
 
+                <Grid item xs={12} md={4} lg={3}>
+                  <Box display='flex' justifyContent='space-between'>
+                    <TextField
+                      id='date1'
+                      label='Desde'
+                      type='date'
+                      onChange={event =>
+                        setDateFetch({ ...dateFetch, dateDesde: event.target.value })
+                      }
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+
+                    <TextField
+                      id='date2'
+                      label='Hasta'
+                      style={{ marginLeft: 20 }}
+                      type='date'
+                      onChange={event => {
+                        if (!dateFetch.dateDesde) {
+                          toast.error('Selecciona primero la fecha de DESDE');
+                          return;
+                        }
+
+                        if (
+                          new Date(dateFetch.dateDesde).getTime() >
+                          new Date(event.target.value).getTime()
+                        ) {
+                          toast.error('La fecha DESDE tiene que ser menor que la fecha HASTA');
+                          return;
+                        }
+
+                        setDateFetch({ ...dateFetch, dateHasta: event.target.value });
+                      }}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                  </Box>
+                </Grid>
+
                 {me.idRol === 'Administrativo' ? (
                   <>
-                    <Grid item xs={12} md={3} lg={2}>
+                    <Grid item xs={12} md={2}>
                       <FormControl className={classes.formControl}>
                         <InputLabel id='demo-simple-select-label'>Sucursales</InputLabel>
                         <Select
@@ -180,12 +240,8 @@ const PagosView = () => {
                       </FormControl>
                     </Grid>
 
-                    <Grid item xs={12} md={1}>
-                      <Button
-                        color='secondary'
-                        variant='outlined'
-                        onClick={HandleResetFilterClient}
-                      >
+                    <Grid item xs={12} md={2} lg={1}>
+                      <Button color='secondary' variant='outlined' onClick={HandleResetFilterPago}>
                         Restablecer
                       </Button>
                     </Grid>

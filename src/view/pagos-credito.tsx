@@ -39,7 +39,7 @@ import { TablaPagosByCredito } from '../components/pagos/credito/table-pagos-by-
 import { Credito } from '../interfaces/Credito';
 import { DetailsCreditoPago } from '../components/pagos/details-credito-pago';
 import { Doughnut } from 'react-chartjs-2';
-import { GraficoPaymentCredito } from '../components/pagos/credito/grafico-pagos-credito';
+import { GraficoLineTemplate } from '../components/pagos/credito/grafico-line-template';
 import { DialogoScreenFull } from '../components/DialogoScreenFull';
 import { ReciboPagoView } from '../components/pagos/credito/recibo-pago';
 import { getPermisoExist } from '../helpers/renderViewMainRol';
@@ -261,7 +261,8 @@ const PagosByCreditoView = () => {
                   {Credito && Cliente && <DetailsCreditoPago credito={Credito} cliente={Cliente} />}
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <GraficoPaymentCredito
+                  <GraficoLineTemplate
+                    label='Pagos del credito'
                     data={StatisticsValue.map(item => item.valor)}
                     labels={StatisticsValue.map(item => item.mes_correspondiente)}
                   />

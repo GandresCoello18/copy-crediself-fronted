@@ -25,13 +25,17 @@ export const GetPagosCreditos = async (options: {
   token: string;
   findPago?: string;
   idSucursal?: string;
+  dateDesde?: string;
+  dateHasta?: string;
   page: number;
 }) => {
-  const { idSucursal, token, findPago, page } = options;
+  const { idSucursal, token, findPago, dateHasta, dateDesde, page } = options;
   api.defaults.headers['access-token'] = token;
   const response = await api({
     method: 'GET',
-    url: `/pago?findPago=${findPago || ''}&page=${page}&idSucursal=${idSucursal || ''}`,
+    url: `/pago?findPago=${findPago || ''}&page=${page}&idSucursal=${idSucursal || ''}&dateDesde=${
+      dateDesde || ''
+    }&dateHasta=${dateHasta || ''}`,
   });
   return response;
 };

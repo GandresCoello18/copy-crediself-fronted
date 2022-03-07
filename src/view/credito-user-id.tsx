@@ -12,14 +12,13 @@ import {
   InputAdornment,
   TextField,
   Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Typography,
+  Avatar,
+  CardHeader,
+  CircularProgress,
 } from '@material-ui/core';
 import Page from '../components/page';
 import { useState, useEffect, useContext } from 'react';
@@ -31,15 +30,16 @@ import { AxiosError } from 'axios';
 import { HandleError } from '../helpers/handleError';
 import { TablaCredito } from '../components/Creditos/table-credito';
 import { CreditoByCliente } from '../interfaces/Credito';
-import { GetCreditos } from '../api/credito';
+import { useParams } from 'react-router';
+import { GetCreditosByUser } from '../api/credito';
 import { DetailsCredito } from '../components/Creditos/details-credito';
 import { DialogoForm } from '../components/DialogoForm';
 import { FormNewPago } from '../components/pagos/new-pago';
-import { Sucursal } from '../interfaces/Sucursales';
-import { GetSucursales } from '../api/sucursales';
 import { FetchByDate } from './mis-comision';
 import { CurrentDate } from '../helpers/fechas';
 import { GraficoLineTemplate } from '../components/pagos/credito/grafico-line-template';
+import { SourceAvatar } from '../helpers/sourceAvatar';
+import { Usuario } from '../interfaces/Usuario';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -60,43 +60,44 @@ const useStyles = makeStyles(theme => ({
   btnDelete: {
     backgroundColor: theme.palette.error.main,
   },
-  containerDetails: { backgroundColor: '#fff', borderTopLeftRadius: 10, borderTopRightRadius: 10 },
+  containerDetails: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
 }));
 
-const CreditosView = () => {
+const CreditosByUserView = () => {
+  const params = useParams();
   const classes = useStyles();
-  const { token, me } = useContext(MeContext);
+  const { token } = useContext(MeContext);
+  const [User, setUser] = useState<Usuario | undefined>(undefined);
   const [SearchCredito, setSearchCliente] = useState<string>('');
   const [Statistics, setStatistics] = useState<{ value: number; created_at: string }[]>([]);
   const [Creditos, setCreditos] = useState<CreditoByCliente[]>([]);
   const [SelectCredito, setSelectCredito] = useState<CreditoByCliente | undefined>(undefined);
   const [Count, setCount] = useState<number>(0);
+  const [Sucursal, setSucursal] = useState<string>('');
   const [dateFetch, setDateFetch] = useState<FetchByDate>({
     dateDesde: '',
     dateHasta: '',
   });
-  const [DataSucursales, setDataSucursales] = useState<Sucursal[]>([]);
-  const [SelectSucursal, setSelectSucursal] = useState<Sucursal | undefined>(undefined);
   const [Loading, setLoading] = useState<boolean>(false);
   const [Expanded, setExpanded] = useState<boolean>(false);
   const [VisibleApertura, setVisibleApertura] = useState<boolean>(false);
   const [ReloadCredito, setReloadCredito] = useState<boolean>(false);
 
-  const fetchCreditos = async (options: {
-    page: number;
-    idSucursal?: string;
-    ClearDate?: boolean;
-  }) => {
-    const { page, idSucursal, ClearDate } = options;
+  const fetchCreditosByUser = async (options: { page: number; ClearDate?: boolean }) => {
+    const { page, ClearDate } = options;
     setLoading(true);
 
     try {
-      const { creditos, pages, statistics } = await (
-        await GetCreditos({
+      const { creditos, pages, statistics, user, sucursal } = await (
+        await GetCreditosByUser({
           token,
           page,
+          idUser: params.idUser,
           findCredito: SearchCredito,
-          idSucursal,
           dateDesde: ClearDate ? '' : dateFetch.dateDesde,
           dateHasta: dateFetch.dateHasta || CurrentDate(),
         })
@@ -105,6 +106,8 @@ const CreditosView = () => {
       setLoading(false);
       setCount(pages || 1);
       setStatistics(statistics);
+      setUser(user);
+      setSucursal(sucursal);
 
       if (creditos && creditos.length === 1) {
         setSelectCredito(creditos[0]);
@@ -119,40 +122,51 @@ const CreditosView = () => {
     }
   };
 
-  const fetchSucursales = async () => {
-    try {
-      const { sucursales } = await (await GetSucursales({ token, empresa: me.empresa })).data;
-      setDataSucursales(sucursales);
-    } catch (error) {
-      toast.error(HandleError(error as AxiosError));
-    }
-  };
-
   useEffect(() => {
-    fetchCreditos({ page: 1, idSucursal: SelectSucursal?.idSucursal });
+    params.idUser && fetchCreditosByUser({ page: 1 });
     setSelectCredito(undefined);
-
-    if (me.idRol === 'Administrativo' && !DataSucursales.length) {
-      fetchSucursales();
-    }
 
     if (ReloadCredito) {
       setReloadCredito(false);
     }
-  }, [ReloadCredito, SelectSucursal, me]);
+  }, [ReloadCredito, params]);
 
-  const SelectItemPagination = (page: number) =>
-    fetchCreditos({ page, idSucursal: SelectSucursal?.idSucursal });
+  const SelectItemPagination = (page: number) => fetchCreditosByUser({ page });
 
   const HandleResetFilterClient = () => {
-    setSelectSucursal(undefined);
     setSearchCliente('');
-    fetchCreditos({ page: 1, ClearDate: true });
+    fetchCreditosByUser({ page: 1, ClearDate: true });
   };
 
   return (
-    <Page className={classes.root} title='Creditos'>
+    <Page className={classes.root} title={`Creditos de ${User?.nombres} ${User?.apellidos}`}>
       <Container maxWidth='xl'>
+        <Grid container spacing={3} justify='space-between'>
+          <Grid item>
+            <h2>
+              Sucursal: <strong>{Loading && !Creditos.length ? '...' : Sucursal}</strong>
+            </h2>
+          </Grid>
+          <Grid item>
+            {Loading && !Creditos.length ? (
+              <CircularProgress />
+            ) : (
+              <Card title={User?.nombres + ' ' + User?.apellidos}>
+                <CardHeader
+                  avatar={
+                    <Avatar
+                      src={SourceAvatar(User?.avatar || '')}
+                      alt={User?.nombres}
+                      aria-label='recipe'
+                    />
+                  }
+                  title={User?.nombres + ' ' + User?.apellidos}
+                  subheader={User?.email}
+                />
+              </Card>
+            )}
+          </Grid>
+        </Grid>
         <Box mt={3}>
           <Card>
             <CardContent>
@@ -173,7 +187,7 @@ const CreditosView = () => {
                               if (!SearchCredito && !dateFetch.dateDesde) {
                                 toast.info('Escribe algo o selecciona fecha para buscar');
                               } else {
-                                fetchCreditos({ page: 1, idSucursal: SelectSucursal?.idSucursal });
+                                fetchCreditosByUser({ page: 1 });
                               }
                             }}
                             className={classes.iconButton}
@@ -231,48 +245,11 @@ const CreditosView = () => {
                     />
                   </Box>
                 </Grid>
-
-                {me.idRol === 'Administrativo' ? (
-                  <>
-                    <Grid item xs={12} md={2}>
-                      <FormControl className={classes.formControl}>
-                        <InputLabel id='demo-simple-select-label'>Sucursales</InputLabel>
-                        <Select
-                          labelId='demo-simple-select-label'
-                          style={{ width: 200 }}
-                          disabled={Loading && !Creditos.length}
-                          value={SelectSucursal?.idSucursal}
-                          id='id-sucursal-select'
-                          onChange={event => {
-                            const findSucursal = DataSucursales.find(
-                              suc => suc.idSucursal === (event.target.value as string),
-                            );
-                            setSelectSucursal(findSucursal);
-                          }}
-                        >
-                          <MenuItem value=''>
-                            <em>Ninguna</em>
-                          </MenuItem>
-                          {DataSucursales.map(suc => (
-                            <MenuItem key={suc.idSucursal} value={suc.idSucursal}>
-                              {suc.sucursal}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </Grid>
-
-                    <Grid item xs={12} md={2} lg={1}>
-                      <Button
-                        color='secondary'
-                        variant='outlined'
-                        onClick={HandleResetFilterClient}
-                      >
-                        Restablecer
-                      </Button>
-                    </Grid>
-                  </>
-                ) : null}
+                <Grid item xs={12} md={2} lg={1}>
+                  <Button color='secondary' variant='outlined' onClick={HandleResetFilterClient}>
+                    Restablecer
+                  </Button>
+                </Grid>
               </Grid>
             </CardContent>
           </Card>
@@ -280,21 +257,19 @@ const CreditosView = () => {
         <Box mt={3}>
           <Grid item xs={12}>
             <Box mt={3} mb={3}>
-              {me.idRol === 'Administrativo' || me.idRol === 'Gerente de Sucursal' ? (
-                <Accordion square expanded={Expanded} onChange={() => setExpanded(!Expanded)}>
-                  <AccordionSummary aria-controls='panel1d-content' id='panel1d-header'>
-                    <Typography>Estadisticas registro de creditos</Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <GraficoLineTemplate
-                      label='Registros de creditos'
-                      height={250}
-                      data={Statistics.map(st => st.value)}
-                      labels={Statistics.map(st => st.created_at)}
-                    />
-                  </AccordionDetails>
-                </Accordion>
-              ) : null}
+              <Accordion square expanded={Expanded} onChange={() => setExpanded(!Expanded)}>
+                <AccordionSummary aria-controls='panel1d-content' id='panel1d-header'>
+                  <Typography>Estadisticas registro de creditos</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <GraficoLineTemplate
+                    label='Registros de creditos'
+                    height={250}
+                    data={Statistics.map(st => st.value)}
+                    labels={Statistics.map(st => st.created_at)}
+                  />
+                </AccordionDetails>
+              </Accordion>
             </Box>
           </Grid>
           <Grid container spacing={3}>
@@ -308,7 +283,7 @@ const CreditosView = () => {
             </Grid>
             <Grid item xs={12} lg={4} className={classes.containerDetails}>
               <DetailsCredito
-                imgSrc='../no-data.svg'
+                imgSrc='../../../no-data.svg'
                 credito={SelectCredito}
                 setSelectCredito={setSelectCredito}
                 setVisibleApertura={setVisibleApertura}
@@ -339,4 +314,4 @@ const CreditosView = () => {
   );
 };
 
-export default CreditosView;
+export default CreditosByUserView;

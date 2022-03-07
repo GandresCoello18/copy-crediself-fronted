@@ -27,6 +27,7 @@ import PaymentIcon from '@material-ui/icons/Payment';
 import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
 import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import NavItem from './NavItem';
+import LocationCityIcon from '@material-ui/icons/LocationCity';
 import CancelIcon from '@material-ui/icons/Cancel';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import BugReportIcon from '@material-ui/icons/BugReport';
@@ -234,6 +235,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           href: '/app/mis-comisiones',
           icon: TimelineIcon,
           title: 'Comisiones usuario',
+        },
+        {
+          href: '/app/sucursales',
+          icon: LocationCityIcon,
+          title: 'Sucursales',
         },
         {
           href: '/app/notificaciones',

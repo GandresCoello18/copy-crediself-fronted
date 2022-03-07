@@ -155,13 +155,13 @@ const CalendarView = () => {
           Calendario en formato PDF.
           <br />
           <br />
-          Estos registros son actualizados automáticamente cada 1 de enero a las 1 a.m., cada vez se
+          Estos registros son actualizados automáticamente cada 1 de enero a las 1 a.m, cada vez se
           se genere por favor entrar a este modulo para verificar los datos.
           <br />
           <br />
           En tal caso que no exista registro alguno puede re generar todo manualmente, ten en cuenta
           que estos datos necesitan existir ya que en caso contrario el sistema no podría funcionar
-          Con normalidad.
+          con normalidad.
         </Alert>
       </Container>
     </Page>

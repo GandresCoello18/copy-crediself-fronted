@@ -77,6 +77,25 @@ export const GetCreditos = async (option: {
   return response;
 };
 
+export const GetCreditosByUser = async (option: {
+  token: string;
+  findCredito?: string;
+  page: number;
+  dateDesde?: string;
+  dateHasta?: string;
+  idUser: string;
+}) => {
+  const { token, findCredito, page, dateDesde, dateHasta, idUser } = option;
+  api.defaults.headers['access-token'] = token;
+  const response = await api({
+    method: 'GET',
+    url: `/credito/user/${idUser}/?findCredito=${findCredito || ''}&page=${page}&dateDesde=${
+      dateDesde || ''
+    }&dateHasta=${dateHasta || ''}`,
+  });
+  return response;
+};
+
 export const GetCreditosCliente = async (option: {
   token: string;
   findCredito?: string;

@@ -7,9 +7,10 @@ interface Props {
   data: number[];
   labels: string[];
   label: string;
+  height?: number;
 }
 
-export const GraficoLineTemplate = ({ data, labels, label }: Props) => {
+export const GraficoLineTemplate = ({ data, labels, label, height }: Props) => {
   const theme = useTheme();
 
   const options = {
@@ -79,6 +80,7 @@ export const GraficoLineTemplate = ({ data, labels, label }: Props) => {
         labels,
       }}
       width={100}
+      height={height || undefined}
       options={options}
     />
   );

@@ -84,7 +84,7 @@ export const Login = () => {
       >
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched }) => (
           <form onSubmit={handleSubmit}>
-            <CardHeader subheader='Acceso para personal de crediself' title='Iniciar sesión' />
+            <CardHeader subheader='Acceso para personal administrativo' title='Iniciar sesión' />
             <Divider />
             <CardContent>
               <Grid container spacing={3}>

@@ -16,6 +16,10 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Typography,
 } from '@material-ui/core';
 import Page from '../components/page';
 import { useState, useEffect, useContext } from 'react';
@@ -32,6 +36,7 @@ import { Sucursal } from '../interfaces/Sucursales';
 import { GetSucursales } from '../api/sucursales';
 import { FetchByDate } from './mis-comision';
 import { CurrentDate } from '../helpers/fechas';
+import { GraficoLineTemplate } from '../components/pagos/credito/grafico-line-template';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -58,6 +63,8 @@ const PagosView = () => {
   const classes = useStyles();
   const { token, me } = useContext(MeContext);
   const [SearchPago, setSearchPago] = useState<string>('');
+  const [Statistics, setStatistics] = useState<{ value: number; created_at: string }[]>([]);
+  const [Expanded, setExpanded] = useState<boolean>(false);
   const [PagosByCreditos, setPagosByCreditos] = useState<PagoByCredito[]>([]);
   const [dateFetch, setDateFetch] = useState<FetchByDate>({
     dateDesde: '',
@@ -78,7 +85,7 @@ const PagosView = () => {
     setLoading(true);
 
     try {
-      const { pagosByCreditos, pages } = await (
+      const { pagosByCreditos, pages, statistics } = await (
         await GetPagosCreditos({
           token,
           page,
@@ -91,6 +98,8 @@ const PagosView = () => {
       setPagosByCreditos(pagosByCreditos);
       setLoading(false);
       setCount(pages || 1);
+
+      setStatistics(statistics);
     } catch (error) {
       toast.error(HandleError(error as AxiosError));
       setLoading(false);
@@ -250,6 +259,23 @@ const PagosView = () => {
               </Grid>
             </CardContent>
           </Card>
+        </Box>
+        <Box mt={3}>
+          {me.idRol === 'Administrativo' ? (
+            <Accordion square expanded={Expanded} onChange={() => setExpanded(!Expanded)}>
+              <AccordionSummary aria-controls='panel1d-content' id='panel1d-header'>
+                <Typography>Estadisticas registro de pagos</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <GraficoLineTemplate
+                  label='Registros de pagos'
+                  height={250}
+                  data={Statistics.map(st => st.value)}
+                  labels={Statistics.map(st => st.created_at)}
+                />
+              </AccordionDetails>
+            </Accordion>
+          ) : null}
         </Box>
         <Box mt={3}>
           <TablaPagosByCreditos pagosByCreditos={PagosByCreditos} Loading={Loading} />

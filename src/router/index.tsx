@@ -40,11 +40,14 @@ const UsuariosView = lazy(() => import('../view/usuarios'));
 const AsesoresView = lazy(() => import('../view/asesores'));
 const NotificacionesView = lazy(() => import('../view/notificacion'));
 const ClientesView = lazy(() => import('../view/clientes'));
+const ClientesByUserView = lazy(() => import('../view/clientes-user-id'));
 const ClienteOnlyView = lazy(() => import('../view/cliente-id'));
 const ClientesAcreditacionView = lazy(() => import('../view/clientes-acreditacion'));
 const CreditosView = lazy(() => import('../view/creditos'));
 const CreditoOnlyView = lazy(() => import('../view/credito-id'));
+const CreditosByUserView = lazy(() => import('../view/credito-user-id'));
 const CreditoClienteOnlyView = lazy(() => import('../view/credito-cliente-id'));
+const SucursalesView = lazy(() => import('../view/sucursales'));
 const GastosView = lazy(() => import('../view/gastos'));
 const PagosView = lazy(() => import('../view/pagos'));
 const PagosByCreditoView = lazy(() => import('../view/pagos-credito'));
@@ -154,6 +157,16 @@ const RenderRouter = (rol: string) => {
           ]),
         },
         {
+          path: 'clientes/user/:idUser',
+          element: PathSesion(ClientesByUserView, [
+            'Director',
+            'Administrativo',
+            'Supervisor',
+            'Asesor',
+            'Gerente de Sucursal',
+          ]),
+        },
+        {
           path: 'clientes-acreditacion',
           element: PathSesion(ClientesAcreditacionView, ['Director', 'Administrativo']),
         },
@@ -169,6 +182,15 @@ const RenderRouter = (rol: string) => {
         {
           path: 'creditos/:idCredito',
           element: PathSesion(CreditoOnlyView, [
+            'Supervisor',
+            'Asesor',
+            'Gerente de Sucursal',
+            'Administrativo',
+          ]),
+        },
+        {
+          path: 'creditos/user/:idUser',
+          element: PathSesion(CreditosByUserView, [
             'Supervisor',
             'Asesor',
             'Gerente de Sucursal',
@@ -194,6 +216,7 @@ const RenderRouter = (rol: string) => {
           element: PathSesion(UsuariosView, ['Director', 'RRHH', 'Gerente Regional']),
         },
         { path: 'asesores', element: PathSesion(AsesoresView, ['Supervisor']) },
+        { path: 'sucursales', element: PathSesion(SucursalesView, ['Administrativo']) },
         { path: 'calendario', element: PathSesion(CalendarioView, ['Administrativo']) },
         { path: 'notificaciones', element: PathSesion(NotificacionesView, AllRols) },
         { path: 'reportes-error', element: PathSesion(ErrorAppView, AllRols) },

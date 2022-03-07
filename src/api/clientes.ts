@@ -48,6 +48,26 @@ export const GetClientes = async (option: {
   return response;
 };
 
+export const GetClientesByUser = async (option: {
+  token: string;
+  dateDesde?: string;
+  dateHasta?: string;
+  idUser: string;
+  findCliente?: string;
+  page: number;
+}) => {
+  const { token, idUser, findCliente, page, dateDesde, dateHasta } = option;
+
+  api.defaults.headers['access-token'] = token;
+  const response = await api({
+    method: 'GET',
+    url: `/cliente/user/${idUser}/?findCliente=${findCliente || ''}&page=${page || ''}&dateDesde=${
+      dateDesde || ''
+    }&dateHasta=${dateHasta || ''}`,
+  });
+  return response;
+};
+
 export const GetAcreditacionClientes = async (option: {
   token: string;
   findCliente?: string;

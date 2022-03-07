@@ -1,3 +1,5 @@
+import { Usuario } from './Usuario';
+
 export interface Sucursal {
   idSucursal: string;
   sucursal: string;
@@ -6,4 +8,8 @@ export interface Sucursal {
   created_at: string | Date;
   active: number;
   idEmpresa: string;
+}
+
+export interface SucursalByUser extends Sucursal {
+  users: Usuario[];
 }

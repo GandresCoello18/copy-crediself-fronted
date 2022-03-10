@@ -36,6 +36,9 @@ _Para el desarrollo de esta api rest se utilizo las siguientes herramientas._
 - [TypeScript](https://www.typescriptlang.org/) - Tipado fuerte para javascript.
 - [Cypress](https://www.cypress.io/) - Testing de punto a punto.
 
+## Testing 🧪
+![example cypress auth](https://res.cloudinary.com/cici/image/upload/v1646936705/util/cypress-gif.gif)
+
 ## Autores ✒️
 
 - **Andrés Coello** - _Developer full stack_ - [Andres Coello](https://www.instagram.com/coellogoyes/)

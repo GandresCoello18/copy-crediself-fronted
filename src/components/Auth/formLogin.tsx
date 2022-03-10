@@ -93,6 +93,7 @@ export const Login = () => {
                     error={Boolean(touched.email && errors.email)}
                     helperText={touched.email && errors.email}
                     fullWidth
+                    id='email'
                     name='email'
                     required
                     onBlur={handleBlur}
@@ -107,6 +108,7 @@ export const Login = () => {
                     helperText={touched.password && errors.password}
                     fullWidth
                     required
+                    id='password'
                     name='password'
                     onBlur={handleBlur}
                     type={visibleKey ? 'text' : 'password'}

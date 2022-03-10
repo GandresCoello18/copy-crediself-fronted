@@ -23,5 +23,5 @@
   },
   "include": [
     "src"
-, "setupTests.ts"  ]
+, "setupTests.ts", "cypress/integration/auth/auth.test.tsx"  ]
 }

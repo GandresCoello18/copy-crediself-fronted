@@ -23,6 +23,7 @@ import { Usuario } from '../../interfaces/Usuario';
 import { DialogoForm } from '../DialogoForm';
 
 interface Props {
+  active?: boolean;
   isCheckGerenteSuc: boolean;
   idCliente: string;
   token: string;
@@ -33,6 +34,7 @@ interface Props {
 }
 
 export const CheckGerenteSuc = ({
+  active,
   isCheckGerenteSuc,
   idCliente,
   token,
@@ -72,7 +74,9 @@ export const CheckGerenteSuc = ({
   const FetchAdministrativo = async () => {
     setLoadingUser(true);
     try {
-      const { usuarios } = await (await GetUserByRol({ token, name: 'Administrativo' })).data;
+      const { usuarios } = await (
+        await GetUserByRol({ token, name: 'Administrativo', idSucursal: me.idSucursal })
+      ).data;
       setUsers(usuarios);
       setLoadingUser(false);
     } catch (error) {
@@ -113,7 +117,7 @@ export const CheckGerenteSuc = ({
         variant='outlined'
         title='Marcar como revisado los documentos para comisiones'
         onClick={() => setVisibleQuestion(true)}
-        disabled={isCheckGerenteSuc || Loading}
+        disabled={active || isCheckGerenteSuc || Loading}
       >
         Revisión de documentación
       </Button>

@@ -21,6 +21,7 @@ import React, { useState, Dispatch, SetStateAction, useContext } from 'react';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { MeContext } from '../../context/contextMe';
 import { toast } from 'react-toast';
+import BlockIcon from '@material-ui/icons/Block';
 import { AxiosError } from 'axios';
 import { HandleError } from '../../helpers/handleError';
 import ImportExportIcon from '@material-ui/icons/ImportExport';
@@ -46,6 +47,9 @@ const useStyles = makeStyles(theme => ({
   avatar: {
     marginRight: theme.spacing(2),
   },
+  textGray: {
+    color: '#696969',
+  },
 }));
 
 interface Props {
@@ -54,6 +58,7 @@ interface Props {
   IdsUser: string[];
   disabledInput: DisableInputUser;
   setIdUser: Dispatch<SetStateAction<string>>;
+  setIdSucursal: Dispatch<SetStateAction<string>>;
   setIdsUser: Dispatch<SetStateAction<string[]>>;
   setDialogoDelete: Dispatch<SetStateAction<boolean>>;
   setDialogoUpdateRol: Dispatch<SetStateAction<boolean>>;
@@ -69,6 +74,7 @@ export const RowTableUser = ({
   disabledInput,
   setIdUser,
   setIdsUser,
+  setIdSucursal,
   setDialogoDelete,
   setDialogoUpdateRol,
   setDialogoAsignaUser,
@@ -172,14 +178,13 @@ export const RowTableUser = ({
                   onClick={() => {
                     setDialogoAddAsesor(true);
                     setIdUser(user.idUser);
+                    setIdSucursal(user.idSucursal || '');
                   }}
                 >
                   Añadir &nbsp; <PersonAddIcon />
                 </Button>
               </MenuItem>
-            ) : (
-              ''
-            )}
+            ) : null}
           </MenuList>
         </Menu>
       </>
@@ -191,6 +196,7 @@ export const RowTableUser = ({
       return (
         <Button
           size='small'
+          disabled={!user.active || !isActive}
           title='Eliminar rol'
           className={clases.btnDelete}
           variant='contained'
@@ -226,12 +232,16 @@ export const RowTableUser = ({
     <>
       <TableRow hover>
         <TableCell>
-          <Checkbox
-            checked={IdsUser.find(id => id === user.idUser) ? true : false}
-            disabled={!disabledInput.check}
-            onChange={check => handleCheck(check.target.checked)}
-            inputProps={{ 'aria-label': 'primary checkbox' }}
-          />
+          {!user.active || !isActive ? (
+            <BlockIcon className={clases.textGray} titleAccess='Usuario desactivado' />
+          ) : (
+            <Checkbox
+              checked={IdsUser.find(id => id === user.idUser) ? true : false}
+              disabled={!disabledInput.check}
+              onChange={check => handleCheck(check.target.checked)}
+              inputProps={{ 'aria-label': 'primary checkbox' }}
+            />
+          )}
         </TableCell>
         <TableCell>
           <Box alignItems='center' display='flex'>

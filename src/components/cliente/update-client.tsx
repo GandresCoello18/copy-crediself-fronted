@@ -109,8 +109,10 @@ export const FormUpdateCliente = ({ setReloadCliente, setVisible, cliente }: Pro
             }
           }
 
-          if (selectCity) {
-            values.ciudad = Ciudades.find(city => city.ciudad === selectCity)?.idCiudad || '';
+          const currentCity = selectCity || values.ciudad;
+
+          if (currentCity) {
+            values.ciudad = Ciudades.find(city => city.ciudad === currentCity)?.idCiudad || '';
 
             if (!values.ciudad) {
               toast.warn('Seleccione una ciudad');
@@ -135,6 +137,7 @@ export const FormUpdateCliente = ({ setReloadCliente, setVisible, cliente }: Pro
             setReloadCliente(true);
             setVisible(false);
           } catch (error) {
+            values.ciudad = Ciudades.find(city => city.ciudad === currentCity)?.ciudad || '';
             toast.error(HandleError(error as AxiosError));
           }
 
@@ -180,7 +183,6 @@ export const FormUpdateCliente = ({ setReloadCliente, setVisible, cliente }: Pro
                   />
                 </Grid>
                 <Grid item md={6} xs={12}>
-                  {console.log(values.telefono + ' cell')}
                   <TextField
                     error={Boolean(touched.telefono && errors.telefono)}
                     helperText={touched.telefono && errors.telefono}
@@ -261,16 +263,16 @@ export const FormUpdateCliente = ({ setReloadCliente, setVisible, cliente }: Pro
                   </Select>
                 </Grid>
                 <Grid item xs={12}>
+                  <strong>{values.ciudad ? `${values.ciudad} (Actual)` : ''}</strong>
                   <Autocomplete
                     id='combo-box-demo'
                     options={Ciudades}
                     getOptionLabel={option => option.ciudad}
                     getOptionSelected={(option, value) => {
-                      console.log(value.ciudad);
                       setSelectCity(value.ciudad);
                       return true;
                     }}
-                    style={{ width: '100%' }}
+                    style={{ width: '100%', marginTop: 10 }}
                     renderInput={params => (
                       <TextField
                         {...params}

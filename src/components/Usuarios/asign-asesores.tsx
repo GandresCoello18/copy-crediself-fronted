@@ -11,10 +11,11 @@ import { Usuario } from '../../interfaces/Usuario';
 interface Props {
   token: string;
   Asesores: Usuario[];
+  IdSucursal: string;
   setAsesoresSelect: Dispatch<SetStateAction<Usuario[]>>;
 }
 
-export const AsignAsesores = ({ token, Asesores, setAsesoresSelect }: Props) => {
+export const AsignAsesores = ({ token, Asesores, IdSucursal, setAsesoresSelect }: Props) => {
   const [AsesoresData, setAsesores] = useState<Usuario[]>([]);
   const [Loading, setLoading] = useState<boolean>(false);
 
@@ -23,7 +24,9 @@ export const AsignAsesores = ({ token, Asesores, setAsesoresSelect }: Props) => 
       setLoading(true);
 
       try {
-        const { asesores } = await (await GetAsesoresDisponiblesUser({ token })).data;
+        const { asesores } = await (
+          await GetAsesoresDisponiblesUser({ token, idSucursal: IdSucursal })
+        ).data;
         setAsesores(asesores);
         setLoading(false);
       } catch (error) {
@@ -33,7 +36,7 @@ export const AsignAsesores = ({ token, Asesores, setAsesoresSelect }: Props) => 
     };
 
     fetchAsesores();
-  }, [token]);
+  }, [token, IdSucursal]);
 
   return Loading ? (
     <>

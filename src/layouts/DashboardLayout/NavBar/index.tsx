@@ -281,6 +281,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           title: 'Asesores',
         },
         {
+          href: '/app/notificaciones',
+          icon: NotificationsActiveIcon,
+          title: 'Notificaciones',
+        },
+        {
           href: '/app/account',
           icon: PersonIcon,
           title: 'Mi cuenta',
@@ -303,6 +308,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           href: '/app/mis-comisiones',
           icon: TimelineIcon,
           title: 'Mis comisiones',
+        },
+        {
+          href: '/app/notificaciones',
+          icon: NotificationsActiveIcon,
+          title: 'Notificaciones',
         },
         {
           href: '/app/account',

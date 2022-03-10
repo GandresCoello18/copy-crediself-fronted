@@ -66,6 +66,7 @@ export const TableUser = ({ usuarios, Loading, IdsUser, setReloadUser, setIdsUse
   const classes = useStyles();
   const { token, me } = useContext(MeContext);
   const [IdUser, setIdUser] = useState<string>('');
+  const [IdSucursal, setIdSucursal] = useState<string>('');
   const [AsesoresSelect, setAsesoresSelect] = useState<Usuario[]>([]);
   const [disableInputUser] = useState<DisableInputUser>({
     check: getPermisoExist({ RolName: me.idRol, permiso: 'DelUsers' }),
@@ -99,6 +100,7 @@ export const TableUser = ({ usuarios, Loading, IdsUser, setReloadUser, setIdsUse
         setAceptDialog(false);
         setDialogoDelete(false);
         setIdUser('');
+        setIdSucursal('');
       } catch (error) {
         toast.error(HandleError(error as AxiosError));
       }
@@ -110,8 +112,13 @@ export const TableUser = ({ usuarios, Loading, IdsUser, setReloadUser, setIdsUse
   useEffect(() => {
     if (!DialogoDelete) {
       setIdUser('');
+      setIdSucursal('');
     }
-  }, [DialogoDelete]);
+
+    if (!DialogoAddAsesor) {
+      setIdSucursal('');
+    }
+  }, [DialogoDelete, DialogoAddAsesor]);
 
   const RemoveAsesorSelect = (idUser: string) => {
     const filterAsesor = AsesoresSelect.filter(user => user.idUser !== idUser);
@@ -192,6 +199,7 @@ export const TableUser = ({ usuarios, Loading, IdsUser, setReloadUser, setIdsUse
                       IdsUser={IdsUser}
                       setIdUser={setIdUser}
                       setIdsUser={setIdsUser}
+                      setIdSucursal={setIdSucursal}
                       setDialogoDelete={setDialogoDelete}
                       setDialogoUpdateRol={setDialogoUpdateRol}
                       setDialogoAsignaUser={setDialogoAsignaUser}
@@ -250,6 +258,7 @@ export const TableUser = ({ usuarios, Loading, IdsUser, setReloadUser, setIdsUse
       >
         <AsignAsesores
           token={token}
+          IdSucursal={IdSucursal}
           Asesores={AsesoresSelect}
           setAsesoresSelect={setAsesoresSelect}
         />
@@ -258,7 +267,7 @@ export const TableUser = ({ usuarios, Loading, IdsUser, setReloadUser, setIdsUse
           <Chip
             key={user.idUser}
             style={{ margin: 5 }}
-            avatar={<Avatar alt='Natacha' src={SourceAvatar(user.avatar || '')} />}
+            avatar={<Avatar alt={user.nombres} src={SourceAvatar(user.avatar || '')} />}
             label={user.nombres}
             title={`${user.nombres} ${user.apellidos}`}
             onDelete={() => RemoveAsesorSelect(user.idUser)}

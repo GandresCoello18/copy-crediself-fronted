@@ -87,20 +87,27 @@ export const GetNotRolUser = async (options: { token: string }) => {
   return response;
 };
 
-export const GetUserByRol = async (options: { token: string; name: string }) => {
+export const GetUserByRol = async (options: {
+  token: string;
+  name: string;
+  idSucursal?: string;
+}) => {
   api.defaults.headers['access-token'] = options.token;
   const response = await api({
     method: 'GET',
-    url: `/users/rol/${options.name}`,
+    url: `/users/rol/${options.name}?idSucursal=${options.idSucursal || ''}`,
   });
   return response;
 };
 
-export const GetAsesoresDisponiblesUser = async (options: { token: string }) => {
+export const GetAsesoresDisponiblesUser = async (options: {
+  token: string;
+  idSucursal?: string;
+}) => {
   api.defaults.headers['access-token'] = options.token;
   const response = await api({
     method: 'GET',
-    url: '/users/asesores/available',
+    url: `/users/asesores/available?idSucursal=${options.idSucursal || ''}`,
   });
   return response;
 };

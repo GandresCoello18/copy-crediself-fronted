@@ -24,6 +24,7 @@ import { UploadImage } from '../UploadImage';
 import { bytesToSize } from '../../helpers/file';
 
 interface Props {
+  active?: number;
   token: string;
   idCliente: string;
   setReloadCliente: Dispatch<SetStateAction<boolean>>;
@@ -49,7 +50,7 @@ const useStyles = makeStyles(theme =>
   }),
 );
 
-export const UploadExpediente = ({ token, idCliente, setReloadCliente }: Props) => {
+export const UploadExpediente = ({ active, token, idCliente, setReloadCliente }: Props) => {
   const classes = useStyles();
   const [images, setImages] = useState<ImageListType>([]);
   const [fileUpload, setFileUpload] = useState<FileList | null>(null);
@@ -197,7 +198,7 @@ export const UploadExpediente = ({ token, idCliente, setReloadCliente }: Props) 
         <Grid item xs={12} md={IsUploadExp ? 6 : 12}>
           <Button
             variant='contained'
-            disabled={Loading}
+            disabled={!active || Loading}
             onClick={handleUploadExpediente}
             color='primary'
             fullWidth

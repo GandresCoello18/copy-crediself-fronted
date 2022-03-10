@@ -19,6 +19,7 @@ import React, { useState, Dispatch, SetStateAction, useContext } from 'react';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { Link } from 'react-router-dom';
 import { MeContext } from '../../context/contextMe';
+import BlockIcon from '@material-ui/icons/Block';
 import { toast } from 'react-toast';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import PostAddIcon from '@material-ui/icons/PostAdd';
@@ -42,6 +43,9 @@ const useStyles = makeStyles((theme: any) => ({
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
     overflow: 'hidden',
+  },
+  textGray: {
+    color: '#696969',
   },
 }));
 
@@ -129,6 +133,7 @@ export const RowTableClient = ({
                     title='Solicitar credito'
                     variant='outlined'
                     fullWidth
+                    disabled={!cliente.active || !isActive}
                     onClick={() => {
                       setIdCliente(cliente.idCliente);
                       setDialogoCredit(true);
@@ -142,6 +147,7 @@ export const RowTableClient = ({
                     size='small'
                     title='Eliminar Cliente'
                     fullWidth
+                    disabled={!cliente.active || !isActive}
                     variant='outlined'
                     onClick={() => {
                       setDialogoDelete(true);
@@ -162,7 +168,15 @@ export const RowTableClient = ({
   return (
     <>
       <TableRow hover>
-        <TableCell>{cliente.nombres}</TableCell>
+        <TableCell>
+          {!cliente.active ||
+            (!isActive && (
+              <BlockIcon className={clases.textGray} titleAccess='Cliente desactivado' />
+            ))}{' '}
+          <span className={!cliente.active || !isActive ? clases.textGray : ''}>
+            {cliente.nombres}
+          </span>
+        </TableCell>
         <TableCell>{cliente.apellidos}</TableCell>
         <TableCell>{cliente.email}</TableCell>
         <TableCell>{cliente.telefono || <Chip label='None' color='primary' />}</TableCell>

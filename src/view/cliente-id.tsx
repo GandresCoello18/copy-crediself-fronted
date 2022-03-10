@@ -23,6 +23,7 @@ import { useParams } from 'react-router';
 import { AxiosError } from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { HandleError } from '../helpers/handleError';
+import BlockIcon from '@material-ui/icons/Block';
 import { DialogoForm } from '../components/DialogoForm';
 import {
   DeleteCliente,
@@ -41,6 +42,7 @@ import { CardFile } from '../components/cliente/card-file';
 import { Usuario } from '../interfaces/Usuario';
 import { CheckGerenteSuc } from '../components/cliente/CheckGerenteSuc';
 import { CheckeSupervisor } from '../components/cliente/CheckSupervisor';
+import { NotificationSupervisor } from '../components/cliente/NotificationSupervisor';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -66,6 +68,7 @@ const useStyles = makeStyles(theme => ({
   },
   subTitle: {
     color: '#696969',
+    marginTop: 4,
   },
   cardNumber: {
     padding: 25,
@@ -205,27 +208,16 @@ const ClientOnlyView = () => {
 
   const RenderEdit = () => {
     return (
-      <>
-        <Grid item>
-          <Button
-            variant='outlined'
-            disabled={Loading}
-            onClick={() => setVisibleUpdate(true)}
-            className={classes.btnEdit}
-          >
-            Editar
-          </Button>
-        </Grid>
-        {/*<Grid item>
-          <Button
-            variant='outlined'
-            onClick={() => setDialogoDelete(true)}
-            className={classes.btnDelete}
-          >
-            Desactivar
-          </Button>
-        </Grid>*/}
-      </>
+      <Grid item>
+        <Button
+          variant='outlined'
+          disabled={!Cliente?.active || Loading}
+          onClick={() => setVisibleUpdate(true)}
+          className={classes.btnEdit}
+        >
+          Editar
+        </Button>
+      </Grid>
     );
   };
 
@@ -251,7 +243,16 @@ const ClientOnlyView = () => {
     return (
       <Grid container spacing={3} justify='space-around'>
         <Grid item xs={12} md={4} className={classes.bgWhite}>
-          <h4>Información</h4>
+          <Box display='flex' alignItems='center' justifyContent='space-between'>
+            <h4>Información</h4>
+            {!Loading && !Cliente?.active && (
+              <Chip
+                icon={<BlockIcon style={{ color: 'red' }} />}
+                label='Desactivado'
+                style={{ backgroundColor: '#f4bec3' }}
+              />
+            )}
+          </Box>
           <br />
           <Divider />
           <br />
@@ -376,7 +377,7 @@ const ClientOnlyView = () => {
           </Box>
 
           <Box mt={2}>
-            <strong className={classes.subTitle}>Datos del cliente confirmados</strong>
+            <strong className={classes.subTitle}>Datos confirmados por el cliente</strong>
             {Loading ? (
               <Skeleton variant='text' width={300} height={20} />
             ) : (
@@ -567,6 +568,7 @@ const ClientOnlyView = () => {
             <Grid item xs={12}>
               <br />
               <UploadExpediente
+                active={Cliente?.active}
                 token={token}
                 idCliente={params.idCliente}
                 setReloadCliente={setReloadCliente}
@@ -591,7 +593,9 @@ const ClientOnlyView = () => {
             <Grid item>
               {me.idRol === 'Administrativo' && Cliente?.checkSupervisor && (
                 <Button
-                  disabled={!Archivos.length || Cliente?.autorizado ? true : false}
+                  disabled={
+                    !Cliente?.active || !Archivos.length || Cliente?.autorizado ? true : false
+                  }
                   variant='outlined'
                   title='Marcar como revisado y autorización de comisiones'
                   onClick={handleAutorizar}
@@ -608,13 +612,24 @@ const ClientOnlyView = () => {
                   clientRefNombres={`${Cliente?.nombres} ${Cliente?.apellidos}`}
                   me={me}
                   setReloadCliente={setReloadCliente}
-                  disabled={!Archivos.length}
+                  disabled={!Cliente?.active || !Archivos.length}
+                />
+              )}
+
+              {me.idRol === 'Asesor' && (
+                <NotificationSupervisor
+                  token={token}
+                  idCliente={params.idCliente}
+                  clientRefNombres={`${Cliente?.nombres} ${Cliente?.apellidos}`}
+                  me={me}
+                  active={!Cliente?.active || !Archivos.length}
                 />
               )}
 
               {me.idRol === 'Gerente de Sucursal' && (
                 <CheckGerenteSuc
                   token={token}
+                  active={!Cliente?.active}
                   idCliente={params.idCliente}
                   isCheckGerenteSuc={!Archivos.length || Cliente?.checkGerenteSuc ? true : false}
                   clientRefNombres={Cliente?.nombres || ''}
@@ -627,6 +642,7 @@ const ClientOnlyView = () => {
               {!Cliente?.checkDataClient && (
                 <Button
                   variant='outlined'
+                  disabled={!Cliente?.active}
                   title='Revision de datos personales por parte del cliente'
                   onClick={NotificarClient}
                 >
@@ -634,9 +650,10 @@ const ClientOnlyView = () => {
                 </Button>
               )}
             </Grid>
-            {!Cliente?.checkSupervisor && me.idRol == 'Supervisor' && RenderEdit()}
-            {!Cliente?.checkGerenteSuc && me.idRol == 'Gerente de Sucursal' && RenderEdit()}
-            {me.idRol === 'Administrativo' && RenderEdit()}
+            {!Cliente?.checkGerenteSuc &&
+              (me.idRol === 'Supervisor' || me.idRol === 'Asesor') &&
+              RenderEdit()}
+            {(me.idRol === 'Administrativo' || me.idRol === 'Gerente de Sucursal') && RenderEdit()}
           </Grid>
         </Grid>
       </Grid>
@@ -644,7 +661,7 @@ const ClientOnlyView = () => {
   };
 
   return (
-    <Page className={classes.root} title='Detalles de Cliente'>
+    <Page className={classes.root} title={`Detalles de ${Cliente?.nombres} ${Cliente?.apellidos}`}>
       <Container maxWidth='xl'>
         <Box mt={3}>{RenderDetailsClient()}</Box>
       </Container>

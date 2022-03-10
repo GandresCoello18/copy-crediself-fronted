@@ -1,19 +1,10 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import {
-  Avatar,
-  Button,
-  Chip,
-  Box,
-  CircularProgress,
-  TextField,
-  Typography,
-} from '@material-ui/core';
+import { Avatar, Button, Chip, CircularProgress, TextField, Typography } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import { AxiosError } from 'axios';
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { useState } from 'react';
 import { toast } from 'react-toast';
 import { BASE_FRONTEND } from '../../api';
-import { UpdatecheckSupervisorCliente } from '../../api/clientes';
 import { NewNoti, NewNotificacion } from '../../api/notificacion';
 import { GetUserByRol } from '../../api/users';
 import { Me } from '../../context/contextMe';
@@ -23,65 +14,45 @@ import { Usuario } from '../../interfaces/Usuario';
 import { DialogoForm } from '../DialogoForm';
 
 interface Props {
-  disabled: boolean;
-  isCheckSupervisor: boolean;
+  active?: boolean;
   idCliente: string;
-  me: Me;
   token: string;
+  me: Me;
   clientRefNombres: string;
-  setReloadCliente: Dispatch<SetStateAction<boolean>>;
 }
 
-export const CheckeSupervisor = ({
-  disabled,
-  isCheckSupervisor,
+export const NotificationSupervisor = ({
+  active,
   idCliente,
-  me,
   token,
+  me,
   clientRefNombres,
-  setReloadCliente,
 }: Props) => {
-  const [Loading, setLoading] = useState<boolean>(false);
   const [LoadingNoti, setLoadingNoti] = useState<boolean>(false);
   const [LoadignUser, setLoadingUser] = useState<boolean>(false);
   const [SelectUser, setSelectUser] = useState<Usuario | undefined>(undefined);
   const [Visible, setVisible] = useState<boolean>(false);
-  const [VisibleQuestion, setVisibleQuestion] = useState<boolean>(false);
   const [Users, setUsers] = useState<Usuario[]>([]);
 
-  const HanldeUpdateCheck = async (isNotificar: boolean) => {
-    setLoading(true);
-    const check = isCheckSupervisor ? false : true;
-
-    try {
-      await UpdatecheckSupervisorCliente({ token, check, idCliente });
-      setLoading(false);
-      setReloadCliente(true);
-    } catch (error) {
-      setLoading(false);
-      toast.error(HandleError(error as AxiosError));
-    }
-
-    if (isNotificar) {
-      FetchGerenteSucursal();
-      setVisible(true);
-    }
-
-    setVisibleQuestion(false);
-  };
-
-  const FetchGerenteSucursal = async () => {
+  const FetchSupervisores = async () => {
     setLoadingUser(true);
+
     try {
       const { usuarios } = await (
-        await GetUserByRol({ token, name: 'Gerente de Sucursal', idSucursal: me.idSucursal })
+        await GetUserByRol({ token, name: 'Supervisor', idSucursal: me.idSucursal })
       ).data;
+
       setUsers(usuarios);
       setLoadingUser(false);
+      setVisible(true);
     } catch (error) {
       toast.error(HandleError(error as AxiosError));
       setLoadingUser(false);
     }
+  };
+
+  const handleDelete = () => {
+    setSelectUser(undefined);
   };
 
   const sendNotification = async () => {
@@ -91,8 +62,8 @@ export const CheckeSupervisor = ({
       const notificacion: NewNoti = {
         sendingUser: me.idUser,
         receiptUser: SelectUser?.idUser || '',
-        title: `${me.nombres.toUpperCase()} ${me.apellidos.toUpperCase()} te invita ha revisar la documentación de un cliente.`,
-        body: `Hola ${SelectUser?.nombres}, requiero que sea revisado los documentos del cliente ${clientRefNombres}.`,
+        title: `${me.nombres.toUpperCase()} ${me.apellidos.toUpperCase()} te invita ha revisar los datos de un cliente.`,
+        body: `Hola ${SelectUser?.nombres}, requiero que sea revisado los datos del cliente: ${clientRefNombres}.`,
         link: `${BASE_FRONTEND}/app/clientes/${idCliente}`,
       };
 
@@ -106,19 +77,15 @@ export const CheckeSupervisor = ({
     }
   };
 
-  const handleDelete = () => {
-    setSelectUser(undefined);
-  };
-
   return (
     <>
       <Button
-        disabled={disabled || Loading}
-        title='Marcar como revisado los documentos y datos'
         variant='outlined'
-        onClick={() => setVisibleQuestion(true)}
+        title='Notifica al supervisor para revición del cliente'
+        onClick={FetchSupervisores}
+        disabled={active || LoadignUser}
       >
-        Validación de documentos y datos
+        Notificar a supervisor
       </Button>
 
       <DialogoForm Open={Visible} setOpen={setVisible} title='Selecciona el usuario a notificar'>
@@ -141,10 +108,10 @@ export const CheckeSupervisor = ({
                 <TextField
                   {...params}
                   fullWidth
-                  label='Gerentes de sucursal'
-                  disabled={Loading}
+                  label='Supervisores'
+                  disabled={LoadignUser}
                   variant='outlined'
-                  placeholder={'Seleccione el gerente sucursal'}
+                  placeholder={'Seleccione el supervisor'}
                 />
               )}
             />
@@ -154,6 +121,12 @@ export const CheckeSupervisor = ({
             {SelectUser && (
               <>
                 <Typography>
+                  Notificar la autorización del cliente{' '}
+                  <Chip
+                    avatar={<Avatar alt={clientRefNombres} src={SourceAvatar('')} />}
+                    label={clientRefNombres}
+                  />{' '}
+                  ha:{' '}
                   <Chip
                     avatar={
                       <Avatar
@@ -174,28 +147,12 @@ export const CheckeSupervisor = ({
                   variant='outlined'
                   fullWidth
                 >
-                  Enviar solicitud de autorización
+                  Enviar solicitud de a supervisor
                 </Button>
               </>
             )}
           </>
         )}
-      </DialogoForm>
-
-      <DialogoForm
-        Open={VisibleQuestion}
-        setOpen={setVisibleQuestion}
-        title='¿Quires notificar a un Gerente Sucursal?'
-      >
-        <Box p={3} display='flex' justifyContent='space-between'>
-          <Button onClick={() => HanldeUpdateCheck(true)} variant='outlined' fullWidth>
-            Si
-          </Button>
-
-          <Button onClick={() => HanldeUpdateCheck(false)} variant='outlined' fullWidth>
-            No
-          </Button>
-        </Box>
       </DialogoForm>
     </>
   );

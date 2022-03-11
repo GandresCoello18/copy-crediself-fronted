@@ -26,6 +26,8 @@ describe('Visit login', () => {
     const buttonEntrar = '.jss21 > .MuiButtonBase-root';
     cy.get(buttonEntrar).click();
 
+    // FETCH API REST
+
     cy.intercept('/api/pago?findPago=&page=1&idSucursal=&dateDesde=&dateHasta=2022-03-10').as(
       'pago',
     );

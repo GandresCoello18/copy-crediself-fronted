@@ -57,6 +57,9 @@
       "last 1 safari version"
     ]
   },
+  "standard": {
+    "global": ["beforeAll"]
+  },
   "devDependencies": {
     "@cypress/react": "^5.9.2",
     "@cypress/webpack-dev-server": "^1.4.0",

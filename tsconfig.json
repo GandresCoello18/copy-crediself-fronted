@@ -22,6 +22,5 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src"
-, "setupTests.ts", "cypress/integration/auth/auth.test.tsx"  ]
+    "src", "setupTests.ts", "cypress/integration/auth/auth.test.tsx"  ]
 }

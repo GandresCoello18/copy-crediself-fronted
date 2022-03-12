@@ -146,6 +146,7 @@ export const Login = () => {
                   color='secondary'
                   disabled={isSubmitting}
                   fullWidth
+                  id='enterLogin'
                   size='large'
                   type='submit'
                   variant='contained'

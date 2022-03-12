@@ -138,9 +138,7 @@ const UsuariosView = () => {
                       Eliminar &nbsp; <strong> {IdsUser.length} </strong> &nbsp; usuarios{' '}
                       <DeleteIcon />
                     </Button>
-                  ) : (
-                    ''
-                  )}
+                  ) : null}
                 </Grid>
               </Grid>
             </CardContent>

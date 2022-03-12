@@ -11,7 +11,7 @@ export const RenderMainViewRol = (Rol: string) => {
     case 'Gerente de Sucursal':
       return '/app/clientes';
     case 'Administrativo':
-      return '/app/pagos';
+      return '/app/clientes';
     case 'Supervisor':
       return '/app/clientes';
     case 'Asesor':

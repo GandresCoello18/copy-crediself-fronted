@@ -11,7 +11,6 @@ const credencialesAuth = {
 // options menu
 const Detalles =
   '[style="position: fixed; z-index: 1300; inset: 0px;"] > .MuiPaper-root > .MuiMenu-list > .MuiList-root > :nth-child(2) > a > .MuiButtonBase-root';
-// const Solicitar = ':nth-child(3) > a > .MuiButtonBase-root';
 // const Eliminar = ':nth-child(4) > a > .MuiButtonBase-root';
 
 export const CurrentDate = (myDate?: Date) => {
@@ -33,24 +32,13 @@ export const CurrentDate = (myDate?: Date) => {
 describe('Usuario Asesor', () => {
   before(() => cy.viewport(1800, 1000));
 
-  it('Iniciar sesion', () => {
+  it.skip('Iniciar sesion', () => {
     cy.visit(`${BASE_FRONTEND}/login`);
 
-    const inputEmail =
-      ':nth-child(1) > .MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input';
-
-    cy.get(inputEmail).type(credencialesAuth.email);
-
-    const inputPassword =
-      ':nth-child(2) > .MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input';
-
-    cy.get(inputPassword).type(credencialesAuth.password);
-
-    const buttonEntrar = '.jss21 > .MuiButtonBase-root';
-    cy.get(buttonEntrar).click();
+    cy.loginUser(credencialesAuth.email, credencialesAuth.password);
   });
 
-  it('Section get clientes asesor', () => {
+  it.skip('Section get clientes asesor', () => {
     const btnSearch = '.MuiInputAdornment-root > .MuiButtonBase-root';
 
     // FETCH API REST
@@ -68,17 +56,11 @@ describe('Usuario Asesor', () => {
       cy.get(inputSearch).type('miCorreo@gmail.com');
 
       cy.get(btnSearch).click();
-
-      /*cy.intercept(
-        `/api/cliente?findCliente=miCorreo@gmail.comc&page=1&idSucursal=&dateDesde=2022-01-10&dateHasta=${CurrentDate()}`,
-      ).as('filterClientes');
-
-      cy.wait('@filterClientes');*/
     });
   });
 
-  it('New clientes asesor', () => {
-    const btnNewClient = '.jss90 > .MuiButtonBase-root';
+  it.skip('New clientes asesor', () => {
+    const btnNewClient = '#newClient';
     cy.get(btnNewClient).click();
 
     const titleModalNewClient = '.MuiCardHeader-content > .MuiTypography-root';
@@ -117,7 +99,7 @@ describe('Usuario Asesor', () => {
     cy.wait('@newClientes');
   });
 
-  it('Opcion detalle usuario', () => {
+  it.skip('Opcion detalle usuario', () => {
     const tresPuntosUsuario =
       ':nth-child(1) > :nth-child(10) > .MuiButtonBase-root > .MuiIconButton-label > .MuiSvgIcon-root';
 
@@ -127,7 +109,7 @@ describe('Usuario Asesor', () => {
 
     cy.get(Detalles).click();
 
-    const btnNotificarCliente = '.MuiGrid-justify-xs-space-around > :nth-child(2) > [tabindex="0"]';
+    const btnNotificarCliente = '#notificarCLiente';
 
     if (cy.get(btnNotificarCliente).should('be.visible')) {
       cy.get(btnNotificarCliente).click();
@@ -154,17 +136,71 @@ describe('Usuario Asesor', () => {
         cy.wait('@editCliente');
       });
     }
-
-    cy.go('back');
   });
 
-  it('Cerrar sesion', () => {
-    const menuLateral = '.MuiToolbar-root > :nth-child(4)';
+  it.skip('Option credito cliente', () => {
+    const btnCreditos = 'a > .MuiButtonBase-root';
+    cy.get(btnCreditos).click();
 
-    cy.get(menuLateral).click();
+    cy.location().then(location => {
+      const hrefDivide = location.href.split('/');
 
-    const OptionCerrarSesion = '.jss78 > .MuiButtonBase-root';
+      cy.intercept(
+        `/api/credito/cliente/${hrefDivide[hrefDivide.length - 1]}?findCredito=&page=1`,
+      ).as('getCretidos');
 
-    cy.get(OptionCerrarSesion).click();
+      cy.wait('@getCretidos');
+    });
+
+    const btnNewCredit = '#newCredit';
+    cy.get(btnNewCredit).click();
+
+    const headerNewCredito =
+      '[style="position: fixed; z-index: 1300; inset: 0px;"] > .MuiDialog-container > .MuiDialog-paper > .MuiDialogContent-root > #alert-dialog-description > .MuiPaper-root > form > .MuiCardHeader-root > .MuiCardHeader-content > .MuiTypography-root';
+
+    cy.get(headerNewCredito).should('have.text', 'Crear nuevo credito');
+
+    const selectTypeCredit =
+      '[style="position: fixed; z-index: 1300; inset: 0px;"] > .MuiDialog-container > .MuiDialog-paper > .MuiDialogContent-root > #alert-dialog-description > .MuiPaper-root > form > .MuiCardContent-root > .MuiGrid-container > :nth-child(1) > .MuiInputBase-root > #demo-simple-select-outlined';
+    cy.get(selectTypeCredit).click();
+    cy.get('.MuiList-root').contains('Bic').click();
+
+    const inputMonto =
+      '[style="position: fixed; z-index: 1300; inset: 0px;"] > .MuiDialog-container > .MuiDialog-paper > .MuiDialogContent-root > #alert-dialog-description > .MuiPaper-root > form > .MuiCardContent-root > .MuiGrid-container > :nth-child(2) > .MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input';
+    cy.get(inputMonto).type('25000');
+
+    const btnSubmit =
+      '[style="position: fixed; z-index: 1300; inset: 0px;"] > .MuiDialog-container > .MuiDialog-paper > .MuiDialogContent-root > #alert-dialog-description > .MuiPaper-root > form > .MuiBox-root > .MuiButtonBase-root';
+    cy.get(btnSubmit).click();
+
+    cy.intercept('/api/creditos').as('newCretido');
+
+    cy.wait('@newCretido');
+  });
+
+  it.skip('Option eliminar client', () => {
+    cy.go('back').then(() => {
+      cy.location().then(location => {
+        const hrefDivide = location.href.split('/');
+
+        cy.intercept(`/api/cliente/${hrefDivide[hrefDivide.length - 1]}`).as('getCliente');
+
+        cy.wait('@getCliente');
+      });
+    });
+
+    const btnEliminar = '#DeleteEliminar';
+    cy.get(btnEliminar).click();
+
+    const modalDeleteClient =
+      '[style="position: fixed; z-index: 1300; inset: 0px;"] > .MuiDialog-container > .MuiPaper-root > #alert-dialog-title > .MuiTypography-root';
+    cy.get(modalDeleteClient).should('have.text', 'Aviso importante');
+
+    const btnAceptar = '.MuiDialogActions-root > .MuiButton-containedSecondary';
+    cy.get(btnAceptar).click();
+  });
+
+  it.skip('Cerrar sesion', () => {
+    cy.CerrarSesion();
   });
 });

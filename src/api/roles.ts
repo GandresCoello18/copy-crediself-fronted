@@ -2,6 +2,7 @@ import { api } from '.';
 
 export const GetRoles = async (option: { token?: string }) => {
   api.defaults.headers['access-token'] = option.token;
+  console.log('fetchRoles');
   const response = await api({
     method: 'GET',
     url: '/rol',

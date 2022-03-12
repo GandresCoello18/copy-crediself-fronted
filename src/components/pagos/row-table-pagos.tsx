@@ -78,7 +78,7 @@ export const RowTablePagosByCreditos = ({ pagosByCredito, isModal }: Props) => {
             },
           }}
         >
-          <MenuList>
+          <MenuList id='menu-list-pago'>
             <MenuItem selected={false} onClick={OnClose}>
               <Link to={`/app/pagos/credito/${pagosByCredito.credito.idCredito}`}>
                 <Button size='small' title='Ver pagos del credito' fullWidth variant='outlined'>

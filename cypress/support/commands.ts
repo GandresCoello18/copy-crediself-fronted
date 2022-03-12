@@ -23,3 +23,32 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('loginUser', (email, password) => {
+  const inputEmail =
+    ':nth-child(1) > .MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input';
+
+  cy.get(inputEmail).type(email);
+
+  const inputPassword =
+    ':nth-child(2) > .MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input';
+
+  cy.get(inputPassword).type(password);
+
+  const buttonEntrar = '#enterLogin';
+  cy.get(buttonEntrar).click();
+});
+
+Cypress.Commands.add('BtnMenuLateral', () => {
+  const menuLateral = '#menuLateral';
+  if (cy.get(menuLateral).should('be.visible')) {
+    cy.get(menuLateral).click({ force: true });
+  }
+});
+
+Cypress.Commands.add('CerrarSesion', () => {
+  cy.BtnMenuLateral();
+
+  const OptionCerrarSesion = '#optionCloseSesion';
+  cy.get(OptionCerrarSesion).click();
+});

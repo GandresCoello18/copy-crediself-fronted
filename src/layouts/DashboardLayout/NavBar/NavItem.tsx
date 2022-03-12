@@ -39,10 +39,11 @@ interface Props {
   click: () => void;
   href: string;
   icon: any;
+  id: string;
   title: string;
 }
 
-const NavItem = ({ click, href, icon: Icon, title, ...rest }: Props) => {
+const NavItem = ({ click, href, icon: Icon, id, title, ...rest }: Props) => {
   const classes = useStyles();
 
   return (
@@ -51,6 +52,7 @@ const NavItem = ({ click, href, icon: Icon, title, ...rest }: Props) => {
         onClick={() => click()}
         activeClassName={classes.active}
         className={classes.button}
+        id={id}
         component={RouterLink}
         to={href}
       >

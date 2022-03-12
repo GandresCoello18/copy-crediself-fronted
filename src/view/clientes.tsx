@@ -145,7 +145,12 @@ const ClientesView = () => {
       <Container maxWidth='xl'>
         {getPermisoExist({ RolName: me.idRol, permiso: 'NewCliente' }) ? (
           <Box display='flex' justifyContent='flex-end'>
-            <Button color='secondary' variant='contained' onClick={() => setVisible(true)}>
+            <Button
+              id='newClient'
+              color='secondary'
+              variant='contained'
+              onClick={() => setVisible(true)}
+            >
               Nuevo cliente
             </Button>
           </Box>
@@ -156,6 +161,7 @@ const ClientesView = () => {
               <Grid container spacing={4}>
                 <Grid item xs={12} md={5}>
                   <TextField
+                    id='inputSearchCliente'
                     disabled={Loading && !Clientes.length}
                     fullWidth
                     onChange={event => setSearchCliente(event.target.value)}
@@ -258,6 +264,7 @@ const ClientesView = () => {
 
                     <Grid item xs={12} md={2} lg={1}>
                       <Button
+                        id='restablecerFilterClient'
                         color='secondary'
                         variant='outlined'
                         onClick={HandleResetFilterClient}
@@ -301,9 +308,11 @@ const ClientesView = () => {
         </Box>
       </Container>
 
-      <DialogoForm Open={Visible} setOpen={setVisible} title=''>
-        <FormNewCliente setReloadCliente={setReloadCliente} setVisible={setVisible} />
-      </DialogoForm>
+      {getPermisoExist({ RolName: me.idRol, permiso: 'NewCliente' }) ? (
+        <DialogoForm Open={Visible} setOpen={setVisible} title=''>
+          <FormNewCliente setReloadCliente={setReloadCliente} setVisible={setVisible} />
+        </DialogoForm>
+      ) : null}
     </Page>
   );
 };

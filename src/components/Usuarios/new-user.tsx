@@ -78,33 +78,33 @@ export const FormNewUser = ({ setReloadUser, setVisible }: Props) => {
     }
   }, [isReferido, dialogo, SelectUser]);
 
+  const fetchRoles = async () => {
+    try {
+      const { roles } = await (await GetRoles({ token })).data;
+
+      if (me.idRol === 'RRHH' && roles?.length) {
+        setRoles(roles.filter((item: Rol) => item.rol !== 'RRHH'));
+      } else {
+        setRoles(roles);
+      }
+    } catch (error) {
+      toast.error(HandleError(error as AxiosError));
+    }
+  };
+
+  const fetchSucursales = async () => {
+    try {
+      const { sucursales } = await (await GetSucursales({ token })).data;
+      setSucursales(sucursales);
+    } catch (error) {
+      toast.error(HandleError(error as AxiosError));
+    }
+  };
+
   useEffect(() => {
-    const fetchRoles = async () => {
-      try {
-        const { roles } = await (await GetRoles({ token })).data;
-
-        if (me.idRol === 'RRHH' && roles?.length) {
-          setRoles(roles.filter((item: Rol) => item.rol !== 'RRHH'));
-        } else {
-          setRoles(roles);
-        }
-      } catch (error) {
-        toast.error(HandleError(error as AxiosError));
-      }
-    };
-
-    const fetchSucursales = async () => {
-      try {
-        const { sucursales } = await (await GetSucursales({ token })).data;
-        setSucursales(sucursales);
-      } catch (error) {
-        toast.error(HandleError(error as AxiosError));
-      }
-    };
-
     fetchRoles();
     fetchSucursales();
-  }, [token, me]);
+  }, []);
 
   return (
     <>
@@ -137,9 +137,13 @@ export const FormNewUser = ({ setReloadUser, setVisible }: Props) => {
             idSupervisor: Yup.string().max(100),
           })}
           onSubmit={async (values, actions) => {
-            if (me.idRol === 'Director' && (!values.idRol || !Roles.length)) {
+            if (me.idRol === 'RRHH' && (!values.idRol || !Roles.length)) {
               toast.warn('Seleccione el rol');
               return;
+            }
+
+            if (me.idRol === 'Director' && !values.idRol) {
+              values.idRol = Roles.find(rol => rol.rol === 'RRHH')?.idRol || '';
             }
 
             if (new Date().getTime() < new Date(values.fechaNacimiento).getTime()) {
@@ -189,7 +193,7 @@ export const FormNewUser = ({ setReloadUser, setVisible }: Props) => {
           }}
         >
           {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
-            <form onSubmit={handleSubmit}>
+            <form id='formNewUser' onSubmit={handleSubmit}>
               <CardHeader title={`Crear nuevo usuario ${me.idRol === 'Director' ? 'RRHH' : ''}`} />
               <Divider />
               <CardContent>
@@ -201,6 +205,7 @@ export const FormNewUser = ({ setReloadUser, setVisible }: Props) => {
                       fullWidth
                       name='nombres'
                       required
+                      id='newUserNombre'
                       label='Nombres'
                       onBlur={handleBlur}
                       disabled={isSubmitting}
@@ -217,6 +222,7 @@ export const FormNewUser = ({ setReloadUser, setVisible }: Props) => {
                       fullWidth
                       name='apellidos'
                       required
+                      id='newUserApellido'
                       label='Apellidos'
                       onBlur={handleBlur}
                       disabled={isSubmitting}
@@ -233,6 +239,7 @@ export const FormNewUser = ({ setReloadUser, setVisible }: Props) => {
                       fullWidth
                       name='userName'
                       label='Nombre de usuario'
+                      id='newUserUsername'
                       onBlur={handleBlur}
                       disabled={isSubmitting}
                       defaultValue={values.userName}
@@ -249,6 +256,7 @@ export const FormNewUser = ({ setReloadUser, setVisible }: Props) => {
                       name='email'
                       required
                       label='Email'
+                      id='newUserEmail'
                       onBlur={handleBlur}
                       disabled={isSubmitting}
                       defaultValue={values.email}
@@ -264,6 +272,7 @@ export const FormNewUser = ({ setReloadUser, setVisible }: Props) => {
                       fullWidth
                       name='password'
                       required
+                      id='newUserPassword'
                       label='Contraseña'
                       onBlur={handleBlur}
                       disabled={isSubmitting}
@@ -280,6 +289,7 @@ export const FormNewUser = ({ setReloadUser, setVisible }: Props) => {
                       fullWidth
                       name='razonSocial'
                       required
+                      id='newUserRazonSocial'
                       onBlur={handleBlur}
                       disabled={isSubmitting}
                       defaultValue={values.razonSocial}
@@ -295,6 +305,7 @@ export const FormNewUser = ({ setReloadUser, setVisible }: Props) => {
                       fullWidth
                       name='fechaNacimiento'
                       type='date'
+                      id='newUserNacimiento'
                       required
                       label='Nacimiento'
                       onBlur={handleBlur}
@@ -309,7 +320,7 @@ export const FormNewUser = ({ setReloadUser, setVisible }: Props) => {
                     <InputLabel id='demo-simple-select-outlined-label'>Sexos</InputLabel>
                     <Select
                       labelId='demo-simple-select-outlined-label'
-                      id='demo-simple-select-outlined'
+                      id='newUserSexo'
                       style={{ width: '100%' }}
                       onChange={handleChange}
                       name='sexo'
@@ -326,7 +337,7 @@ export const FormNewUser = ({ setReloadUser, setVisible }: Props) => {
                     <InputLabel id='demo-simple-select-outlined-label'>Sucursales</InputLabel>
                     <Select
                       labelId='demo-simple-select-outlined-label'
-                      id='demo-simple-select-outlined'
+                      id='newUserSucursal'
                       style={{ width: '100%' }}
                       onChange={handleChange}
                       name='idSucursal'

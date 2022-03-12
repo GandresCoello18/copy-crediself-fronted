@@ -148,6 +148,7 @@ const PagosView = () => {
                   <Box display='flex'>
                     <TextField
                       fullWidth
+                      id='inputSearchPago'
                       disabled={Loading && !PagosByCreditos.length}
                       onChange={event => setSearchPago(event.target.value)}
                       InputProps={{
@@ -250,7 +251,12 @@ const PagosView = () => {
                     </Grid>
 
                     <Grid item xs={12} md={2} lg={1}>
-                      <Button color='secondary' variant='outlined' onClick={HandleResetFilterPago}>
+                      <Button
+                        id='btnResetFIlterPago'
+                        color='secondary'
+                        variant='outlined'
+                        onClick={HandleResetFilterPago}
+                      >
                         Restablecer
                       </Button>
                     </Grid>

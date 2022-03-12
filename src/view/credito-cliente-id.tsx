@@ -101,7 +101,12 @@ const CreditoClienteOnlyView = () => {
     <Page className={classes.root} title='Detalles de Credito'>
       {getPermisoExist({ RolName: me.idRol, permiso: 'NewCliente' }) ? (
         <Box mr={3} display='flex' justifyContent='flex-end'>
-          <Button color='secondary' variant='contained' onClick={() => setVisibleNewCredito(true)}>
+          <Button
+            id='newCredit'
+            color='secondary'
+            variant='contained'
+            onClick={() => setVisibleNewCredito(true)}
+          >
             Nuevo credito {Creditos.length ? `para ${Creditos[0].cliente.nombres}` : ''}
           </Button>
           &nbsp; &nbsp;

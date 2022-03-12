@@ -203,6 +203,7 @@ const RenderRouter = (rol: string) => {
             'Supervisor',
             'Asesor',
             'Gerente de Sucursal',
+            'Administrativo',
           ]),
         },
         { path: 'gastos', element: PathSesion(GastosView, ['Gerente de Sucursal']) },

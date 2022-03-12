@@ -66,6 +66,10 @@ const useStyles = makeStyles(theme => ({
     borderColor: 'orange',
     color: 'orange',
   },
+  btnEliminar: {
+    borderColor: 'red',
+    color: 'red',
+  },
   subTitle: {
     color: '#696969',
     marginTop: 4,
@@ -616,13 +620,13 @@ const ClientOnlyView = () => {
                 />
               )}
 
-              {me.idRol === 'Asesor' && (
+              {me.idRol === 'Asesor' && !Cliente?.checkSupervisor && (
                 <NotificationSupervisor
                   token={token}
                   idCliente={params.idCliente}
                   clientRefNombres={`${Cliente?.nombres} ${Cliente?.apellidos}`}
                   me={me}
-                  active={!Cliente?.active || !Archivos.length}
+                  active={!Cliente?.active}
                 />
               )}
 
@@ -641,6 +645,7 @@ const ClientOnlyView = () => {
 
               {!Cliente?.checkDataClient && (
                 <Button
+                  id='notificarCLiente'
                   variant='outlined'
                   disabled={!Cliente?.active}
                   title='Revision de datos personales por parte del cliente'
@@ -654,6 +659,20 @@ const ClientOnlyView = () => {
               (me.idRol === 'Supervisor' || me.idRol === 'Asesor') &&
               RenderEdit()}
             {(me.idRol === 'Administrativo' || me.idRol === 'Gerente de Sucursal') && RenderEdit()}
+
+            {!Archivos.length && (
+              <Grid item>
+                <Button
+                  id='DeleteEliminar'
+                  variant='outlined'
+                  disabled={!Cliente?.active || Loading}
+                  onClick={() => setDialogoDelete(true)}
+                  className={classes.btnEliminar}
+                >
+                  Eliminar
+                </Button>
+              </Grid>
+            )}
           </Grid>
         </Grid>
       </Grid>

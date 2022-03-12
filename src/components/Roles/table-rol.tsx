@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/react-in-jsx-scope */
 import { useState, useContext, useEffect, Dispatch, SetStateAction } from 'react';
@@ -61,23 +62,23 @@ export const TableRol = ({
     ));
   };
 
+  const FetchDelete = async () => {
+    try {
+      await DeleteRole({ token, IdRol });
+      toast.success('Rol eliminado');
+      setReloadRol(true);
+
+      setAceptDialog(false);
+      setDialogoDelete(false);
+      setIdRol('');
+    } catch (error) {
+      toast.error(HandleError(error as AxiosError));
+    }
+  };
+
   useEffect(() => {
-    const FetchDelete = async () => {
-      try {
-        await DeleteRole({ token, IdRol });
-        toast.success('Rol eliminado');
-        setReloadRol(true);
-
-        setAceptDialog(false);
-        setDialogoDelete(false);
-        setIdRol('');
-      } catch (error) {
-        toast.error(HandleError(error as AxiosError));
-      }
-    };
-
     AceptDialog && IdRol && FetchDelete();
-  }, [AceptDialog, token, IdRol, setReloadRol]);
+  }, [AceptDialog, IdRol]);
 
   return (
     <>

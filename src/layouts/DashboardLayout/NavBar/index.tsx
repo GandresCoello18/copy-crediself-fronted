@@ -426,12 +426,13 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
               click={onMobileClose}
               href={item.href}
               key={item.title}
+              id={`option-nav-${item.title}`}
               title={item.title}
               icon={item.icon}
             />
           ))}
           <ListItem className={classes.item} disableGutters>
-            <Button className={classes.button} onClick={closeSesion}>
+            <Button id='optionCloseSesion' className={classes.button} onClick={closeSesion}>
               <span className={classes.title}>Salir</span>
             </Button>
           </ListItem>

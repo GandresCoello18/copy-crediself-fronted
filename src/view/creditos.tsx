@@ -159,6 +159,7 @@ const CreditosView = () => {
               <Grid container spacing={4}>
                 <Grid item xs={12} md={5}>
                   <TextField
+                    id='inputSearchCreditos'
                     fullWidth
                     disabled={Loading && !Creditos.length}
                     onChange={event => setSearchCliente(event.target.value)}
@@ -264,6 +265,7 @@ const CreditosView = () => {
 
                     <Grid item xs={12} md={2} lg={1}>
                       <Button
+                        id='btnResetFilterCredit'
                         color='secondary'
                         variant='outlined'
                         onClick={HandleResetFilterClient}

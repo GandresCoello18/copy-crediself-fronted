@@ -153,7 +153,7 @@ const TopBar = ({ onMobileNavOpen, ...rest }: Props) => {
             </IconButton>
           </Hidden>
           <Hidden lgUp>
-            <IconButton color='inherit' onClick={onMobileNavOpen}>
+            <IconButton id='menuLateral' color='inherit' onClick={onMobileNavOpen}>
               <MenuIcon />
             </IconButton>
           </Hidden>

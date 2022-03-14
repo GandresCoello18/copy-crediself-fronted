@@ -144,6 +144,7 @@ const RenderRouter = (rol: string) => {
             'Asesor',
             'Gerente de Sucursal',
             'Administrativo',
+            'Gerente Regional',
           ]),
         },
         {
@@ -154,6 +155,7 @@ const RenderRouter = (rol: string) => {
             'Supervisor',
             'Asesor',
             'Gerente de Sucursal',
+            'Gerente Regional',
           ]),
         },
         {
@@ -164,6 +166,7 @@ const RenderRouter = (rol: string) => {
             'Supervisor',
             'Asesor',
             'Gerente de Sucursal',
+            'Gerente Regional',
           ]),
         },
         {
@@ -172,7 +175,11 @@ const RenderRouter = (rol: string) => {
         },
         {
           path: 'creditos',
-          element: PathSesion(CreditosView, ['Administrativo', 'Gerente de Sucursal']),
+          element: PathSesion(CreditosView, [
+            'Administrativo',
+            'Gerente de Sucursal',
+            'Gerente Regional',
+          ]),
         },
         { path: 'cancelaciones', element: PathSesion(CancelacionesView, ['Cobranza']) },
         {
@@ -186,6 +193,7 @@ const RenderRouter = (rol: string) => {
             'Asesor',
             'Gerente de Sucursal',
             'Administrativo',
+            'Gerente Regional',
           ]),
         },
         {
@@ -195,6 +203,7 @@ const RenderRouter = (rol: string) => {
             'Asesor',
             'Gerente de Sucursal',
             'Administrativo',
+            'Gerente Regional',
           ]),
         },
         {
@@ -204,6 +213,7 @@ const RenderRouter = (rol: string) => {
             'Asesor',
             'Gerente de Sucursal',
             'Administrativo',
+            'Gerente Regional',
           ]),
         },
         { path: 'gastos', element: PathSesion(GastosView, ['Gerente de Sucursal']) },
@@ -217,7 +227,10 @@ const RenderRouter = (rol: string) => {
           element: PathSesion(UsuariosView, ['Director', 'RRHH', 'Gerente Regional']),
         },
         { path: 'asesores', element: PathSesion(AsesoresView, ['Supervisor']) },
-        { path: 'sucursales', element: PathSesion(SucursalesView, ['Administrativo']) },
+        {
+          path: 'sucursales',
+          element: PathSesion(SucursalesView, ['Administrativo', 'Gerente Regional']),
+        },
         { path: 'calendario', element: PathSesion(CalendarioView, ['Administrativo']) },
         { path: 'notificaciones', element: PathSesion(NotificacionesView, AllRols) },
         { path: 'reportes-error', element: PathSesion(ErrorAppView, AllRols) },

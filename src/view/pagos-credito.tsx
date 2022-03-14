@@ -59,6 +59,14 @@ const useStyles = makeStyles((theme: any) => ({
   },
 }));
 
+const initParamsFIlter = {
+  typePayment: undefined,
+  isAtrasado: 0,
+  datePayment: undefined,
+  dateRegister: undefined,
+  dateCorrespondiente: undefined,
+};
+
 export interface ParamsFilterPagos {
   typePayment?: string;
   isAtrasado?: number;
@@ -83,21 +91,21 @@ const PagosByCreditoView = () => {
   const [Visible, setVisible] = useState<boolean>(false);
   const [Loading, setLoading] = useState<boolean>(false);
   const [Expanded, setExpanded] = useState<boolean>(false);
-  const [ParamsFilter, setParamsFilter] = useState<ParamsFilterPagos>({
-    typePayment: undefined,
-    isAtrasado: 0,
-    datePayment: undefined,
-    dateRegister: undefined,
-    dateCorrespondiente: undefined,
-  });
+  const [ParamsFilter, setParamsFilter] = useState<ParamsFilterPagos>(initParamsFIlter);
   const [ReloadPago, setReloadPago] = useState<boolean>(false);
 
-  const fetchPagos = async (page: number) => {
+  const fetchPagos = async (options: { page: number; emptyFilter?: boolean }) => {
+    const { page, emptyFilter } = options;
     setLoading(true);
 
     try {
       const { pagos, cliente, credito, statistics, statisticsValue, pages } = await (
-        await GetPagosByCredito({ token, idCredito: params.idCredito, page, ParamsFilter })
+        await GetPagosByCredito({
+          token,
+          idCredito: params.idCredito,
+          page,
+          ParamsFilter: emptyFilter ? initParamsFIlter : ParamsFilter,
+        })
       ).data;
       setPagos(pagos);
       setCredito(credito);
@@ -113,7 +121,7 @@ const PagosByCreditoView = () => {
   };
 
   useEffect(() => {
-    params.idCredito && fetchPagos(1);
+    params.idCredito && fetchPagos({ page: 1 });
 
     if (ReloadPago) {
       setReloadPago(false);
@@ -121,7 +129,7 @@ const PagosByCreditoView = () => {
   }, [ReloadPago, params]);
 
   useEffect(() => {
-    fetchPagos(1);
+    fetchPagos({ page: 1 });
   }, [ParamsFilter]);
 
   const ResetParams = () => {
@@ -131,10 +139,10 @@ const PagosByCreditoView = () => {
       datePayment: undefined,
       dateRegister: undefined,
     });
-    fetchPagos(1);
+    fetchPagos({ page: 1, emptyFilter: true });
   };
 
-  const SelectItemPagination = (page: number) => fetchPagos(page);
+  const SelectItemPagination = (page: number) => fetchPagos({ page });
 
   return (
     <Page className={classes.root} title='Pagos de credito'>
@@ -144,7 +152,12 @@ const PagosByCreditoView = () => {
             Recibo
           </Button>
           {getPermisoExist({ permiso: 'NewPayment', RolName: me.idRol }) && (
-            <Button color='secondary' variant='contained' onClick={() => setVisible(true)}>
+            <Button
+              id='btnRegisterPayment'
+              color='secondary'
+              variant='contained'
+              onClick={() => setVisible(true)}
+            >
               Registrar pago
             </Button>
           )}
@@ -201,6 +214,7 @@ const PagosByCreditoView = () => {
                     <TextField
                       fullWidth
                       type='date'
+                      id='dateByPayment'
                       label='Fecha de pago'
                       variant='outlined'
                       onChange={event =>
@@ -213,6 +227,7 @@ const PagosByCreditoView = () => {
                   <Grid item>
                     <TextField
                       fullWidth
+                      id='dateByRegister'
                       type='date'
                       label='Fecha registrado'
                       variant='outlined'
@@ -225,7 +240,7 @@ const PagosByCreditoView = () => {
                   </Grid>
                   <Grid item>
                     <TextField
-                      id='date'
+                      id='dateByMonth'
                       label='Mes correspondiente'
                       type='month'
                       value={ParamsFilter.dateCorrespondiente}
@@ -241,7 +256,12 @@ const PagosByCreditoView = () => {
                     />
                   </Grid>
                   <Grid item>
-                    <Button color='secondary' variant='outlined' onClick={ResetParams}>
+                    <Button
+                      id='resetParamsFIlterPagoCredito'
+                      color='secondary'
+                      variant='outlined'
+                      onClick={ResetParams}
+                    >
                       Restablecer
                     </Button>
                   </Grid>

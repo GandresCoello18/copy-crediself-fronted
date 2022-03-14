@@ -11,7 +11,6 @@ import {
   Grid,
   CardContent,
   InputAdornment,
-  SvgIcon,
   TextField,
 } from '@material-ui/core';
 import Page from '../components/page';
@@ -39,6 +38,11 @@ const useStyles = makeStyles((theme: any) => ({
   },
   btnDelete: {
     backgroundColor: theme.palette.error.main,
+  },
+  iconButton: {
+    padding: 5,
+    backgroundColor: theme.palette.primary.main,
+    color: '#fff',
   },
 }));
 
@@ -88,7 +92,7 @@ const UsuariosView = () => {
     if (ReloadUser) {
       setReloadUser(false);
     }
-  }, [ReloadUser, SearchUser]);
+  }, [ReloadUser]);
 
   const SelectItemPagination = (page: number) => fetchUsuarios(page);
 
@@ -107,16 +111,22 @@ const UsuariosView = () => {
             <CardContent>
               <Grid container spacing={3} direction='row' justify='center' alignItems='center'>
                 <Grid item xs={12} md={9}>
-                  <Box maxWidth={500}>
+                  <Box maxWidth={500} display='flex' justifyContent='space-between'>
                     <TextField
                       fullWidth
                       onChange={event => setSearchUser(event.target.value)}
                       InputProps={{
-                        startAdornment: (
+                        endAdornment: (
                           <InputAdornment position='start'>
-                            <SvgIcon fontSize='small' color='action'>
+                            <Button
+                              color='primary'
+                              variant='outlined'
+                              disabled={Loading && !Usuarios.length}
+                              onClick={() => fetchUsuarios(1)}
+                              className={classes.iconButton}
+                            >
                               <SearchIcon />
-                            </SvgIcon>
+                            </Button>
                           </InputAdornment>
                         ),
                       }}

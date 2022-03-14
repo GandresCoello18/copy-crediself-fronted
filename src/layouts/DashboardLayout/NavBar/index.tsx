@@ -91,9 +91,19 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           title: 'Usuarios',
         },
         {
-          href: '/app/mis-comisiones',
-          icon: TimelineIcon,
-          title: 'Mis comisiones',
+          href: '/app/clientes',
+          icon: EmojiPeopleIcon,
+          title: 'Clientes',
+        },
+        {
+          href: '/app/creditos',
+          icon: CardTravelIcon,
+          title: 'Creditos',
+        },
+        {
+          href: '/app/notificaciones',
+          icon: NotificationsActiveIcon,
+          title: 'Notificaciones',
         },
         {
           href: '/app/account',

@@ -36,7 +36,15 @@ export interface Expediente {
   sourceExp: string;
   created_at: string | Date;
   idCliente: string;
+  title?: string;
   kind: 'img' | 'pdf';
+}
+
+export interface ExpedienteRequisito {
+  readonly idRequisitoExp: string;
+  created_at: string | Date;
+  active: number;
+  title: string;
 }
 
 export interface Acreditacion extends Credito {

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import {
@@ -12,16 +13,21 @@ import {
   Select,
 } from '@material-ui/core';
 import { AxiosError } from 'axios';
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { Dispatch, SetStateAction, useState, useEffect } from 'react';
 import { ImageListType } from 'react-images-uploading';
 import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import { toast } from 'react-toast';
-import { AddFileExpediente, AddFileExpedienteDoc } from '../../api/expediente';
+import {
+  AddFileExpediente,
+  AddFileExpedienteDoc,
+  GetExpedienteRequisitos,
+} from '../../api/expediente';
 import { HandleError } from '../../helpers/handleError';
 import { DialogoForm } from '../DialogoForm';
 import { UploadImage } from '../UploadImage';
 import { bytesToSize } from '../../helpers/file';
+import { ExpedienteRequisito } from '../../interfaces/Cliente';
 
 interface Props {
   active?: number;
@@ -58,6 +64,20 @@ export const UploadExpediente = ({ active, token, idCliente, setReloadCliente }:
   const [Loading, setLoading] = useState<boolean>(false);
   const [Visible, setVisible] = useState<boolean>(false);
   const [ComprobanteExp, setComprobanteExp] = useState<string>('');
+  const [Requisitos, setRequisitos] = useState<ExpedienteRequisito[]>([]);
+
+  const fetchRequisitos = async () => {
+    try {
+      const { requisitos } = await (await GetExpedienteRequisitos({ token })).data;
+      setRequisitos(requisitos);
+    } catch (error) {
+      toast.error(HandleError(error as AxiosError));
+    }
+  };
+
+  useEffect(() => {
+    !Requisitos.length && fetchRequisitos();
+  }, [Requisitos]);
 
   const handleUploadExpediente = async () => {
     if (!IsUploadExp) {
@@ -126,9 +146,11 @@ export const UploadExpediente = ({ active, token, idCliente, setReloadCliente }:
           style={{ width: '100%' }}
           onChange={event => setComprobanteExp(event.target.value as string)}
         >
-          <MenuItem value='Factura Telefonica'>Factura Telefonica</MenuItem>
-          <MenuItem value='Factura de Internet'>Factura de Internet</MenuItem>
-          <MenuItem value='Factura de Energia'>Factura de Energia</MenuItem>
+          {Requisitos.map(req => (
+            <MenuItem key={req.idRequisitoExp} value={req.idRequisitoExp}>
+              {req.title}
+            </MenuItem>
+          ))}
         </Select>
 
         <br />

@@ -32,13 +32,13 @@ export const CurrentDate = (myDate?: Date) => {
 describe('Usuario Asesor', () => {
   before(() => cy.viewport(1800, 1000));
 
-  it.skip('Iniciar sesion', () => {
+  it('Iniciar sesion', () => {
     cy.visit(`${BASE_FRONTEND}/login`);
 
     cy.loginUser(credencialesAuth.email, credencialesAuth.password);
   });
 
-  it.skip('Section get clientes asesor', () => {
+  it('Section get clientes asesor', () => {
     const btnSearch = '.MuiInputAdornment-root > .MuiButtonBase-root';
 
     // FETCH API REST
@@ -59,7 +59,7 @@ describe('Usuario Asesor', () => {
     });
   });
 
-  it.skip('New clientes asesor', () => {
+  it('New clientes asesor', () => {
     const btnNewClient = '#newClient';
     cy.get(btnNewClient).click();
 
@@ -99,7 +99,7 @@ describe('Usuario Asesor', () => {
     cy.wait('@newClientes');
   });
 
-  it.skip('Opcion detalle usuario', () => {
+  it('Opcion detalle usuario', () => {
     const tresPuntosUsuario =
       ':nth-child(1) > :nth-child(10) > .MuiButtonBase-root > .MuiIconButton-label > .MuiSvgIcon-root';
 
@@ -138,7 +138,7 @@ describe('Usuario Asesor', () => {
     }
   });
 
-  it.skip('Option credito cliente', () => {
+  it('Option credito cliente', () => {
     const btnCreditos = 'a > .MuiButtonBase-root';
     cy.get(btnCreditos).click();
 
@@ -178,7 +178,7 @@ describe('Usuario Asesor', () => {
     cy.wait('@newCretido');
   });
 
-  it.skip('Option eliminar client', () => {
+  it('Option eliminar client', () => {
     cy.go('back').then(() => {
       cy.location().then(location => {
         const hrefDivide = location.href.split('/');
@@ -200,7 +200,7 @@ describe('Usuario Asesor', () => {
     cy.get(btnAceptar).click();
   });
 
-  it.skip('Cerrar sesion', () => {
+  it('Cerrar sesion', () => {
     cy.CerrarSesion();
   });
 });

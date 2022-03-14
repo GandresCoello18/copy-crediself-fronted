@@ -20,6 +20,15 @@ export const AddFileExpedienteDoc = async (options: { token: string; data: FormD
   return response;
 };
 
+export const GetExpedienteRequisitos = async (options: { token: string }) => {
+  api.defaults.headers['access-token'] = options.token;
+  const response = await api({
+    method: 'GET',
+    url: '/expediente/requisitos',
+  });
+  return response;
+};
+
 export const RemoveFileExpediente = async (options: {
   token: string;
   idExpedienteClient: string;

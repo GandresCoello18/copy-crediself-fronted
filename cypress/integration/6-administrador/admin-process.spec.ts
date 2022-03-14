@@ -17,7 +17,7 @@ describe('Usuario Administrador', () => {
     cy.loginUser(credencialesAuth.email, credencialesAuth.password);
   });
 
-  it.skip('Section cliente', () => {
+  it('Section cliente', () => {
     cy.intercept('/api/notificacion?page=1').as('notificacion');
     cy.intercept('/api/sucursal?empresa=CREDISELF').as('sucursal');
     cy.intercept(
@@ -60,7 +60,7 @@ describe('Usuario Administrador', () => {
     });
   });
 
-  it.skip('Option creditos', () => {
+  it('Option creditos', () => {
     cy.BtnMenuLateral();
     const optionNavCredit = '#option-nav-Creditos';
     cy.get(optionNavCredit).click();
@@ -96,13 +96,9 @@ describe('Usuario Administrador', () => {
     cy.BtnMenuLateral();
     cy.get('#option-nav-Pagos').click();
 
-    cy.intercept(`/api/pago?findPago=&page=1&idSucursal=&dateDesde=&dateHasta=${CurrentDate()}`).as(
-      'getPagos',
-    );
-
     const acordionEstadisticas = '.MuiAccordionSummary-content';
 
-    cy.wait('@getPagos').then(() => {
+    cy.wait(22000).then(() => {
       cy.get(acordionEstadisticas).click();
       cy.get('#date1').type('2022-01-05');
       cy.get('#inputSearchPago').type('keyPago');
@@ -117,29 +113,54 @@ describe('Usuario Administrador', () => {
 
       if (cy.get(ListSelect).should('be.visible')) {
         cy.get(ListSelect).contains('CIRCUITO').click();
-        cy.wait(6000);
+        cy.wait(7000);
       }
+    });
 
-      cy.get('#btnResetFIlterPago').click();
-      cy.get(acordionEstadisticas).click();
+    cy.get('#btnResetFIlterPago').click();
+    cy.get(acordionEstadisticas).click();
 
-      cy.wait('@getPagos').then(() => {
-        // options
+    cy.wait(23000).then(() => {
+      // options
 
-        const tresPuntos = ':nth-child(1) > :nth-child(10) > .MuiButtonBase-root';
-        cy.get(tresPuntos).click();
+      const tresPuntos = ':nth-child(1) > :nth-child(10) > .MuiButtonBase-root';
+      cy.get(tresPuntos).click();
 
-        const optionPago = '#menu-list-pago';
-        if (cy.get(optionPago).should('be.visible')) {
-          cy.get(
-            '[style="position: fixed; z-index: 1300; inset: 0px;"] > .MuiPaper-root > .MuiMenu-list > #menu-list-pago > [tabindex="0"][role="menuitem"] > a > .MuiButtonBase-root',
-          ).click();
-        }
-      });
+      const optionPago = '#menu-list-pago';
+      if (cy.get(optionPago).should('be.visible')) {
+        cy.get(
+          '[style="position: fixed; z-index: 1300; inset: 0px;"] > .MuiPaper-root > .MuiMenu-list > #menu-list-pago > [tabindex="0"][role="menuitem"] > a > .MuiButtonBase-root',
+        ).click();
+      }
     });
   });
 
-  it.skip('Cerrar sesion', () => {
+  it('Seccion pagos de credito', () => {
+    cy.wait(22000);
+
+    const btnNewPayment = '#btnRegisterPayment';
+    cy.get(btnNewPayment).click();
+
+    const headerModalRegistre = '.MuiCardHeader-content > .MuiTypography-root';
+    cy.get(headerModalRegistre).should('be.visible');
+    cy.get(headerModalRegistre).should('include.text', 'Registrar pago de');
+
+    // Formulario
+    const selectMethod =
+      '.MuiCardContent-root > .MuiGrid-container > :nth-child(1) > .MuiInputBase-root > #demo-simple-select-outlined';
+    cy.get(selectMethod).click();
+
+    cy.get('#menu-tipoDePago > .MuiPaper-root > .MuiList-root').contains('Deposito').click();
+    cy.get(':nth-child(2) > .MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input').type(
+      '2022-03-03',
+    );
+    cy.get(
+      '.MuiCardContent-root > .MuiGrid-container > :nth-child(3) > .MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input',
+    ).type('5000');
+    cy.get('form').submit();
+  });
+
+  it('Cerrar sesion', () => {
     cy.CerrarSesion();
   });
 });

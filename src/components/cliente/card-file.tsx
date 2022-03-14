@@ -65,7 +65,7 @@ export const CardFile = ({ file, token, setReloadCliente }: Props) => {
               <PictureAsPdfIcon style={{ fontSize: 100 }} />
             </a>
           )}
-          <h3 style={{ padding: 8, color: '#696969' }}>{file.comprobanteExp}</h3>
+          <h5 style={{ padding: 8, color: '#696969' }}>{file?.title || file.comprobanteExp}</h5>
           <span title='Eliminar archivo' onClick={() => setDialogoDelete(true)}>
             <BackspaceIcon style={{ color: 'red', cursor: 'pointer' }} />
           </span>
@@ -95,7 +95,7 @@ export const CardFile = ({ file, token, setReloadCliente }: Props) => {
               <PictureAsPdfIcon style={{ fontSize: 100 }} />
             </div>
           )}
-          <h3 style={{ padding: 8, color: '#696969' }}>{file.comprobanteExp}</h3>
+          <h5 style={{ padding: 8, color: '#696969' }}>{file?.title || file.comprobanteExp}</h5>
         </Paper>
       </>
     );

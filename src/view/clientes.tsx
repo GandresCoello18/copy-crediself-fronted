@@ -121,7 +121,10 @@ const ClientesView = () => {
   useEffect(() => {
     fetchClientes({ page: 1, idSucursal: SelectSucursal?.idSucursal });
 
-    if (me.idRol === 'Administrativo' && !DataSucursales.length) {
+    if (
+      (me.idRol === 'Administrativo' || me.idRol === 'Gerente Regional') &&
+      !DataSucursales.length
+    ) {
       fetchSucursales();
     }
 
@@ -233,7 +236,9 @@ const ClientesView = () => {
                   </Box>
                 </Grid>
 
-                {me.idRol === 'Administrativo' ? (
+                {me.idRol === 'Administrativo' ||
+                me.idRol === 'Gerente Regional' ||
+                me.idRol === 'Gerente Regional' ? (
                   <>
                     <Grid item xs={12} md={2}>
                       <FormControl className={classes.formControl}>
@@ -279,7 +284,9 @@ const ClientesView = () => {
           </Card>
         </Box>
         <Box mt={3}>
-          {me.idRol === 'Administrativo' || me.idRol === 'Gerente de Sucursal' ? (
+          {me.idRol === 'Administrativo' ||
+          me.idRol === 'Gerente Regional' ||
+          me.idRol === 'Gerente de Sucursal' ? (
             <Accordion square expanded={Expanded} onChange={() => setExpanded(!Expanded)}>
               <AccordionSummary aria-controls='panel1d-content' id='panel1d-header'>
                 <Typography>Estadisticas registro de clientes</Typography>

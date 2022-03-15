@@ -171,6 +171,16 @@ export const ItemCreditoCancelado = ({
               </Grid>
             </Box>
             {RenderContentItemCancelacion({ field: 'Rol', value: cancelacion.user.idRol })}
+            <Box borderTop={1} borderColor='success.main' p={2}>
+              <Grid spacing={3} container justify='space-between'>
+                <Grid item>Detalles del credito:</Grid>
+                <Grid item>
+                  <Link target='_blank' to={`/app/creditos/${cancelacion.idCredito}`}>
+                    Ver Credito
+                  </Link>
+                </Grid>
+              </Grid>
+            </Box>
           </Grid>
           <Grid item xs={12} md={4}>
             <Box p={2} className={classes.headContante}>

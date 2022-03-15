@@ -181,10 +181,13 @@ const RenderRouter = (rol: string) => {
             'Gerente Regional',
           ]),
         },
-        { path: 'cancelaciones', element: PathSesion(CancelacionesView, ['Cobranza']) },
+        {
+          path: 'cancelaciones',
+          element: PathSesion(CancelacionesView, ['Cobranza', 'Gerente Regional']),
+        },
         {
           path: 'cancelaciones/:idCancelacion',
-          element: PathSesion(CancelacionView, ['Cobranza', 'Administrativo']),
+          element: PathSesion(CancelacionView, ['Cobranza', 'Administrativo', 'Gerente Regional']),
         },
         {
           path: 'creditos/:idCredito',
@@ -216,7 +219,10 @@ const RenderRouter = (rol: string) => {
             'Gerente Regional',
           ]),
         },
-        { path: 'gastos', element: PathSesion(GastosView, ['Gerente de Sucursal']) },
+        {
+          path: 'gastos',
+          element: PathSesion(GastosView, ['Gerente de Sucursal', 'Administrativo']),
+        },
         { path: 'pagos', element: PathSesion(PagosView, ['Administrativo']) },
         {
           path: 'pagos/credito/:idCredito',

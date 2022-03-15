@@ -10,12 +10,15 @@ import {
   InputAdornment,
   Grid,
   makeStyles,
-  SvgIcon,
   TextField,
   Button,
   Avatar,
   Chip,
   Typography,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
 } from '@material-ui/core';
 import Page from '../components/page';
 import { useState, useEffect, useContext } from 'react';
@@ -37,6 +40,9 @@ import { BASE_FRONTEND } from '../api';
 import { NewNoti, NewNotificacion } from '../api/notificacion';
 import { DialogoForm } from '../components/DialogoForm';
 import { SourceAvatar } from '../helpers/sourceAvatar';
+import { Sucursal } from '../interfaces/Sucursales';
+import { GetSucursales } from '../api/sucursales';
+import { CurrentDate } from '../helpers/fechas';
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -49,6 +55,15 @@ const useStyles = makeStyles((theme: any) => ({
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
     width: 200,
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  iconButton: {
+    padding: 5,
+    backgroundColor: theme.palette.primary.main,
+    color: '#fff',
   },
 }));
 
@@ -73,6 +88,8 @@ const CancelacionesView = () => {
   const [Admis, setAdmins] = useState<Usuario[]>([]);
   const [SelectUser, setSelectUser] = useState<Usuario | undefined>(undefined);
   const [Loading, setLoading] = useState<boolean>(false);
+  const [DataSucursales, setDataSucursales] = useState<Sucursal[]>([]);
+  const [SelectSucursal, setSelectSucursal] = useState<Sucursal | undefined>(undefined);
   const [DialogoDelete, setDialogoDelete] = useState<boolean>(false);
   const [DialogoNotifi, setDialogoNotifi] = useState<boolean>(false);
   const [LoadingRemove, setLoadingRemove] = useState<boolean>(false);
@@ -84,18 +101,26 @@ const CancelacionesView = () => {
   const [Search, setSearch] = useState<string>('');
   const [AcuerdoEditado, setAcuerdoEditado] = useState<AcuerdoEdit[]>([]);
   const [Filter, setFilter] = useState<FilterCancelacion>({
-    dateInit: 'dd/mm/aaaa',
-    dateEnd: 'dd/mm/aaaa',
+    dateInit: '',
+    dateEnd: '',
   });
   const [Cancelaciones, setCancelaciones] = useState<CancelacionByDetails[]>([]);
 
-  const fetchCancelaciones = async (page: number) => {
+  const fetchCancelaciones = async (options: { page: number; idSucursal?: string }) => {
+    const { page, idSucursal } = options;
     setLoading(true);
 
     try {
       const { dateInit, dateEnd } = Filter;
       const { cancelaciones, pages } = await (
-        await GetCancelaciones({ token, page, dateInit, dateEnd, find: Search })
+        await GetCancelaciones({
+          token,
+          page,
+          dateInit,
+          dateEnd: dateEnd || CurrentDate(),
+          find: Search,
+          idSucursal,
+        })
       ).data;
 
       setCancelaciones(cancelaciones);
@@ -104,6 +129,15 @@ const CancelacionesView = () => {
     } catch (error) {
       toast.error(HandleError(error as AxiosError));
       setLoading(false);
+    }
+  };
+
+  const fetchSucursales = async () => {
+    try {
+      const { sucursales } = await (await GetSucursales({ token, empresa: me.empresa })).data;
+      setDataSucursales(sucursales);
+    } catch (error) {
+      toast.error(HandleError(error as AxiosError));
     }
   };
 
@@ -160,13 +194,17 @@ const CancelacionesView = () => {
   };
 
   useEffect(() => {
-    fetchCancelaciones(1);
+    fetchCancelaciones({ page: 1 });
     FetchDirecctores();
-  }, [Search]);
+  }, []);
 
   useEffect(() => {
-    ValidDate(true) && fetchCancelaciones(1);
-  }, [Filter]);
+    fetchCancelaciones({ page: 1, idSucursal: SelectSucursal?.idSucursal });
+
+    if (!DataSucursales.length) {
+      fetchSucursales();
+    }
+  }, [Filter, DataSucursales, SelectSucursal]);
 
   const SkeletonPlaceHolder = () => {
     return [0, 1, 2, 3, 4, 5, 6, 7].map(item => (
@@ -174,7 +212,8 @@ const CancelacionesView = () => {
     ));
   };
 
-  const SelectItemPagination = (page: number) => console.log(page);
+  const SelectItemPagination = (page: number) =>
+    fetchCancelaciones({ page, idSucursal: SelectSucursal?.idSucursal });
 
   const ClearFIlter = () => {
     setFilter({
@@ -183,10 +222,11 @@ const CancelacionesView = () => {
     });
 
     if (!Search) {
-      fetchCancelaciones(1);
+      fetchCancelaciones({ page: 1, idSucursal: SelectSucursal?.idSucursal });
     }
 
     setSearch('');
+    setSelectSucursal(undefined);
   };
 
   const handleSaveAcuerdo = async () => {
@@ -253,17 +293,55 @@ const CancelacionesView = () => {
                       fullWidth
                       onChange={event => setSearch(event.target.value)}
                       InputProps={{
-                        startAdornment: (
+                        endAdornment: (
                           <InputAdornment position='start'>
-                            <SvgIcon fontSize='small' color='action'>
+                            <Button
+                              color='primary'
+                              variant='outlined'
+                              disabled={Loading && !Cancelaciones.length}
+                              onClick={() => {
+                                fetchCancelaciones({
+                                  page: 1,
+                                  idSucursal: SelectSucursal?.idSucursal,
+                                });
+                              }}
+                              className={classes.iconButton}
+                            >
                               <SearchIcon />
-                            </SvgIcon>
+                            </Button>
                           </InputAdornment>
                         ),
                       }}
                       placeholder='Buscar por cliente'
                       variant='outlined'
                     />
+                  </Grid>
+                  <Grid item>
+                    <FormControl className={classes.formControl}>
+                      <InputLabel id='demo-simple-select-label'>Sucursales</InputLabel>
+                      <Select
+                        labelId='demo-simple-select-label'
+                        style={{ width: 200 }}
+                        disabled={Loading && !Cancelaciones.length}
+                        value={SelectSucursal?.idSucursal}
+                        id='id-sucursal-select'
+                        onChange={event => {
+                          const findSucursal = DataSucursales.find(
+                            suc => suc.idSucursal === (event.target.value as string),
+                          );
+                          setSelectSucursal(findSucursal);
+                        }}
+                      >
+                        <MenuItem value=''>
+                          <em>Ninguna</em>
+                        </MenuItem>
+                        {DataSucursales.map(suc => (
+                          <MenuItem key={suc.idSucursal} value={suc.idSucursal}>
+                            {suc.sucursal}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
                   </Grid>
                   <Grid item>
                     <Box>
@@ -285,9 +363,24 @@ const CancelacionesView = () => {
                         label='Hasta'
                         disabled={!ValidDate()}
                         type='date'
-                        defaultValue={Filter.dateEnd}
+                        defaultValue={Filter.dateEnd || CurrentDate()}
                         value={Filter.dateEnd}
-                        onChange={event => setFilter({ ...Filter, dateEnd: event.target.value })}
+                        onChange={event => {
+                          if (!Filter.dateInit) {
+                            toast.info('Primero seleccion la fecha desde');
+                            return;
+                          }
+
+                          if (
+                            new Date(event.target.value).getTime() <=
+                            new Date(Filter.dateInit).getTime()
+                          ) {
+                            toast.info('La fecha hasta tiene que ser mayor que la fecha desde');
+                            return;
+                          }
+
+                          setFilter({ ...Filter, dateEnd: event.target.value });
+                        }}
                         className={classes.textField}
                         InputLabelProps={{
                           shrink: true,

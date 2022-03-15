@@ -5,11 +5,11 @@
     },
     {
         "rol": "Administrativo",
-        "permisos": ["reportError", "UpdateMeUser", "viewComisiones", "NewPayment", "ViewPayment", "AprobarPayment", "UpdateComprobantePayment", "DeleteComprobantePayment", "ViewClientes", "ViewCredito", "ViewNotification", "UpdateCliente"]
+        "permisos": ["reportError", "UpdateMeUser", "reGenerarCalendario", "GenerateFileCalendar", "NewNotification", "GetCancelacion", "autorizacionCancelacion", "viewComisiones", "NewPayment", "ViewPayment", "AprobarPayment", "UpdateComprobantePayment", "DeleteComprobantePayment", "ViewClientes", "ViewCredito", "ViewNotification", "UpdateCliente"]
     },
     {
         "rol": "Gerente Regional",
-        "permisos": ["reportError", "UpdateMeUser", "ViewUsers", "UpdateRolByUsers", "ViewRoles"]
+        "permisos": ["reportError", "UpdateMeUser", "ViewUsers", "UpdateRolByUsers", "ViewRoles", "NewNotification", "ViewClientes", "ViewCredito", "ViewNotification", "UpdateCliente", "GetCancelacion"]
     },
     {
         "rol": "Gerente de Sucursal",
@@ -17,11 +17,11 @@
     },
     {
         "rol": "Supervisor",
-        "permisos": ["UpdateMeUser", "ViewClientes", "viewComisiones", "ViewNotification", "NewCliente", "UpdateCliente", "NewCredito", "ViewCredito", "UpdateContratoCredito", "AperturaPayment", "AddFileExpediente", "RemoveFileExpediente", "ViewUsers", "ViewPayment", "NewNotification"]
+        "permisos": ["UpdateMeUser", "ViewClientes", "DelCliente", "viewComisiones", "ViewNotification", "NewCliente", "UpdateCliente", "NewCredito", "ViewCredito", "UpdateContratoCredito", "AperturaPayment", "AddFileExpediente", "RemoveFileExpediente", "ViewUsers", "ViewPayment", "NewNotification"]
     },
     {
         "rol": "Asesor",
-        "permisos": ["UpdateMeUser", "ViewClientes", "viewComisiones", "ViewNotification", "NewCliente", "UpdateCliente", "NewCredito", "ViewCredito", "UpdateContratoCredito", "AperturaPayment", "AddFileExpediente", "RemoveFileExpediente", "ViewPayment", "NewNotification"]
+        "permisos": ["UpdateMeUser", "ViewClientes", "DelCliente", "viewComisiones", "ViewNotification", "NewCliente", "UpdateCliente", "NewCredito", "ViewCredito", "UpdateContratoCredito", "AperturaPayment", "AddFileExpediente", "RemoveFileExpediente", "ViewPayment", "NewNotification"]
     },
     {
         "rol": "Cobranza",

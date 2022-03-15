@@ -101,6 +101,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           title: 'Creditos',
         },
         {
+          href: '/app/cancelaciones',
+          icon: CancelIcon,
+          title: 'Cancelaciones',
+        },
+        {
           href: '/app/notificaciones',
           icon: NotificationsActiveIcon,
           title: 'Notificaciones',
@@ -250,6 +255,11 @@ const NavBar = ({ onMobileClose, openMobile }: Props) => {
           href: '/app/sucursales',
           icon: LocationCityIcon,
           title: 'Sucursales',
+        },
+        {
+          href: '/app/gastos',
+          icon: MoneyOffIcon,
+          title: 'Gastos',
         },
         {
           href: '/app/notificaciones',

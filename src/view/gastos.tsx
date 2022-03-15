@@ -55,7 +55,7 @@ const GastosView = () => {
   const classes = useStyles();
   const { token, me } = useContext(MeContext);
   const [SearchGasto, setSearchGasto] = useState<string>('');
-  const [idSucursal, setIdSucursal] = useState<string>('');
+  const [SelectSucursal, setSelectSucursal] = useState<Sucursal | undefined>(undefined);
   const [Gastos, setGastos] = useState<Gastos[]>([]);
   const [Count, setCount] = useState<number>(0);
   const [Statistics, setStatistics] = useState<GastoStatistics | undefined>(undefined);
@@ -75,7 +75,7 @@ const GastosView = () => {
           token,
           page,
           findGasto: SearchGasto,
-          idSucursal,
+          idSucursal: SelectSucursal?.idSucursal,
           findDate,
           isStatistics: 'true',
         })
@@ -96,11 +96,16 @@ const GastosView = () => {
     if (ReloadGasto) {
       setReloadGasto(false);
     }
-  }, [ReloadGasto, SearchGasto, idSucursal, findDate]);
+  }, [ReloadGasto, SearchGasto, SelectSucursal, findDate]);
 
   const fetchSucursales = async () => {
     try {
-      const { sucursales } = await (await GetSucursales({ token, empresa: me.empresa })).data;
+      const { sucursales } = await (
+        await GetSucursales({
+          token,
+          empresa: me.idRol === 'Administrativo' ? undefined : me.empresa,
+        })
+      ).data;
       setDataSucursales(sucursales);
     } catch (error) {
       toast.error(HandleError(error as AxiosError));
@@ -108,25 +113,30 @@ const GastosView = () => {
   };
 
   useEffect(() => {
-    fetchSucursales();
-  }, []);
+    me.idRol === 'Administrativo' && fetchSucursales();
+  }, [me]);
 
   const resetOptions = () => {
     setFindDate('');
-    setIdSucursal('');
+    setSelectSucursal(undefined);
     setSearchGasto('');
   };
 
   const SelectItemPagination = (page: number) => fetchGastos(page);
 
   return (
-    <Page className={classes.root} title='Gastos'>
+    <Page
+      className={classes.root}
+      title={`Gastos de sucursal ${SelectSucursal ? SelectSucursal?.sucursal : ''}`}
+    >
       <Container maxWidth='xl'>
-        <Box display='flex' justifyContent='flex-end'>
-          <Button color='secondary' variant='contained' onClick={() => setVisible(true)}>
-            Añadir Gastos
-          </Button>
-        </Box>
+        {me.idRol === 'Gerente de Sucursal' ? (
+          <Box display='flex' justifyContent='flex-end'>
+            <Button color='secondary' variant='contained' onClick={() => setVisible(true)}>
+              Añadir Gastos
+            </Button>
+          </Box>
+        ) : null}
         <Box mt={3}>
           <Card>
             <CardContent>
@@ -163,21 +173,28 @@ const GastosView = () => {
                     }}
                   />
                 </Grid>
-                <Grid item xs={12} lg={3} xl={2}>
-                  <InputLabel id='select-sucursales'>Sucursales</InputLabel>
-                  <Select
-                    labelId='select-sucursales'
-                    style={{ width: 200 }}
-                    id='select-sucursales'
-                    onChange={event => setIdSucursal(event.target.value as string)}
-                  >
-                    {DataSucursales.map(sucursal => (
-                      <MenuItem key={sucursal.idSucursal} value={sucursal.idSucursal}>
-                        {sucursal.sucursal}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </Grid>
+                {me.idRol === 'Administrativo' ? (
+                  <Grid item xs={12} lg={3} xl={2}>
+                    <InputLabel id='select-sucursales'>Sucursales</InputLabel>
+                    <Select
+                      labelId='select-sucursales'
+                      style={{ width: 200 }}
+                      id='select-sucursales'
+                      onChange={event => {
+                        const findSucursal = DataSucursales.find(
+                          suc => suc.idSucursal === event.target.value,
+                        );
+                        setSelectSucursal(findSucursal);
+                      }}
+                    >
+                      {DataSucursales.map(sucursal => (
+                        <MenuItem key={sucursal.idSucursal} value={sucursal.idSucursal}>
+                          {sucursal.sucursal}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </Grid>
+                ) : null}
                 <Grid item xs={12} lg={1}>
                   <Button color='secondary' variant='outlined' onClick={resetOptions}>
                     Restablecer

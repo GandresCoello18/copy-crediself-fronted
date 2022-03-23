@@ -309,7 +309,7 @@ export const FormUpdateCliente = ({ setReloadCliente, setVisible, cliente }: Pro
                         control={
                           <Checkbox
                             checked={values.notificarEmail ? true : false}
-                            disabled={values.email.length === 0}
+                            disabled={values?.email ? values?.email.length === 0 : false}
                             defaultChecked={values.notificarEmail ? true : false}
                             onChange={values =>
                               setNotificationClient({

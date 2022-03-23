@@ -178,7 +178,7 @@ export const RowTableClient = ({
           </span>
         </TableCell>
         <TableCell>{cliente.apellidos}</TableCell>
-        <TableCell>{cliente.email}</TableCell>
+        <TableCell>{cliente.email || <Chip color='primary' label='No especificado' />}</TableCell>
         <TableCell>{cliente.telefono || <Chip label='None' color='primary' />}</TableCell>
         <TableCell>{cliente.sexo}</TableCell>
         <TableCell>{cliente.created_at}</TableCell>

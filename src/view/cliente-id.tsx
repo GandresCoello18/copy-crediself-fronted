@@ -308,7 +308,9 @@ const ClientOnlyView = () => {
             {Loading ? (
               <Skeleton variant='text' width={300} height={20} />
             ) : (
-              <Typography className={classes.textTop}>{Cliente?.email}</Typography>
+              <Typography className={classes.textTop}>
+                {Cliente?.email || <Chip label='No especificado' />}
+              </Typography>
             )}
           </Box>
 

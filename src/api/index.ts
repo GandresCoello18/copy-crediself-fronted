@@ -11,11 +11,12 @@ export const BASE_FRONTEND_PROD = 'https://copy-crediself-fronted.vercel.app';
 export const BASE_FRONTEND = BASE_FRONTEND_PROD;
 
 // const apiDev = 'http://localhost:9000';
-const apiProd = 'https://crediself-api.herokuapp.com';
+const apiProdRespaldo = 'https://crediself.herokuapp.com';
+// const apiProd = 'https://crediself-api.herokuapp.com';
 
-export const BASE_API_FILE_DOCUMENT = `${apiProd}/static`;
+export const BASE_API_FILE_DOCUMENT = `${apiProdRespaldo}/static`;
 
-export const BASE_API = apiProd;
+export const BASE_API = apiProdRespaldo;
 
 export const api = axios.default.create({
   baseURL: `${BASE_API}/api`,

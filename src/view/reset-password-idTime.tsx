@@ -63,7 +63,9 @@ export const RestaurarCuenta = () => {
   useEffect(() => {
     const fetchMessage = async () => {
       try {
-        const { message } = await (await getTimeMessage({ idMessage: params?.idTimeMessage })).data;
+        const { message } = await (
+          await getTimeMessage({ idMessage: params?.idTimeMessage as string })
+        ).data;
         setMessage(message);
 
         setLoading(false);

@@ -89,7 +89,7 @@ const ClientesByUserView = () => {
           findCliente: SearchCliente,
           dateDesde: ClearDate ? '' : dateFetch.dateDesde,
           dateHasta: dateFetch.dateHasta || CurrentDate(),
-          idUser: params.idUser,
+          idUser: params.idUser as string,
         })
       ).data;
       setClientes(clientes);

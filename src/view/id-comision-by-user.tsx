@@ -44,7 +44,7 @@ const ComuisionUser = () => {
 
     try {
       const { comisiones } = await (
-        await GetComisionByUser({ token, idComisionUser: params.idComisionUser })
+        await GetComisionByUser({ token, idComisionUser: params.idComisionUser as string })
       ).data;
 
       setComision(comisiones);

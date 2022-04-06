@@ -57,7 +57,7 @@ const CancelacionView = () => {
 
     try {
       const { cancelacion } = await (
-        await GetCancelacion({ token, idCancelacion: params.idCancelacion })
+        await GetCancelacion({ token, idCancelacion: params.idCancelacion as string })
       ).data;
 
       if (cancelacion === undefined) {
@@ -89,7 +89,7 @@ const CancelacionView = () => {
     try {
       await UpdateAutorizacionCancelacion({
         token,
-        idCancelacion: params.idCancelacion,
+        idCancelacion: params.idCancelacion as string,
         autorizacion: Cancelacion?.autorizado ? false : true,
         fechaHaPagar,
       });

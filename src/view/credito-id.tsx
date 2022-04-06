@@ -44,7 +44,8 @@ const CreditoOnlyView = () => {
     setLoading(true);
 
     try {
-      const { credito } = await (await GetCredito({ token, IdCredito: params.idCredito })).data;
+      const { credito } = await (await GetCredito({ token, IdCredito: params.idCredito as string }))
+        .data;
       setCreditos(credito);
       setLoading(false);
       setSelectCredito(credito);

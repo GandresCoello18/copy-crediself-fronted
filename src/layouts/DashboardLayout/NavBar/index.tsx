@@ -64,7 +64,7 @@ const useStyles = makeStyles(theme => ({
   },
   button: {
     color: theme.palette.text.secondary,
-    fontWeight: theme.typography.fontWeightMedium,
+    fontWeight: 'bold',
     justifyContent: 'flex-start',
     letterSpacing: 0,
     padding: '10px 8px',

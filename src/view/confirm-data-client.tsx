@@ -63,7 +63,9 @@ const ConfirmDataClient = () => {
 
   const FetchClient = async () => {
     try {
-      const { cliente } = await (await GetConfirmDataCliente({ IdCliente: params.idCliente })).data;
+      const { cliente } = await (
+        await GetConfirmDataCliente({ IdCliente: params.idCliente as string })
+      ).data;
       setCliente(cliente);
     } catch (error) {
       toast.error(HandleError(error as AxiosError));
@@ -74,8 +76,9 @@ const ConfirmDataClient = () => {
     setLoading(true);
 
     try {
-      const { message } = await (await getTimeMessage({ token, idMessage: params.idTimeMessage }))
-        .data;
+      const { message } = await (
+        await getTimeMessage({ token, idMessage: params.idTimeMessage as string })
+      ).data;
       setTimeProgres(message);
 
       if (message && message?.status === 'En progreso' && params.idCliente) {
@@ -93,7 +96,7 @@ const ConfirmDataClient = () => {
     setLoadingConfir(true);
 
     try {
-      await UpdatecheckDataClient({ idCliente: params.idCliente, check: true });
+      await UpdatecheckDataClient({ idCliente: params.idCliente as string, check: true });
       setLoadingConfir(false);
       toast.success('Se registro su confirmación con exito');
       FetchTimeMessage();

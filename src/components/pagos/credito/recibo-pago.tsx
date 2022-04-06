@@ -65,7 +65,12 @@ export const ReciboPagoView = () => {
 
     try {
       const { pagos, cliente, credito, pages } = await (
-        await GetPagosByCredito({ token, idCredito: params.idCredito, page, ParamsFilter })
+        await GetPagosByCredito({
+          token,
+          idCredito: params.idCredito as string,
+          page,
+          ParamsFilter,
+        })
       ).data;
       setPagos(pagos);
       setCount(pages || 1);
@@ -93,7 +98,7 @@ export const ReciboPagoView = () => {
 
     try {
       const { fileName } = await (
-        await GetReciboPagosByCredito({ token, idCredito: params.idCredito, page })
+        await GetReciboPagosByCredito({ token, idCredito: params.idCredito as string, page })
       ).data;
 
       setTimeout(() => {
@@ -182,7 +187,7 @@ export const ReciboPagoView = () => {
                       <strong>Lugar de expediciòn:</strong>
                     </TableCell>
                     <TableCell colSpan={2} className={classes.celda} align='center'>
-                      {me.idSucursal}
+                      {me.sucursalName}
                     </TableCell>
                   </TableRow>
                   <TableRow>

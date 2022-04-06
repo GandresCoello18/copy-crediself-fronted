@@ -102,7 +102,7 @@ const PagosByCreditoView = () => {
       const { pagos, cliente, credito, statistics, statisticsValue, pages } = await (
         await GetPagosByCredito({
           token,
-          idCredito: params.idCredito,
+          idCredito: params.idCredito as string,
           page,
           ParamsFilter: emptyFilter ? initParamsFIlter : ParamsFilter,
         })
@@ -332,7 +332,7 @@ const PagosByCreditoView = () => {
         <FormNewPago
           setVisible={setVisible}
           setReloadPago={setReloadPago}
-          idCredito={params.idCredito}
+          idCredito={params.idCredito as string}
           cliente={`${Cliente?.nombres.toUpperCase()} ${Cliente?.apellidos.toUpperCase()}`}
         />
       </DialogoForm>

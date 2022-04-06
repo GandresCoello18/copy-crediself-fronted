@@ -67,7 +67,7 @@ const CreditoClienteOnlyView = () => {
       const { creditos, pages } = await (
         await GetCreditosCliente({
           token,
-          idCliente: params.idCliente,
+          idCliente: params.idCliente as string,
           page,
           findCredito: SearchCredito,
         })
@@ -182,7 +182,7 @@ const CreditoClienteOnlyView = () => {
       </DialogoForm>
 
       <DialogoForm Open={VisibleNewCredito} setOpen={setVisibleNewCredito} title=''>
-        <FormNewCredit setVisible={setVisibleNewCredito} idCliente={params.idCliente} />
+        <FormNewCredit setVisible={setVisibleNewCredito} idCliente={params.idCliente as string} />
       </DialogoForm>
     </Page>
   );

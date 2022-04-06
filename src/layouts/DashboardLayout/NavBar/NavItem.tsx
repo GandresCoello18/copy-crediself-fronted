@@ -11,7 +11,7 @@ const useStyles = makeStyles(theme => ({
   },
   button: {
     color: theme.palette.text.secondary,
-    fontWeight: theme.typography.fontWeightMedium,
+    fontWeight: 'bold',
     justifyContent: 'flex-start',
     letterSpacing: 0,
     padding: '10px 8px',
@@ -50,7 +50,7 @@ const NavItem = ({ click, href, icon: Icon, id, title, ...rest }: Props) => {
     <ListItem className={classes.item} disableGutters {...rest}>
       <Button
         onClick={() => click()}
-        activeClassName={classes.active}
+        //activeClassName={classes.active}
         className={classes.button}
         id={id}
         component={RouterLink}

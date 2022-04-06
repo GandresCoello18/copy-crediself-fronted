@@ -96,7 +96,7 @@ const CreditosByUserView = () => {
         await GetCreditosByUser({
           token,
           page,
-          idUser: params.idUser,
+          idUser: params.idUser as string,
           findCredito: SearchCredito,
           dateDesde: ClearDate ? '' : dateFetch.dateDesde,
           dateHasta: dateFetch.dateHasta || CurrentDate(),

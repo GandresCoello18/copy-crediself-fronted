@@ -18,6 +18,7 @@ export interface Me {
   idSucursal: string;
   supervisor: string;
   empresa?: EmpresaUser;
+  sucursalName?: string;
 }
 
 const templeate: Me = {

@@ -122,7 +122,7 @@ const ClientOnlyView = () => {
 
     try {
       const { cliente, numbers, expediente, usuario } = await (
-        await GetCliente({ token, IdCliente: params.idCliente })
+        await GetCliente({ token, IdCliente: params.idCliente as string })
       ).data;
 
       setCliente(cliente);
@@ -151,7 +151,7 @@ const ClientOnlyView = () => {
   useEffect(() => {
     const FetchDelete = async () => {
       try {
-        await DeleteCliente({ token, IdCliente: params.idCliente });
+        await DeleteCliente({ token, IdCliente: params.idCliente as string });
         toast.success('Cliente eliminado');
 
         setAceptDialog(false);
@@ -170,7 +170,7 @@ const ClientOnlyView = () => {
     setLoading(true);
 
     try {
-      await UpdateActiveCliente({ token, active: check, idCliente: params.idCliente });
+      await UpdateActiveCliente({ token, active: check, idCliente: params.idCliente as string });
       setLoading(false);
       setIsActive(check);
     } catch (error) {
@@ -183,7 +183,7 @@ const ClientOnlyView = () => {
     const autorizar = Cliente?.autorizado ? false : true;
 
     try {
-      await UpdateAutorizarCliente({ token, idCliente: params.idCliente, autorizar });
+      await UpdateAutorizarCliente({ token, idCliente: params.idCliente as string, autorizar });
       setReloadCliente(true);
     } catch (error) {
       toast.error(HandleError(error as AxiosError));
@@ -199,8 +199,9 @@ const ClientOnlyView = () => {
     setLoadingNotificar(true);
 
     try {
-      const { status } = await (await NotificarDataClient({ token, idCliente: params.idCliente }))
-        .data;
+      const { status } = await (
+        await NotificarDataClient({ token, idCliente: params.idCliente as string })
+      ).data;
       setLoadingNotificar(false);
       toast.success('Se notifico al cliente para confirmar sus datos');
       status && toast.error(status);
@@ -576,7 +577,7 @@ const ClientOnlyView = () => {
               <UploadExpediente
                 active={Cliente?.active}
                 token={token}
-                idCliente={params.idCliente}
+                idCliente={params.idCliente as string}
                 setReloadCliente={setReloadCliente}
               />
             </Grid>
@@ -613,7 +614,7 @@ const ClientOnlyView = () => {
               {me.idRol === 'Supervisor' && (
                 <CheckeSupervisor
                   token={token}
-                  idCliente={params.idCliente}
+                  idCliente={params.idCliente as string}
                   isCheckSupervisor={Cliente?.checkSupervisor ? true : false}
                   clientRefNombres={`${Cliente?.nombres} ${Cliente?.apellidos}`}
                   me={me}
@@ -625,7 +626,7 @@ const ClientOnlyView = () => {
               {me.idRol === 'Asesor' && !Cliente?.checkSupervisor && (
                 <NotificationSupervisor
                   token={token}
-                  idCliente={params.idCliente}
+                  idCliente={params.idCliente as string}
                   clientRefNombres={`${Cliente?.nombres} ${Cliente?.apellidos}`}
                   me={me}
                   active={!Cliente?.active}
@@ -636,7 +637,7 @@ const ClientOnlyView = () => {
                 <CheckGerenteSuc
                   token={token}
                   active={!Cliente?.active}
-                  idCliente={params.idCliente}
+                  idCliente={params.idCliente as string}
                   isCheckGerenteSuc={!Archivos.length || Cliente?.checkGerenteSuc ? true : false}
                   clientRefNombres={Cliente?.nombres || ''}
                   me={me}

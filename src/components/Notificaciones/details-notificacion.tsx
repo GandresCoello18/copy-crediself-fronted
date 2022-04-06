@@ -51,7 +51,7 @@ export const DetailsNotificacion = ({ notifiacion }: Props) => {
       );
     }
 
-    if (notifiacion.title.includes('te invita ha revisar la documentación de un cliente')) {
+    if (notifiacion.title.includes('te invita ha revisar')) {
       return (
         <TemplateDefault notificacion={notifiacion}>
           <a href={`${notifiacion.link}`} target='_blank' rel='noreferrer'>
